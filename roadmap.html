@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<title>Learning Roadmap — ops → ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090E;--s1:#0E1019;--s2:#141722;--s3:#1A1E2E;
+  --mint:#00E8B0;--mint-d:#00A67D;--mint-dim:rgba(0,232,176,.1);--mint-glow:rgba(0,232,176,.18);
+  --violet:#7C5CFC;--sky:#38BDF8;--amber:#FBBF24;--rose:#FB7185;
+  --text:#E8ECF4;--text2:#8B9AB8;--text3:#4B5672;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);
+  --done:#00E8B0;--done-bg:rgba(0,232,176,.08);
+  --radius:14px;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;min-height:100vh}
+::selection{background:rgba(0,232,176,.25);color:#fff}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 clamp(20px,4vw,48px);height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,9,14,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-left{display:flex;align-items:center;gap:20px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-signal{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+.logo-word{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:#fff}
+.logo-word .arr{color:var(--mint)}
+.nav-page{font-size:13px;color:var(--text3);padding-left:20px;border-left:1px solid var(--border)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-back{font-size:13px;color:var(--text2);text-decoration:none;transition:color .15s}
+.nav-back:hover{color:var(--mint)}
+.auth-btn{font-size:13px;font-weight:600;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px}
+.auth-login{background:var(--mint);color:var(--bg)}
+.auth-login:hover{background:#00d4a0}
+.auth-user{background:var(--s2);color:var(--text);border:1px solid var(--border2)}
+.auth-user:hover{background:var(--s3)}
+.auth-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.auth-logout{font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);padding:4px 10px;border-radius:6px;cursor:pointer;margin-left:4px}
+.auth-logout:hover{color:var(--rose);border-color:rgba(251,113,133,.3)}
+.auth-hide{display:none!important}
+.auth-group{display:flex;align-items:center;gap:8px}
+.auth-name{font-size:13px;font-weight:500;color:var(--text);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* PROGRESS HEADER */
+.prog-header{padding:32px clamp(20px,4vw,48px);border-bottom:1px solid var(--border);background:var(--s1)}
+.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+.prog-title{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.prog-stats{display:flex;gap:24px}
+.prog-stat{text-align:center}
+.prog-stat-n{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:var(--mint);line-height:1}
+.prog-stat-l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+.prog-bar-wrap{background:var(--s3);border-radius:6px;height:8px;overflow:hidden}
+.prog-bar{background:linear-gradient(90deg,var(--mint),var(--violet));height:100%;border-radius:6px;transition:width .5s ease;width:0%}
+.prog-pct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);margin-top:6px}
+
+/* TRACK TOGGLE */
+.track-toggle{display:flex;gap:6px;padding:16px clamp(20px,4vw,48px);border-bottom:1px solid var(--border);background:var(--bg)}
+.tt-btn{font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;transition:all .15s}
+.tt-btn:hover{border-color:var(--border2);color:var(--text)}
+.tt-btn.active{background:var(--mint-dim);color:var(--mint);border-color:rgba(0,232,176,.25)}
+
+/* ROADMAP */
+.roadmap-wrap{max-width:800px;margin:0 auto;padding:40px clamp(20px,4vw,48px) 80px;position:relative}
+
+/* TIER */
+.tier{margin-bottom:8px}
+.tier-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;padding:8px 0;display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.tier-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.tier-label.ops{color:var(--sky)}
+.tier-label.ai{color:var(--mint)}
+
+/* SKILL NODE */
+.skill{background:var(--s1);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.skill:hover{border-color:var(--border2)}
+.skill.done{border-color:rgba(0,232,176,.2);background:var(--done-bg)}
+.skill.done .sk-dot{background:var(--done);box-shadow:0 0 8px var(--done)}
+.skill-hd{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .1s}
+.skill-hd:hover{background:rgba(255,255,255,.02)}
+.sk-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .2s;font-size:12px;color:transparent}
+.sk-check:hover{border-color:var(--mint)}
+.skill.done .sk-check{background:var(--mint);border-color:var(--mint);color:var(--bg)}
+.sk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all .2s}
+.sk-dot.ops-dot{background:var(--sky)}
+.sk-dot.ai-dot{background:var(--mint)}
+.sk-info{flex:1;min-width:0}
+.sk-name{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3}
+.skill.done .sk-name{color:var(--mint)}
+.skill.coming{opacity:.45;pointer-events:none}
+.skill.coming .sk-check{display:none}
+.skill.coming .sk-chev{display:none}
+.sk-coming-badge{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.06);color:var(--text3);border:1px solid var(--border);flex-shrink:0}
+.sk-meta{font-size:12px;color:var(--text3);margin-top:2px;display:flex;gap:12px}
+.sk-chev{color:var(--text3);font-size:11px;transition:transform .2s;flex-shrink:0}
+.skill.open .sk-chev{transform:rotate(180deg);color:var(--mint)}
+.sk-link{font-size:12.5px;color:var(--mint);text-decoration:none;padding:4px 10px;border:1px solid rgba(0,232,176,.2);border-radius:6px;flex-shrink:0;transition:all .15s;display:none}
+.sk-link:hover{background:var(--mint-dim)}
+
+/* SKILL EXPANDED */
+.skill-body{display:none;padding:0 18px 18px;animation:fadeIn .2s ease}
+.skill.open .skill-body{display:block}
+.skill.open .sk-link{display:inline-block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.sk-desc{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:14px}
+.sk-topics{margin-bottom:14px}
+.sk-topics h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px}
+.sk-topic-grid{display:flex;flex-wrap:wrap;gap:6px}
+.sk-topic{font-size:12px;padding:4px 10px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2);font-family:'JetBrains Mono',monospace}
+.sk-resources{margin-top:14px}
+.sk-resources h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px}
+.sk-res-link{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--s2);border:1px solid var(--border);border-radius:8px;text-decoration:none;margin-bottom:6px;transition:border-color .15s}
+.sk-res-link:hover{border-color:var(--border2)}
+.sk-res-icon{font-size:14px;flex-shrink:0}
+.sk-res-title{font-size:13px;color:var(--text);flex:1}
+.sk-res-src{font-size:11px;color:var(--text3)}
+
+/* GO PLAYGROUND */
+.playground-wrap{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.playground-label{font-size:11px;font-weight:600;color:var(--mint);text-transform:uppercase;letter-spacing:.1em;padding:8px 14px;background:rgba(0,232,176,.06);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.playground-label::before{content:'▶';font-size:9px}
+.playground-frame{width:100%;height:340px;border:none;background:#1e1e2e}
+
+/* CONNECTOR LINE */
+.connector{display:flex;align-items:center;justify-content:center;padding:4px 0;color:var(--text3)}
+.conn-line{width:2px;height:16px;background:var(--border2);border-radius:1px}
+.conn-line.done-line{background:var(--mint)}
+
+/* FOOTER */
+.rm-footer{padding:32px clamp(20px,4vw,48px);border-top:1px solid var(--border);text-align:center}
+.rm-footer a{color:var(--text3);text-decoration:none;font-size:13px;transition:color .15s}
+.rm-footer a:hover{color:var(--mint)}
+
+/* MOBILE */
+@media(max-width:600px){
+  .prog-header{padding:24px 16px}
+  .roadmap-wrap{padding:24px 16px 60px}
+  .prog-stats{gap:16px}
+  .track-toggle{padding:12px 16px;overflow-x:auto}
+  .sk-meta{flex-direction:column;gap:2px}
+  .nav-page{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-logo"><div class="logo-signal"></div><div class="logo-word">ops<span class="arr">→</span>ai</div></a>
+    <span class="nav-page">Learning Roadmap</span>
+  </div>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Home</a>
+    <div id="authArea">
+      <button class="auth-btn auth-login" id="loginBtn" onclick="signInWithGitHub()">Sign in with GitHub</button>
+      <div class="auth-hide auth-group" id="userArea">
+        <img class="auth-avatar" id="userAvatar" src="" style="display:none" alt=""/>
+        <span class="auth-name" id="userName"></span>
+        <button class="auth-logout" onclick="handleSignOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="prog-header">
+  <div class="prog-top">
+    <div class="prog-title">Your Learning Path</div>
+    <div class="prog-stats">
+      <div class="prog-stat"><div class="prog-stat-n" id="doneCount">0</div><div class="prog-stat-l">Completed</div></div>
+      <div class="prog-stat"><div class="prog-stat-n" id="totalCount">0</div><div class="prog-stat-l">Total skills</div></div>
+    </div>
+  </div>
+  <div class="prog-bar-wrap"><div class="prog-bar" id="progBar"></div></div>
+  <div class="prog-pct" id="progPct">0% complete</div>
+</div>
+
+<div class="track-toggle">
+  <button class="tt-btn active" onclick="filterTrack('all',this)">All skills</button>
+  <button class="tt-btn" onclick="filterTrack('ops',this)">⚙️ Ops Core</button>
+  <button class="tt-btn" onclick="filterTrack('ai',this)">🧠 AI Bridge</button>
+</div>
+
+<div class="roadmap-wrap" id="roadmapWrap">
+  <!-- Roadmap is rendered by JavaScript below -->
+</div>
+
+<div class="rm-footer">
+  <a href="index.html">← Back to ops → ai</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+// ============================================
+// SKILL TREE DATA
+// ============================================
+var SKILLS = [
+  // OPS CORE
+  {id:'linux',name:'Linux & Networking',track:'ops',tier:'Foundation',time:'2 weeks',
+    desc:'Everything runs on Linux. Master the command line, file systems, processes, systemd, and networking fundamentals — IP, DNS, HTTP/S, SSH, firewalls, and the OSI model.',
+    topics:['Command line','File permissions','Process management','systemd & journald','TCP/IP & DNS','SSH & firewalls','OSI model','Package managers'],
+    resources:[
+      {icon:'📺',title:'Linux for Hackers (Full Course)',src:'youtube.com',url:'https://www.youtube.com/watch?v=VbEx7B_PTOE'},
+      {icon:'📖',title:'The Linux Command Line (free book)',src:'linuxcommand.org',url:'https://linuxcommand.org/tlcl.php'}
+    ]},
+  {id:'git',name:'Git & Collaboration',track:'ops',tier:'Foundation',time:'0.5 weeks',
+    desc:'Version control is non-negotiable. Branching, merging, pull requests, rebasing, and code review workflows.',
+    topics:['Branching & merging','Pull requests','Rebasing','Code review','Git hooks','.gitignore'],
+    resources:[
+      {icon:'🎮',title:'Learn Git Branching (interactive)',src:'learngitbranching.js.org',url:'https://learngitbranching.js.org/'}
+    ]},
+  {id:'go',name:'Go for Ops Engineers',track:'ops',tier:'Foundation',time:'2–3 weeks',
+    desc:'Go is the language of cloud-native: Kubernetes, Docker, Prometheus, Terraform, k8sgpt — all written in Go. Learn it once, read the source of everything.',
+    topics:['Goroutines & channels','Structs & interfaces','Error handling','HTTP servers','CLI with cobra','Testing','Modules & packages'],
+    resources:[
+      {icon:'📖',title:'Go by Example',src:'gobyexample.com',url:'https://gobyexample.com/'},
+      {icon:'📺',title:'Go Full Course — freeCodeCamp',src:'youtube.com',url:'https://www.youtube.com/watch?v=un6ZyFkqFKo'}
+    ],
+    playground:true},
+  {id:'bash',name:'Bash & Shell Scripting',track:'ops',tier:'Foundation',time:'0.5 weeks',
+    desc:'The glue of operations. Automate anything with bash: parsing logs, health checks, deployment scripts, cron jobs.',
+    topics:['Variables & loops','Functions','Pipes & redirection','sed & awk','cron','Error handling','trap & signals'],
+    resources:[]},
+  {id:'docker',name:'Docker & Containers',track:'ops',tier:'Core Stack',time:'1.5 weeks',
+    desc:'Containers are the deployment standard. Understand images, Dockerfiles, multi-stage builds, Compose, registries, and container hardening.',
+    topics:['Dockerfile','Multi-stage builds','Docker Compose','Registries','Volumes & networks','Container security','Image scanning'],
+    resources:[
+      {icon:'📺',title:'Docker Tutorial for Beginners — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=3c-iBn73dDE'}
+    ]},
+  {id:'kubernetes',name:'Kubernetes Fundamentals',track:'ops',tier:'Core Stack',time:'3 weeks',
+    desc:'The single highest-leverage skill in the market. 82% of container users run Kubernetes in production. Pods, Deployments, Services, Ingress, ConfigMaps, Secrets, Helm.',
+    topics:['Pods & Deployments','Services & Ingress','ConfigMaps & Secrets','PersistentVolumes','Namespaces','Helm','RBAC','kubectl'],
+    resources:[
+      {icon:'📺',title:'Kubernetes Full Course — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=X48VuDVv0do'},
+      {icon:'🎮',title:'Killercoda Interactive K8s Labs',src:'killercoda.com',url:'https://killercoda.com/playgrounds/scenario/kubernetes'}
+    ]},
+  {id:'openshift',name:'OpenShift',track:'ops',tier:'Core Stack',time:'2 weeks',link:'openshift.html',available:true,
+    desc:'Red Hat\'s enterprise Kubernetes platform. If your company runs OpenShift, you need to understand SCCs, Routes, Operators, OLM, and how it differs from vanilla K8s.',
+    topics:['oc CLI','Routes vs Ingress','SCCs','Operators & OLM','DeploymentConfigs','Builds & S2I','RBAC'],
+    resources:[
+      {icon:'📖',title:'OpenShift Guide (this site)',src:'ops-to-ai',url:'openshift.html'}
+    ]},
+  {id:'cicd',name:'CI/CD — GitHub Actions',track:'ops',tier:'Automation',time:'1.5 weeks',
+    desc:'The dominant CI/CD tool (62% of developers). Build, test, scan, deploy — all as pipeline-as-code in your repo.',
+    topics:['Workflow syntax','Triggers & events','Jobs & steps','Secrets & variables','Matrix builds','Custom actions','Artifact caching'],
+    resources:[
+      {icon:'📖',title:'GitHub Actions Documentation',src:'docs.github.com',url:'https://docs.github.com/en/actions'}
+    ]},
+  {id:'terraform',name:'Terraform / OpenTofu',track:'ops',tier:'Automation',time:'2 weeks',
+    desc:'Infrastructure as Code. Define your infrastructure in HCL, version control it, and reproduce environments. The BUSL/OpenTofu split matters for your career.',
+    topics:['HCL syntax','Providers','State management','Modules','Variables & outputs','Workspaces','Terraform vs OpenTofu','Terraform Cloud'],
+    resources:[
+      {icon:'📖',title:'Terraform Learn (HashiCorp)',src:'developer.hashicorp.com',url:'https://developer.hashicorp.com/terraform/tutorials'}
+    ]},
+  {id:'aws',name:'AWS Core for DevOps',track:'ops',tier:'Cloud',time:'2 weeks',
+    desc:'AWS has ~30% cloud market share and the most job postings. Core services: IAM, EC2, S3, VPC, EKS, CloudWatch.',
+    topics:['IAM & policies','EC2 & VPCs','S3 & storage','EKS','CloudWatch','Route53','CloudFormation'],
+    resources:[
+      {icon:'📖',title:'AWS Free Tier',src:'aws.amazon.com',url:'https://aws.amazon.com/free/'}
+    ]},
+  {id:'observability',name:'Observability — Prometheus, Grafana, Loki',track:'ops',tier:'Reliability',time:'2 weeks',
+    desc:'The three pillars: metrics (Prometheus), logs (Loki), traces (Tempo/Jaeger). Plus OpenTelemetry for vendor-neutral instrumentation.',
+    topics:['PromQL','Grafana dashboards','Alertmanager','Loki & LogQL','OpenTelemetry','Jaeger / Tempo','SLI metrics'],
+    resources:[
+      {icon:'📺',title:'Prometheus & Grafana Tutorial — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=h4Sl21AKiDg'}
+    ]},
+  {id:'sre',name:'SRE Practices & Incident Management',track:'ops',tier:'Reliability',time:'1.5 weeks',
+    desc:'SLOs, SLIs, error budgets, blameless postmortems, on-call practices, and runbook writing. The professional discipline of operations.',
+    topics:['SLIs & SLOs','Error budgets','On-call rotations','Incident response','Blameless postmortems','Runbook design','Toil reduction'],
+    resources:[
+      {icon:'📖',title:'Google SRE Book (free online)',src:'sre.google',url:'https://sre.google/sre-book/table-of-contents/'}
+    ]},
+  {id:'gitops',name:'GitOps — ArgoCD',track:'ops',tier:'Automation',time:'1 week',
+    desc:'ArgoCD won the GitOps battle (~50% adoption vs Flux\'s 11%). Declarative, GitOps continuous delivery for Kubernetes.',
+    topics:['ArgoCD architecture','Application CRDs','Sync strategies','ApplicationSets','RBAC','Helm + Kustomize'],
+    resources:[
+      {icon:'📖',title:'ArgoCD Getting Started',src:'argo-cd.readthedocs.io',url:'https://argo-cd.readthedocs.io/en/stable/getting_started/'}
+    ]},
+  {id:'security',name:'DevSecOps — Trivy, Vault, Sigstore',track:'ops',tier:'Security',time:'1.5 weeks',
+    desc:'Container scanning, secrets management, supply chain security. In 2025 alone, over 845K malicious packages were detected.',
+    topics:['Trivy scanning','HashiCorp Vault / OpenBao','Sigstore & cosign','SBOM generation','SLSA framework','GitHub Actions security'],
+    resources:[]},
+
+  // AI BRIDGE
+  {id:'llm',available:true,name:'LLM Foundations & Prompt Engineering',track:'ai',tier:'AI Foundations',time:'1 week',link:'ai-devops.html',
+    desc:'How LLMs actually work — tokens, transformers, context windows, temperature. Plus the 6 prompt engineering techniques every engineer needs.',
+    topics:['Tokens & context windows','Temperature','System prompts','Role prompting','Chain of Thought','Output formatting','Few-shot examples'],
+    resources:[
+      {icon:'📖',title:'AI for DevOps (this site, Weeks 1)',src:'ops-to-ai',url:'ai-devops.html'},
+      {icon:'📺',title:'How LLMs Work — 3Blue1Brown',src:'youtube.com',url:'https://www.youtube.com/watch?v=wjZofJX0v4M'}
+    ]},
+  {id:'rag',available:true,name:'RAG & Vector Databases',track:'ai',tier:'AI Foundations',time:'1.5 weeks',link:'ai-devops.html',
+    desc:'Retrieval-Augmented Generation — how to make AI answer questions from YOUR documentation. Embeddings, chunking, pgvector, semantic search.',
+    topics:['Embeddings','Vector similarity','pgvector','Chunking strategies','Hybrid search','Reranking','Document loaders'],
+    resources:[
+      {icon:'📖',title:'AI for DevOps (this site, Week 2)',src:'ops-to-ai',url:'ai-devops.html'}
+    ]},
+  {id:'mcp',available:true,name:'MCP — Model Context Protocol',track:'ai',tier:'AI Tools',time:'1 week',link:'ai-devops.html',
+    desc:'The universal standard for connecting AI to tools. 97M+ monthly SDK downloads. Build MCP servers in Go that expose kubectl, Terraform, and monitoring as AI tools.',
+    topics:['MCP architecture','Client & server','Transport layers','Tool exposure','Go MCP SDK','DevOps MCP servers'],
+    resources:[
+      {icon:'📖',title:'MCP Documentation',src:'modelcontextprotocol.io',url:'https://modelcontextprotocol.io/'},
+      {icon:'📖',title:'AI for DevOps (this site, Week 4)',src:'ops-to-ai',url:'ai-devops.html'}
+    ]},
+  {id:'agents',available:true,name:'Building AI Agents in Go',track:'ai',tier:'AI Tools',time:'2 weeks',link:'ai-devops.html',
+    desc:'The ReAct pattern (Think → Act → Observe → Repeat), tool calling, multi-step reasoning, and the frameworks: LangChainGo, Eino, Google ADK for Go.',
+    topics:['ReAct pattern','Tool/function calling','LangChainGo','Eino (ByteDance)','Google ADK for Go','Human-in-the-loop','Agent evaluation'],
+    resources:[
+      {icon:'📖',title:'AI for DevOps (this site, Weeks 3+5–8)',src:'ops-to-ai',url:'ai-devops.html'}
+    ],
+    playground:true},
+  {id:'aiops',available:true,name:'AIOps — k8sgpt, kagent, kubectl-ai',track:'ai',tier:'AI in Production',time:'1.5 weeks',
+    desc:'Real, production-ready AI tools for operations. k8sgpt scans clusters and explains issues. kagent runs agents as Kubernetes CRDs. kubectl-ai turns natural language into kubectl.',
+    topics:['k8sgpt','kagent','kubectl-ai','AI incident copilots','Log analysis with LLMs','Alert correlation'],
+    resources:[
+      {icon:'📖',title:'k8sgpt GitHub',src:'github.com',url:'https://github.com/k8sgpt-ai/k8sgpt'}
+    ]},
+  {id:'infrabot',available:true,name:'InfraBot — Build Your AI Agent',track:'ai',tier:'Capstone Project',time:'2 weeks',link:'ai-devops.html',
+    desc:'The capstone: build a working AI agent in Go that searches runbooks (RAG), checks service health (tools), analyzes logs, and creates incident reports. Your portfolio project.',
+    topics:['Project architecture','RAG pipeline in Go','Custom tools','ReAct agent loop','pgvector integration','CLI interface','Azure OpenAI swap'],
+    resources:[
+      {icon:'📖',title:'AI for DevOps (this site, Weeks 5–8)',src:'ops-to-ai',url:'ai-devops.html'}
+    ],
+    playground:true}
+];
+
+// ============================================
+// STATE
+// ============================================
+var completedSkills = {};  // {skill_id: true}
+var currentUser = null;
+var currentFilter = 'all';
+
+// ============================================
+// RENDER ROADMAP
+// ============================================
+function renderRoadmap() {
+  var wrap = document.getElementById('roadmapWrap');
+  var html = '';
+  var lastTier = '';
+
+  SKILLS.forEach(function(sk, i) {
+    // Filter
+    if (currentFilter !== 'all' && sk.track !== currentFilter) return;
+
+    // Tier label
+    if (sk.tier !== lastTier) {
+      lastTier = sk.tier;
+      html += '<div class="tier-label ' + sk.track + '">' + sk.tier + '</div>';
+    }
+
+    var isDone = !!completedSkills[sk.id];
+    var isAvailable = !!sk.available;
+    html += '<div class="skill' + (isDone ? ' done' : '') + (!isAvailable ? ' coming' : '') + '" id="skill-' + sk.id + '" data-track="' + sk.track + '">';
+    html += '<div class="skill-hd"' + (isAvailable ? ' onclick="toggleSkill(\'' + sk.id + '\')"' : '') + '>';
+    if (isAvailable) {
+      html += '<div class="sk-check" onclick="event.stopPropagation();toggleComplete(\'' + sk.id + '\')">' + (isDone ? '✓' : '') + '</div>';
+    }
+    html += '<div class="sk-dot ' + sk.track + '-dot"></div>';
+    html += '<div class="sk-info"><div class="sk-name">' + sk.name + '</div>';
+    html += '<div class="sk-meta"><span>⏱ ' + sk.time + '</span><span>' + (sk.track === 'ops' ? '⚙️ Ops' : '🧠 AI') + '</span></div></div>';
+    if (sk.link && isAvailable) html += '<a href="' + sk.link + '" class="sk-link" onclick="event.stopPropagation()">Open course →</a>';
+    if (!isAvailable) html += '<span class="sk-coming-badge">Coming soon</span>';
+    if (isAvailable) html += '<span class="sk-chev">▼</span>';
+    html += '</div>';
+
+    // Expanded body
+    html += '<div class="skill-body">';
+    html += '<div class="sk-desc">' + sk.desc + '</div>';
+
+    // Topics
+    html += '<div class="sk-topics"><h4>What you\'ll learn</h4><div class="sk-topic-grid">';
+    sk.topics.forEach(function(t) { html += '<span class="sk-topic">' + t + '</span>'; });
+    html += '</div></div>';
+
+    // Resources
+    if (sk.resources && sk.resources.length > 0) {
+      html += '<div class="sk-resources"><h4>Resources</h4>';
+      sk.resources.forEach(function(r) {
+        html += '<a href="' + r.url + '" target="_blank" class="sk-res-link">';
+        html += '<span class="sk-res-icon">' + r.icon + '</span>';
+        html += '<span class="sk-res-title">' + r.title + '</span>';
+        html += '<span class="sk-res-src">' + r.src + '</span></a>';
+      });
+      html += '</div>';
+    }
+
+    // Go Playground
+    if (sk.playground) {
+      html += '<div class="playground-wrap">';
+      html += '<div class="playground-label">Try Go code</div>';
+      html += '<iframe class="playground-frame" src="https://go.dev/play/" loading="lazy" title="Go Playground"></iframe>';
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+
+    // Connector line between skills
+    if (i < SKILLS.length - 1) {
+      var nextSk = SKILLS[i + 1];
+      if (currentFilter === 'all' || nextSk.track === currentFilter) {
+        html += '<div class="connector"><div class="conn-line' + (isDone ? ' done-line' : '') + '"></div></div>';
+      }
+    }
+  });
+
+  wrap.innerHTML = html;
+  updateProgress();
+}
+
+// ============================================
+// INTERACTIONS
+// ============================================
+function handleSignOut() {
+  localStorage.removeItem('ota-progress');
+  completedSkills = {};
+  signOut();
+}
+
+function toggleSkill(id) {
+  var el = document.getElementById('skill-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleComplete(id) {
+  var skill = SKILLS.find(function(s){return s.id===id});
+  if (!skill || !skill.available) return;
+  if (completedSkills[id]) {
+    delete completedSkills[id];
+    removeProgress(id);
+  } else {
+    completedSkills[id] = true;
+    saveProgress(id);
+  }
+  renderRoadmap();
+}
+
+function filterTrack(track, btn) {
+  currentFilter = track;
+  document.querySelectorAll('.tt-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderRoadmap();
+}
+
+function updateProgress() {
+  var total = SKILLS.filter(function(s){return s.available}).length;
+  var done = Object.keys(completedSkills).length;
+  var pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('progBar').style.width = pct + '%';
+  document.getElementById('progPct').textContent = pct + '% complete';
+}
+
+// ============================================
+// PERSISTENCE (Supabase + localStorage fallback)
+// ============================================
+function saveProgress(skillId) {
+  // Always save to localStorage as backup
+  localStorage.setItem('ota-progress', JSON.stringify(completedSkills));
+
+  // Save to Supabase if logged in
+  var sb = getSupabase();
+  if (sb && currentUser) {
+    sb.from('progress').upsert({
+      user_id: currentUser.id,
+      skill_id: skillId
+    }, { onConflict: 'user_id,skill_id' }).then(function() {});
+  }
+}
+
+function removeProgress(skillId) {
+  localStorage.setItem('ota-progress', JSON.stringify(completedSkills));
+
+  var sb = getSupabase();
+  if (sb && currentUser) {
+    sb.from('progress').delete()
+      .eq('user_id', currentUser.id)
+      .eq('skill_id', skillId)
+      .then(function() {});
+  }
+}
+
+async function loadProgress() {
+  // Try Supabase first
+  var sb = getSupabase();
+  if (sb && currentUser) {
+    try {
+      var res = await sb.from('progress').select('skill_id').eq('user_id', currentUser.id);
+      if (res.data && res.data.length > 0) {
+        completedSkills = {};
+        res.data.forEach(function(r) { completedSkills[r.skill_id] = true; });
+        localStorage.setItem('ota-progress', JSON.stringify(completedSkills));
+        return;
+      }
+    } catch (e) {}
+  }
+
+  // Fall back to localStorage
+  try {
+    var stored = localStorage.getItem('ota-progress');
+    if (stored) completedSkills = JSON.parse(stored);
+  } catch (e) {}
+}
+
+// ============================================
+// AUTH UI
+// ============================================
+function escHTML(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+function safeURL(url) {
+  if (!url) return '';
+  try { var u = new URL(url); if (u.protocol !== 'https:' && u.protocol !== 'http:') return ''; return u.href; } catch(e) { return ''; }
+}
+
+async function initAuth() {
+  var sb = getSupabase();
+  if (!sb) {
+    renderRoadmap();
+    return;
+  }
+
+  try {
+    var res = await sb.auth.getUser();
+    currentUser = res.data.user;
+  } catch (e) {
+    currentUser = null;
+  }
+
+  if (currentUser) {
+    document.getElementById('loginBtn').style.display = 'none';
+    var ua = document.getElementById('userArea');
+    ua.classList.remove('auth-hide');
+    var profile = await getUserProfile(currentUser.id);
+    var name = profile ? profile.display_name : currentUser.email;
+    var avatar = profile ? profile.avatar_url : '';
+    document.getElementById('userBtn').innerHTML =
+      (avatar ? '<img src="' + escHTML(safeURL(avatar)) + '" class="auth-avatar"/>' : '') + escHTML(name);
+  }
+
+  await loadProgress();
+  renderRoadmap();
+}
+
+// ============================================
+// INIT
+// ============================================
+initAuth();
+</script>
+</body>
+</html>

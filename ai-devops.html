@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI for DevOps Engineers — ops→ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#08090E;--s1:#0E1019;--s2:#141722;--s3:#1A1E2E;
+  --accent:#00E8B0;--accent2:#7C5CFC;--amber:#F0B429;--red:#FF6B6B;
+  --text:#E8ECF4;--text2:#8B9AB8;--text3:#4B5672;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --glow:0 0 20px rgba(0,255,194,0.15);--glow2:0 0 30px rgba(123,97,255,0.2);
+  --sw:300px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--s1)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:9999;width:0%;transition:width .1s;box-shadow:0 0 8px var(--accent)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--s1);border-right:1px solid var(--border);overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:transform .3s ease}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+.logo-text{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.logo-text span{color:var(--accent)}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase}
+
+.nav-section{padding:6px 0;border-bottom:1px solid var(--border)}
+.nav-label{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;padding:10px 18px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;font-size:12.5px;color:var(--text2);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.3}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.04);border-left-color:var(--accent2)}
+.nav-item.active{color:var(--accent);background:rgba(0,255,194,.06);border-left-color:var(--accent);font-weight:600}
+.nav-item .nbadge{margin-left:auto;font-size:9.5px;padding:2px 7px;border-radius:20px;background:var(--s3);color:var(--text3);white-space:nowrap}
+.nav-item.active .nbadge{background:rgba(0,255,194,.15);color:var(--accent)}
+.nav-sub{padding-left:36px!important;font-size:12px!important}
+.nav-sub.active{color:var(--accent)!important;background:rgba(0,255,194,.04)!important}
+.sidebar-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.sidebar-foot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* HAMBURGER */
+.ham{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;cursor:pointer;color:var(--text)}
+
+/* MAIN */
+.main{margin-left:var(--sw);min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,#070B16 0%,#0C1428 60%,#080D1A 100%);padding:70px 56px 60px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(0,255,194,.05) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-50px;left:200px;width:350px;height:350px;background:radial-gradient(circle,rgba(123,97,255,.05) 0%,transparent 65%);pointer-events:none}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;background:rgba(0,255,194,.08);border:1px solid rgba(0,255,194,.18);padding:5px 13px;border-radius:20px;margin-bottom:22px}
+.hero-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease-in-out infinite}
+.hero h1{font-family:'Outfit',sans-serif;font-size:clamp(34px,4.5vw,54px);font-weight:800;line-height:1.08;margin-bottom:18px;letter-spacing:-1.5px;color:#fff}
+.hero h1 span{color:var(--accent)}
+.hero h1 em{color:var(--accent2);font-style:normal}
+.hero-desc{font-size:16px;color:var(--text2);max-width:580px;margin-bottom:32px;line-height:1.75}
+.hero-tags{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:36px}
+.htag{font-size:12px;padding:5px 12px;border-radius:6px;font-weight:500;font-family:'JetBrains Mono',monospace;letter-spacing:-.3px}
+.tg{background:rgba(0,173,216,.12);color:#67e8f9;border:1px solid rgba(0,173,216,.2)}
+.tp{background:rgba(123,97,255,.12);color:#c4b5fd;border:1px solid rgba(123,97,255,.2)}
+.ta{background:rgba(79,158,255,.12);color:#7dd3fc;border:1px solid rgba(79,158,255,.2)}
+.tf{background:rgba(0,255,194,.12);color:var(--accent);border:1px solid rgba(0,255,194,.2)}
+.hero-stats{display:flex;gap:36px;flex-wrap:wrap}
+.hs{display:flex;flex-direction:column;gap:2px}
+.hs-n{font-family:'Outfit',sans-serif;font-size:30px;font-weight:800;color:var(--accent);line-height:1}
+.hs-l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+
+/* HOW TO */
+.how-to{background:var(--s1);padding:32px 56px;border-bottom:1px solid var(--border)}
+.how-to h2{font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hw-step{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:18px;display:flex;align-items:flex-start;gap:13px;transition:border-color .2s}
+.hw-step:hover{border-color:rgba(0,255,194,.2)}
+.step-n{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;font-family:'Outfit',sans-serif}
+.sn1{background:rgba(0,255,194,.15);color:var(--accent)}
+.sn2{background:rgba(123,97,255,.15);color:#c4b5fd}
+.sn3{background:rgba(240,180,41,.15);color:var(--amber)}
+.step-txt strong{display:block;font-size:13px;color:var(--text);margin-bottom:4px;font-weight:600}
+.step-txt{font-size:12.5px;color:var(--text2);line-height:1.55}
+
+/* CONTENT */
+.content{padding:40px 56px 80px;max-width:920px}
+
+/* WEEK SECTIONS */
+.wk-section{margin-bottom:40px}
+.wk-header{display:flex;align-items:center;gap:14px;padding:22px 24px;background:var(--s2);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;cursor:default;position:relative;overflow:hidden}
+.wk-header::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.wk-w1 .wk-header::before{background:var(--accent)}
+.wk-w2 .wk-header::before{background:var(--accent2)}
+.wk-w3 .wk-header::before{background:var(--amber)}
+.wk-w4 .wk-header::before{background:var(--red)}
+.wk-icon{font-size:22px;line-height:1}
+.wk-meta{flex:1}
+.wk-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.wk-w1 .wk-lbl{color:var(--accent)}
+.wk-w2 .wk-lbl{color:var(--accent2)}
+.wk-w3 .wk-lbl{color:var(--amber)}
+.wk-w4 .wk-lbl{color:var(--red)}
+.wk-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+
+/* LESSONS */
+.lesson{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .2s,box-shadow .2s;background:var(--s1)}
+.lesson:hover{border-color:rgba(255,255,255,.1)}
+.lesson.open{border-color:rgba(0,255,194,.18);box-shadow:0 0 0 1px rgba(0,255,194,.06)}
+.lesson-hd{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.lesson-hd:hover{background:rgba(255,255,255,.02)}
+.lesson-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--accent);background:rgba(0,255,194,.1);border:1px solid rgba(0,255,194,.15);padding:3px 8px;border-radius:5px;flex-shrink:0}
+.lesson-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.lesson-chev{color:var(--text3);font-size:12px;transition:transform .25s;flex-shrink:0}
+.lesson.open .lesson-chev{transform:rotate(180deg);color:var(--accent)}
+.lesson-body{display:none;padding:20px 22px 22px;border-top:1px solid var(--border);animation:fadeSlide .2s ease}
+.lesson.open .lesson-body{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.lesson-body p{font-size:14px;color:var(--text2);margin-bottom:14px;line-height:1.75}
+.lesson-body h4{font-size:13px;font-weight:700;color:var(--text);margin:20px 0 10px;font-family:'Inter',sans-serif}
+.lesson-body strong{color:var(--text)}
+.lesson-body code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(255,255,255,.07);border:1px solid var(--border2);padding:2px 7px;border-radius:4px;color:#7dd3fc}
+.lesson-body a{color:var(--accent);text-decoration:none}
+.lesson-body a:hover{text-decoration:underline}
+
+/* TERM GRID */
+.term-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.term-card{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:14px;transition:border-color .2s,transform .2s}
+.term-card:hover{border-color:rgba(0,255,194,.2);transform:translateY(-2px)}
+.term-name{font-size:12.5px;font-weight:700;color:var(--accent);font-family:'Inter',sans-serif;margin-bottom:6px}
+.term-desc{font-size:12.5px;color:var(--text2);line-height:1.55}
+
+/* CALLOUTS */
+.callout{border-radius:9px;padding:14px 16px;margin:14px 0;font-size:13.5px;display:flex;gap:12px;border:1px solid}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.callout-text{flex:1;line-height:1.6;color:var(--text2)}
+.callout-text strong{color:var(--text);display:block;margin-bottom:3px}
+.callout-info{background:rgba(79,158,255,.07);border-color:rgba(79,158,255,.2)}
+.callout-tip{background:rgba(0,255,194,.06);border-color:rgba(0,255,194,.2)}
+.callout-warn{background:rgba(240,180,41,.07);border-color:rgba(240,180,41,.2)}
+
+/* CODE BLOCKS */
+.code-block{position:relative;margin:14px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border2)}
+.code-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(255,255,255,.04);border-bottom:1px solid var(--border)}
+.code-lang{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3)}
+.code-block pre{background:#080D18;padding:18px 16px;overflow-x:auto;margin:0;line-height:1.65}
+.code-block code{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#C8D8F0;background:none;border:none;padding:0}
+.copy-btn{font-size:11px;font-family:'Inter',sans-serif;padding:4px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--text2);border-radius:5px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:rgba(255,255,255,.1);color:var(--text)}
+.copy-btn.copied{background:rgba(0,255,194,.15);color:var(--accent);border-color:rgba(0,255,194,.3)}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:13px}
+.tbl-wrap th{background:rgba(255,255,255,.04);color:var(--text2);font-weight:600;padding:10px 14px;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+.tbl-wrap td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
+.tbl-wrap tr:last-child td{border-bottom:none}
+.tbl-wrap tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
+.tbl-wrap td strong{color:var(--accent)}
+.tbl-wrap td code{background:rgba(255,255,255,.06);border:none;color:#7dd3fc}
+
+/* VIDEO SECTION */
+.vid-section{margin-top:20px}
+.vid-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.vid-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.vid-grid{display:flex;flex-direction:column;gap:8px}
+.vid-card{display:flex;align-items:center;gap:13px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:9px;text-decoration:none;transition:all .2s}
+.vid-card:hover{border-color:rgba(255,255,255,.15);transform:translateX(3px)}
+.vid-icon{width:34px;height:34px;border-radius:8px;background:rgba(255,107,107,.15);border:1px solid rgba(255,107,107,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#FF6B6B}
+.vid-info .vid-title{font-size:13px;color:var(--text);font-weight:500}
+.vid-info .vid-src{font-size:11.5px;color:var(--text3);margin-top:2px}
+.vid-card:hover .vid-icon{background:rgba(255,107,107,.25)}
+
+/* PHASES */
+.phase-card{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;background:var(--s1)}
+.phase-hd{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;transition:background .15s}
+.phase-hd:hover{background:rgba(255,255,255,.02)}
+.phase-badge{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;padding:4px 10px;border-radius:5px;flex-shrink:0}
+.ph1{background:rgba(0,255,194,.12);color:var(--accent);border:1px solid rgba(0,255,194,.2)}
+.ph2{background:rgba(123,97,255,.12);color:#c4b5fd;border:1px solid rgba(123,97,255,.2)}
+.ph3{background:rgba(240,180,41,.12);color:var(--amber);border:1px solid rgba(240,180,41,.2)}
+.ph4{background:rgba(79,158,255,.12);color:#7dd3fc;border:1px solid rgba(79,158,255,.2)}
+.ph5{background:rgba(0,255,194,.12);color:var(--accent);border:1px solid rgba(0,255,194,.2)}
+.ph6{background:rgba(123,97,255,.12);color:#c4b5fd;border:1px solid rgba(123,97,255,.2)}
+.ph7{background:rgba(240,180,41,.12);color:var(--amber);border:1px solid rgba(240,180,41,.2)}
+.ph8{background:rgba(79,158,255,.12);color:#7dd3fc;border:1px solid rgba(79,158,255,.2)}
+.phase-title{font-size:14.5px;font-weight:600;color:var(--text);flex:1}
+.phase-chev{color:var(--text3);font-size:12px;transition:transform .25s;flex-shrink:0}
+.phase-card.open .phase-chev{transform:rotate(180deg);color:var(--accent)}
+.phase-body{display:none;padding:20px 22px 24px;border-top:1px solid var(--border);animation:fadeSlide .2s ease}
+.phase-card.open .phase-body{display:block}
+.phase-body h5{font-size:13px;font-weight:700;color:var(--accent);margin:18px 0 10px;font-family:'Inter',sans-serif}
+.phase-body h5:first-child{margin-top:0}
+
+/* REACT DIAGRAM */
+.react-diag{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0;padding:18px;background:var(--s2);border:1px solid var(--border);border-radius:10px}
+.react-node{display:flex;flex-direction:column;align-items:center;gap:5px}
+.react-box{padding:8px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em}
+.rb-think{background:rgba(0,255,194,.12);color:var(--accent);border:1px solid rgba(0,255,194,.2)}
+.rb-act{background:rgba(123,97,255,.12);color:#c4b5fd;border:1px solid rgba(123,97,255,.2)}
+.rb-obs{background:rgba(240,180,41,.12);color:var(--amber);border:1px solid rgba(240,180,41,.2)}
+.react-lbl{font-size:10.5px;color:var(--text3)}
+.react-arrow{color:var(--text3);font-size:18px;margin-top:-16px}
+
+/* NEXT STEPS */
+.next-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:16px}
+.nsc{display:flex;align-items:flex-start;gap:14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.nsc:hover{border-color:rgba(0,255,194,.2)}
+.nsc-n{font-family:'Outfit',sans-serif;font-size:22px;font-weight:800;color:rgba(0,255,194,.2);flex-shrink:0;line-height:1.2}
+.nsc-txt{font-size:13.5px;color:var(--text2);line-height:1.6}
+.nsc-txt strong{display:block;color:var(--text);margin-bottom:4px;font-size:14px}
+
+/* QUICK REF */
+.qref{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:28px;margin-top:40px}
+.qref h3{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.qref h3::after{content:'';flex:1;height:1px;background:var(--border)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.ref-item{display:flex;align-items:baseline;gap:10px;padding:9px 12px;background:rgba(255,255,255,.02);border-radius:7px}
+.ref-k{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:500;color:var(--accent);flex-shrink:0;min-width:80px}
+.ref-v{font-size:12.5px;color:var(--text2)}
+
+/* SUMMARY TABLE */
+.sum-section{margin-top:40px}
+.sum-section .sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sum-section .sec-icon{font-size:20px}
+.sum-section .sec-tt{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.sum-section .sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:4px}
+
+/* PROJECT SECTION */
+.project-sec{margin-bottom:40px}
+.project-sec .sec-hd{display:flex;align-items:center;gap:12px;padding:22px 24px;background:var(--s2);border:1px solid rgba(0,255,194,.15);border-radius:14px;margin-bottom:16px}
+.project-sec .sec-icon{font-size:22px}
+.project-sec .sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);display:block;margin-bottom:3px}
+.project-sec .sec-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:var(--text)}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:7px;color:var(--text3);font-size:13px;text-decoration:none;padding:18px 56px;border-bottom:1px solid var(--border);transition:color .2s}
+.back-link:hover{color:var(--accent)}
+
+/* SCROLL PROGRESS RING */
+.prog-ring{position:fixed;bottom:24px;right:24px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;font-size:11px;z-index:50;display:flex;align-items:center;gap:6px}
+.prog-ring::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 6px var(--accent)}
+#rpct{color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600}
+#rpct::after{content:'%'}
+
+/* MOBILE */
+/* Mobile overlay */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;cursor:pointer}
+.sidebar-overlay.show{display:block}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);z-index:150}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hero{padding:60px 24px 48px}
+  .content{padding:28px 24px 60px}
+  .how-to{padding:24px 24px}
+  .how-steps{grid-template-columns:1fr}
+  .ham{display:block;z-index:200}
+  .back-link{padding:16px 24px 16px 56px}
+  .term-grid{grid-template-columns:1fr}
+  .how-steps{grid-template-columns:1fr}
+  .react-diag{flex-wrap:wrap;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-dot"></div>
+      <div class="logo-text">ops<span>→ai</span></div>
+    </div>
+    <div class="logo-sub">AI for DevOps Engineers</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Start Here</div>
+    <a href="#top" class="nav-item active">🏠 Home</a>
+    <a href="#how-to-use" class="nav-item">📖 How to Use</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Theory (Weeks 1–4)</div>
+    <a href="#week1" class="nav-item">⚡ Week 1: LLM Foundations<span class="nbadge">Wk 1</span></a>
+    <a href="#lesson-1-1" class="nav-item nav-sub">→ 1.1 How LLMs Work</a>
+    <a href="#lesson-1-2" class="nav-item nav-sub">→ 1.2 API Basics</a>
+    <a href="#lesson-1-3" class="nav-item nav-sub">→ 1.3 Prompt Engineering</a>
+    <a href="#week2" class="nav-item">🔍 Week 2: RAG &amp; Vectors<span class="nbadge">Wk 2</span></a>
+    <a href="#lesson-2-1" class="nav-item nav-sub">→ 2.1 The Problem RAG Solves</a>
+    <a href="#lesson-2-2" class="nav-item nav-sub">→ 2.2 RAG Pipeline</a>
+    <a href="#lesson-2-3" class="nav-item nav-sub">→ 2.3 Embeddings</a>
+    <a href="#lesson-2-4" class="nav-item nav-sub">→ 2.4 Vector Databases</a>
+    <a href="#lesson-2-5" class="nav-item nav-sub">→ 2.5 Chunking</a>
+    <a href="#week3" class="nav-item">🤖 Week 3: Agents &amp; LangChain<span class="nbadge">Wk 3</span></a>
+    <a href="#lesson-3-1" class="nav-item nav-sub">→ 3.1 What is an Agent?</a>
+    <a href="#lesson-3-2" class="nav-item nav-sub">→ 3.2 LangChainGo</a>
+    <a href="#lesson-3-3" class="nav-item nav-sub">→ 3.3 LangGraph</a>
+    <a href="#week4" class="nav-item">🔌 Week 4: MCP &amp; AIOps<span class="nbadge">Wk 4</span></a>
+    <a href="#lesson-4-1" class="nav-item nav-sub">→ 4.1 MCP Protocol</a>
+    <a href="#lesson-4-2" class="nav-item nav-sub">→ 4.2 AIOps</a>
+    <a href="#lesson-4-3" class="nav-item nav-sub">→ 4.3 Go Ecosystem</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Project: InfraBot (Wks 5–8)</div>
+    <a href="#project-intro" class="nav-item">🎯 Project Overview</a>
+    <a href="#phase-1" class="nav-item nav-sub">→ Phase 1: Setup</a>
+    <a href="#phase-2" class="nav-item nav-sub">→ Phase 2: Runbooks</a>
+    <a href="#phase-3" class="nav-item nav-sub">→ Phase 3: RAG System</a>
+    <a href="#phase-4" class="nav-item nav-sub">→ Phase 4: Tools</a>
+    <a href="#phase-5" class="nav-item nav-sub">→ Phase 5: Agent Loop</a>
+    <a href="#phase-6" class="nav-item nav-sub">→ Phase 6: CLI Entry</a>
+    <a href="#phase-7" class="nav-item nav-sub">→ Phase 7: Run &amp; Test</a>
+    <a href="#phase-8" class="nav-item nav-sub">→ Phase 8: Azure OpenAI</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Reference</div>
+    <a href="#summary" class="nav-item">📊 What You Learned</a>
+    <a href="#next-steps" class="nav-item">🚀 Next Steps</a>
+    <a href="#quick-ref" class="nav-item">⚡ Quick Reference</a>
+  </div>
+
+  <div class="sidebar-foot">8 weeks · All Go · No Python needed</div>
+</nav>
+
+<button class="ham" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<main class="main" id="top">
+  <a href="index.html" class="back-link">← Back to ops→ai</a>
+
+  <div class="hero">
+    <div class="hero-pill">Complete Course · 2026 Edition</div>
+    <h1>AI for<br><span>DevOps Engineers</span><br><em>Built in Go.</em></h1>
+    <p class="hero-desc">From zero to building a production-ready AI agent — complete with RAG, tools, vector databases, and a ReAct agent loop. No Python required. Everything starts free with Ollama.</p>
+    <div class="hero-tags">
+      <span class="htag tg">⬡ Go 1.22+</span>
+      <span class="htag tp">8 Weeks Part-Time</span>
+      <span class="htag ta">☁ Azure OpenAI</span>
+      <span class="htag tf">🆓 Start Free (Ollama)</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-n">8</div><div class="hs-l">Weeks</div></div>
+      <div class="hs"><div class="hs-n">4</div><div class="hs-l">Theory Weeks</div></div>
+      <div class="hs"><div class="hs-n">8</div><div class="hs-l">Project Phases</div></div>
+      <div class="hs"><div class="hs-n">0</div><div class="hs-l">Python Needed</div></div>
+    </div>
+  </div>
+
+  <div class="how-to" id="how-to-use">
+    <h2>📖 How to Use This Course</h2>
+    <div class="how-steps">
+      <div class="hw-step"><div class="step-n sn1">1</div><div class="step-txt"><strong>Read the Theory (Weeks 1–4)</strong>Expand each lesson, watch the videos, understand every concept before touching code.</div></div>
+      <div class="hw-step"><div class="step-n sn2">2</div><div class="step-txt"><strong>Build the Project (Weeks 5–8)</strong>Follow each phase step by step. Every line of code is explained.</div></div>
+      <div class="hw-step"><div class="step-n sn3">3</div><div class="step-txt"><strong>Use the Reference</strong>Quick-reference card and summary table are always at the bottom. Check them anytime.</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- WEEK 1 -->
+    <div class="wk-section wk-w1" id="week1">
+      <div class="wk-header">
+        <div class="wk-icon">⚡</div>
+        <div class="wk-meta">
+          <div class="wk-lbl">Week 1</div>
+          <div class="wk-title">LLM Foundations — How LLMs Actually Work</div>
+        </div>
+      </div>
+
+      <div class="lesson open" id="lesson-1-1">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">1.1</span>
+          <span class="lesson-title">What is a Large Language Model (LLM)?</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>Imagine you've read every book, every website, every Stack Overflow answer ever written. Now someone asks you a question, and you predict the most likely answer based on everything you've read. That's essentially what an LLM does — except with math instead of human memory.</p>
+          <p>An LLM is a massive neural network trained on enormous amounts of text. The training concept is simple: show the model a sentence with the last word removed, it tries to predict that word. Do this billions of times, adjusting the knobs each time it gets it wrong, and eventually the model gets really good at predicting what comes next.</p>
+          <h4>🔑 Key Terms You MUST Know</h4>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">Token</div><div class="term-desc">LLMs don't read words — they read "tokens." A token is a piece of a word. <code>Kubernetes</code> → <code>[Kub][ern][etes]</code> = 3 tokens. ~0.75 words per token. You PAY per token via APIs.</div></div>
+            <div class="term-card"><div class="term-name">Context Window</div><div class="term-desc">The model's short-term memory. GPT-4o: 128K tokens. Claude: 200K tokens. This is why we need RAG — you can't dump an entire runbook into the prompt.</div></div>
+            <div class="term-card"><div class="term-name">Temperature</div><div class="term-desc">Controls creativity (0–1). Temp 0 = always the most likely word. Temp 1 = creative. For DevOps: always use 0 or 0.1.</div></div>
+            <div class="term-card"><div class="term-name">System Prompt</div><div class="term-desc">Instructions given BEFORE the user's question. Your most powerful tool. "You are a senior SRE. Always respond with exact kubectl commands."</div></div>
+            <div class="term-card"><div class="term-name">Inference</div><div class="term-desc">The act of sending a prompt and getting a response back. You are NOT training the model — you're just using it. "Running inference" = calling the API.</div></div>
+            <div class="term-card"><div class="term-name">Fine-tuning</div><div class="term-desc">Further training on your specific data. Expensive, complex, rarely needed. RAG achieves the same result 90% of the time. Ignore for now.</div></div>
+          </div>
+          <div class="callout callout-info"><div class="callout-icon">💡</div><div class="callout-text"><strong>The Transformer's secret weapon: self-attention</strong>In "The kubectl command failed because the service was not found in the production namespace", self-attention connects "failed" → "kubectl command". This is why LLMs can read a 50-line error log and figure out what went wrong. You don't need to understand the math.</div></div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These First</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/watch?v=wjZofJX0v4M" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">How LLMs Work — 3Blue1Brown</div><div class="vid-src">youtube.com · Best visual explanation of neural networks</div></div></a>
+              <a href="https://www.youtube.com/watch?v=ECR4oAwocjs" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">Transformers Explained Visually</div><div class="vid-src">youtube.com · Interactive visualization of how Transformers process text</div></div></a>
+              <a href="https://www.deeplearning.ai/courses/how-transformer-llms-work" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">How Transformer LLMs Work — DeepLearning.AI</div><div class="vid-src">deeplearning.ai · Free course by Andrew Ng's team</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-1-2">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">1.2</span>
+          <span class="lesson-title">How Do You Actually Use an LLM? (API Basics)</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>As a DevOps engineer, you'll interact with LLMs through APIs. You send an HTTP request with your prompt, and you get back a response. It's no different from calling any REST API.</p>
+          <h4>The Request</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">json / REST</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>POST https://api.openai.com/v1/chat/completions
+
+{
+  "model": "gpt-4o",
+  "temperature": 0,
+  "messages": [
+    {"role": "system", "content": "You are a Kubernetes expert..."},
+    {"role": "user",   "content": "Why is my pod in CrashLoopBackOff?"}
+  ]
+}</code></pre></div>
+          <h4>LLM Providers and their Go SDKs</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Provider</th><th>Model</th><th>Go SDK</th><th>Cost (per 1M tokens)</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI</td><td>GPT-4o</td><td><code>openai/openai-go</code></td><td>$2.50 in / $10 out</td></tr>
+              <tr><td>Anthropic</td><td>Claude Sonnet</td><td><code>anthropics/anthropic-sdk-go</code></td><td>$3 in / $15 out</td></tr>
+              <tr><td><strong>Ollama</strong></td><td>LLaMA, Mistral (local)</td><td><code>ollama/ollama/api</code></td><td><strong>FREE</strong></td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout callout-tip"><div class="callout-icon">✅</div><div class="callout-text"><strong>Start with Ollama.</strong> Runs open-source LLMs on your laptop. No API key, no cost, no data leaving your machine. Install from <a href="https://ollama.com" target="_blank">ollama.com</a>, then run <code>ollama pull llama3.2</code>.</div></div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-1-3">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">1.3</span>
+          <span class="lesson-title">Prompt Engineering — The 6 Techniques You Need</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>Prompt engineering is the skill of writing instructions so the LLM gives you exactly what you want. This is the single most practical AI skill you'll use daily.</p>
+          <h4>1. Role Prompting</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">prompt</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>System: You are a senior SRE with 10 years of experience managing
+Kubernetes clusters on Azure AKS. You always provide exact commands.</code></pre></div>
+          <h4>2. Chain of Thought (CoT)</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">prompt</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>User: Analyze this error log and explain what went wrong.
+Think step by step:
+1. Identify the service
+2. Identify the error type
+3. Determine the root cause
+4. Suggest the fix with exact commands</code></pre></div>
+          <h4>3. Output Format Control</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">prompt</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>User: List the top 5 Kubernetes best practices.
+Return your answer as a JSON array with fields: "practice", "reason", "command"</code></pre></div>
+          <h4>4. Constraint Setting</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">prompt</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>System: Never guess. If you don't have enough information to answer,
+say "I need more context" and list what you need.
+Never suggest deprecated kubectl commands.
+Always include the namespace flag in kubectl commands.</code></pre></div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/watch?v=2BpCk4d2Cc0" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">Prompt Engineering Full Course — Tech With Tim</div><div class="vid-src">youtube.com</div></div></a>
+              <a href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">ChatGPT Prompt Engineering for Developers — DeepLearning.AI</div><div class="vid-src">deeplearning.ai · Free, the gold standard</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div class="wk-section wk-w2" id="week2">
+      <div class="wk-header">
+        <div class="wk-icon">🔍</div>
+        <div class="wk-meta">
+          <div class="wk-lbl">Week 2</div>
+          <div class="wk-title">RAG — Teaching AI Your Internal Knowledge</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-2-1">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">2.1</span>
+          <span class="lesson-title">The Problem RAG Solves</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>You ask an LLM "What's our rollback procedure for the payment service?" — and it makes something up, because it has never seen your internal documentation. LLMs are trained on public internet data. They know about Kubernetes in general, but nothing about YOUR infrastructure.</p>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">Option 1: Fine-tuning ❌</div><div class="term-desc">Retrain the model on your data. Expensive ($$$), slow, requires ML expertise. Overkill 99% of the time.</div></div>
+            <div class="term-card"><div class="term-name">Option 2: Prompt Stuffing ❌</div><div class="term-desc">Paste your entire runbook into the prompt. Works until it exceeds the context window. Very expensive per query.</div></div>
+            <div class="term-card" style="border-color:rgba(0,255,194,.3)"><div class="term-name">Option 3: RAG ✅</div><div class="term-desc">Search documents for relevant parts FIRST, then only send those parts to the LLM. Cheap, fast, scalable. This is what you'll build.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-2-2">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">2.2</span>
+          <span class="lesson-title">How RAG Works — The Full Pipeline</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>RAG (Retrieval-Augmented Generation) is a 2-phase process:</p>
+          <h4>Phase 1: Indexing (done once)</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">pipeline</span></div><pre><code>Your Documents (runbooks, wiki, post-mortems)
+        ↓
+   [Document Loader]  — reads the files
+        ↓
+   [Text Splitter]    — breaks into small chunks (e.g., 500 chars each)
+        ↓
+   [Embedding Model]  — converts each chunk into a vector
+        ↓
+   [Vector Database]  — stores the vectors for fast similarity search</code></pre></div>
+          <h4>Phase 2: Querying (every user question)</h4>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">pipeline</span></div><pre><code>User Question: "How do I rollback a deployment?"
+        ↓
+   [Embedding Model]  — converts the question into a vector
+        ↓
+   [Vector Database]  — finds chunks whose vectors are most similar
+        ↓
+   [Top 4 chunks retrieved]
+        ↓
+   [Build Prompt] = System prompt + Retrieved chunks + User question
+        ↓
+   [LLM]             — generates answer using the retrieved context
+        ↓
+   Answer: "To rollback, run: kubectl rollout undo deployment/..."</code></pre></div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/watch?v=gweRh5Xtkq0" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">RAG Explained in 10 Minutes (Beginner-Friendly)</div><div class="vid-src">youtube.com</div></div></a>
+              <a href="https://www.youtube.com/watch?v=ea2W8IogX80" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">RAG Fundamentals and Advanced Techniques — freeCodeCamp</div><div class="vid-src">youtube.com · 3+ hours, comprehensive</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-2-3">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">2.3</span>
+          <span class="lesson-title">Embeddings — How Computers Understand Meaning</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>An embedding is a list of numbers (a "vector") that represents the <strong>MEANING</strong> of text. Similar meanings = similar numbers.</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">concept (simplified — real embeddings have 768–3072 dimensions)</span></div><pre><code>"kubectl rollout undo"     → [0.82, 0.15, 0.91]
+"rollback the deployment"  → [0.80, 0.17, 0.89]  ← Very similar!
+"deploy to production"     → [0.31, 0.88, 0.22]  ← Very different</code></pre></div>
+          <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-text"><strong>Semantic similarity</strong> — even though "kubectl rollout undo" and "rollback the deployment" use different words, their vectors are close because they MEAN the same thing. This is the magic that makes RAG work.</div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Model</th><th>Dimensions</th><th>Cost</th><th>For</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI <code>text-embedding-3-small</code></td><td>1536</td><td>$0.02 / 1M tokens</td><td>Production</td></tr>
+              <tr><td>Ollama <code>nomic-embed-text</code></td><td>768</td><td><strong>FREE</strong> (local)</td><td>Learning / dev</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-2-4">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">2.4</span>
+          <span class="lesson-title">Vector Databases — Where Embeddings Live</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Database</th><th>Why Use It</th><th>Go Support</th></tr></thead>
+            <tbody>
+              <tr><td><strong>pgvector ⭐</strong></td><td>You already run PostgreSQL — just add a vector extension.</td><td>Via <code>jackc/pgx</code></td></tr>
+              <tr><td>Qdrant</td><td>Purpose-built, great filtering, good performance</td><td>Official Go client</td></tr>
+              <tr><td>Weaviate</td><td>Written IN Go! Multi-modal, hybrid search</td><td>Official Go client</td></tr>
+              <tr><td>ChromaDB</td><td>Simplest for prototyping, runs locally</td><td>HTTP client</td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout callout-tip"><div class="callout-icon">✅</div><div class="callout-text"><strong>Recommendation: Start with pgvector.</strong> As a DevOps engineer, you already know Postgres. It runs in a Docker container. One less thing to learn. We use it in this course.</div></div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-2-5">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">2.5</span>
+          <span class="lesson-title">Text Splitting (Chunking) — The Underrated Skill</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>Chunking is how you break documents into pieces small enough for the vector database. Get this wrong and your RAG returns garbage.</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">chunking strategies</span></div><pre><code>// 1. Fixed-size: split every 500 chars with 50-char overlap
+Chunk 1: chars 0-500
+Chunk 2: chars 450-950    ← 50-char overlap prevents cutting mid-sentence
+
+// 2. Recursive character splitting (RECOMMENDED): try natural boundaries first
+//    paragraph breaks → newlines → sentences → characters
+
+// 3. Markdown/header-based: split on "## Heading" boundaries
+//    Perfect for runbooks organized by section</code></pre></div>
+          <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-text"><strong>Best practices:</strong> Chunk size 500–1000 chars for runbooks. Always overlap (50–100 chars). Keep source metadata (filename, section) with each chunk. Test different sizes with your actual data.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div class="wk-section wk-w3" id="week3">
+      <div class="wk-header">
+        <div class="wk-icon">🤖</div>
+        <div class="wk-meta">
+          <div class="wk-lbl">Week 3</div>
+          <div class="wk-title">Agents, LangChain, and LangGraph</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-3-1">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">3.1</span>
+          <span class="lesson-title">What is an AI Agent?</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>An agent is an LLM that can <strong>TAKE ACTIONS</strong>, not just talk.</p>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">Regular LLM</div><div class="term-desc">"What's the CPU usage of the payment service?"<br><br>→ "I don't have access to your monitoring system. Here's how you could check: run kubectl top pods..."</div></div>
+            <div class="term-card" style="border-color:rgba(0,255,194,.3)"><div class="term-name">AI Agent ✅</div><div class="term-desc">"What's the CPU usage of the payment service?"<br><br>→ calls prometheus_query tool → reads result → "The payment service is using 67% CPU across 3 pods..."</div></div>
+          </div>
+          <h4>The 4 Components of an Agent</h4>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">1. Brain (LLM)</div><div class="term-desc">The reasoning engine. Reads the question, decides what to do, interprets results.</div></div>
+            <div class="term-card"><div class="term-name">2. Tools</div><div class="term-desc">Functions the LLM can call: <code>check_pod_status()</code>, <code>query_prometheus()</code>, <code>search_runbooks()</code></div></div>
+            <div class="term-card"><div class="term-name">3. Memory</div><div class="term-desc">Context from previous steps. The agent remembers what it already checked.</div></div>
+            <div class="term-card"><div class="term-name">4. The Loop (ReAct)</div><div class="term-desc">Think → Act → Observe → Repeat. This cycle is the core of every agent.</div></div>
+          </div>
+          <h4>The ReAct Pattern</h4>
+          <div class="react-diag">
+            <div class="react-node"><div class="react-box rb-think">THINK</div><div class="react-lbl">Reason</div></div>
+            <div class="react-arrow">→</div>
+            <div class="react-node"><div class="react-box rb-act">ACT</div><div class="react-lbl">Call Tool</div></div>
+            <div class="react-arrow">→</div>
+            <div class="react-node"><div class="react-box rb-obs">OBSERVE</div><div class="react-lbl">Read Result</div></div>
+            <div class="react-arrow">→</div>
+            <div class="react-node"><div class="react-box rb-think">THINK again</div><div class="react-lbl">Loop or Answer</div></div>
+          </div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/playlist?list=PLlrxD0HtieHgKcRjd5-8DT9TbwdlDO-OC" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">AI Agents for Beginners — Microsoft (10-lesson free course)</div><div class="vid-src">youtube.com · Excellent comprehensive playlist</div></div></a>
+              <a href="https://www.youtube.com/watch?v=61x7tSXImdI" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">AI Agents Full Course 2026 — Simplilearn</div><div class="vid-src">youtube.com</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-3-2">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">3.2</span>
+          <span class="lesson-title">What is LangChain? (And LangChainGo?)</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>LangChain is a framework providing pre-built building blocks for LLM applications. Think of it as <strong>Lego blocks</strong> — snap pieces together without writing all the plumbing from scratch.</p>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">Models</div><div class="term-desc">Unified interface to OpenAI, Anthropic, Ollama, Azure — same code, swap providers</div></div>
+            <div class="term-card"><div class="term-name">Tools</div><div class="term-desc">Wrap any function so the LLM can call it</div></div>
+            <div class="term-card"><div class="term-name">Retrievers</div><div class="term-desc">Connect to vector databases for RAG (pgvector, Qdrant, Weaviate, Chroma)</div></div>
+            <div class="term-card"><div class="term-name">Text Splitters</div><div class="term-desc">Chunk documents for embedding</div></div>
+          </div>
+          <div class="callout callout-info"><div class="callout-icon">⬡</div><div class="callout-text"><strong>LangChainGo</strong> (<code>github.com/tmc/langchaingo</code>) is the Go port — 9,200+ GitHub stars. Pre-1.0 but stable for production DevOps tooling.</div></div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/watch?v=aywZrzNaKjs" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">LangChain Explained in 13 Minutes</div><div class="vid-src">youtube.com · Quick overview</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-3-3">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">3.3</span>
+          <span class="lesson-title">LangGraph — Graph-Based Agent Orchestration</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>LangChain gives you chains (linear: A → B → C). But agents need to LOOP, BRANCH, and make DECISIONS. That's LangGraph — your agent modeled as a directed graph.</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">ReAct agent as a graph</span></div><pre><code>[START]
+   ↓
+[Agent Node] ← LLM reads state, decides what to do
+   ↓
+{Should Continue?}
+   ↓ YES (tool call)         ↓ NO (final answer)
+[Tool Node]                 [END]
+   ↓
+   └──→ back to [Agent Node]</code></pre></div>
+          <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-text"><strong>Reality check for Go:</strong> LangGraph (Python) reached v1.0 in October 2025. There is NO official LangGraph in Go. Best alternative: <strong>ByteDance's Eino</strong> (<code>github.com/cloudwego/eino</code>) — 11K+ stars, battle-tested at TikTok.<br><br>For our project we write a clean custom agent loop in ~200 lines of Go. You learn more, and it works perfectly.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div class="wk-section wk-w4" id="week4">
+      <div class="wk-header">
+        <div class="wk-icon">🔌</div>
+        <div class="wk-meta">
+          <div class="wk-lbl">Week 4</div>
+          <div class="wk-title">MCP, AIOps, and the Go AI Ecosystem</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-4-1">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">4.1</span>
+          <span class="lesson-title">What is MCP (Model Context Protocol)?</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <p>MCP is a new open standard (created by Anthropic, now maintained with Google) that defines how AI models connect to external tools and data sources.</p>
+          <div class="callout callout-info"><div class="callout-icon">🔌</div><div class="callout-text"><strong>The USB Analogy:</strong> Before USB, every device had its own proprietary connector. USB standardized it. MCP does the same for AI — it standardizes how an LLM connects to ANY tool.</div></div>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">architecture</span></div><pre><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  MCP Client  │────→│  MCP Server  │────→│  External    │
+│  (your agent)│←────│  (tool host) │←────│  Service     │
+└──────────────┘     └──────────────┘     └──────────────┘
+                          ↑
+                     Exposes tools like:
+                     - list_pods()
+                     - query_prometheus()
+                     - create_jira_ticket()</code></pre></div>
+          <div class="callout callout-tip"><div class="callout-icon">⬡</div><div class="callout-text"><strong>MCP in Go is excellent.</strong> The official Go SDK (<code>modelcontextprotocol/go-sdk</code> v1.0+) is one of the best MCP implementations in any language. A DevOps MCP server compiles to a single binary — perfect for containers and sidecars.</div></div>
+          <div class="vid-section">
+            <div class="vid-lbl">Watch These</div>
+            <div class="vid-grid">
+              <a href="https://www.youtube.com/watch?v=GuTcle5edjk" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">You Need to Learn MCP RIGHT NOW!! — NetworkChuck</div><div class="vid-src">youtube.com</div></div></a>
+              <a href="https://anthropic.skilljar.com/introduction-to-model-context-protocol" target="_blank" class="vid-card"><div class="vid-icon">▶</div><div class="vid-info"><div class="vid-title">Introduction to MCP — Anthropic Official Free Course</div><div class="vid-src">anthropic.skilljar.com</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-4-2">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">4.2</span>
+          <span class="lesson-title">AIOps — AI + DevOps in Practice</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <h4>What AI Can Do for DevOps Today</h4>
+          <div class="term-grid">
+            <div class="term-card"><div class="term-name">Log Analysis</div><div class="term-desc">Feed error logs to an LLM, get root cause analysis in seconds instead of hours.</div></div>
+            <div class="term-card"><div class="term-name">Alert Correlation</div><div class="term-desc">Reduce 500 alerts to 1 root cause. An LLM can read all alerts and find the common thread.</div></div>
+            <div class="term-card"><div class="term-name">Runbook Automation</div><div class="term-desc">RAG-powered bots that answer "how do I fix X?" from your actual documentation.</div></div>
+            <div class="term-card"><div class="term-name">Incident Response</div><div class="term-desc">Agent that detects an issue, diagnoses it, suggests a fix, and creates a Jira ticket.</div></div>
+            <div class="term-card"><div class="term-name">Code Review</div><div class="term-desc">LLM reviews Terraform plans, Kubernetes manifests, Dockerfiles for best practices.</div></div>
+            <div class="term-card"><div class="term-name">Natural Language Infra</div><div class="term-desc">"Scale the payment service to 5 replicas" → agent runs <code>kubectl scale</code></div></div>
+          </div>
+          <h4>Go-Based AIOps Tools You Should Know</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Tool</th><th>Stars</th><th>What It Does</th></tr></thead>
+            <tbody>
+              <tr><td><strong>k8sgpt</strong> (CNCF Sandbox)</td><td>7.3K</td><td>Scans your Kubernetes cluster, uses AI to explain issues. Written in Go. Try: <code>brew install k8sgpt</code></td></tr>
+              <tr><td>kagent (CNCF Sandbox)</td><td>Growing</td><td>Kubernetes-native AI agent framework. Defines agents as CRDs.</td></tr>
+              <tr><td>kubectl-ai (Google)</td><td>—</td><td>kubectl plugin that turns natural language into kubectl commands.</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="lesson" id="lesson-4-3">
+        <div class="lesson-hd" onclick="tL(this)">
+          <span class="lesson-num">4.3</span>
+          <span class="lesson-title">The Go AI Ecosystem — Your Complete Toolkit</span>
+          <span class="lesson-chev">▼</span>
+        </div>
+        <div class="lesson-body">
+          <h4>Frameworks</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Framework</th><th>Stars</th><th>Best For</th></tr></thead>
+            <tbody>
+              <tr><td>LangChainGo</td><td>9.2K</td><td>Breadth — RAG, agents, many integrations. Good for starting out.</td></tr>
+              <tr><td>Eino (ByteDance)</td><td>11.3K</td><td>Graph orchestration, multi-agent, production scale. Battle-tested at TikTok.</td></tr>
+            </tbody>
+          </table></div>
+          <h4>Official LLM SDKs</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>SDK</th><th>Maintainer</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><code>openai/openai-go</code> v3</td><td>OpenAI (official)</td><td>Chat, tools, structured output, Azure routing</td></tr>
+              <tr><td><code>anthropics/anthropic-sdk-go</code> v1</td><td>Anthropic (official)</td><td>Messages, tools, streaming</td></tr>
+              <tr><td>Ollama API</td><td>Ollama (official)</td><td>Free local models</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT -->
+    <div class="project-sec" id="project-intro">
+      <div class="sec-hd">
+        <div class="sec-icon">🎯</div>
+        <div>
+          <span class="sec-lbl">Weeks 5–8 · Project</span>
+          <div class="sec-title">Build "InfraBot" — AI DevOps Agent in Go</div>
+        </div>
+      </div>
+      <div class="callout callout-tip">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-text"><strong>What You'll Build:</strong> A command-line AI agent in Go that answers questions about your infrastructure from runbooks (RAG), checks service health, analyzes error logs, and creates incident reports — with a proper ReAct agent loop.<br><br><strong>Tech Stack:</strong> Go 1.22+ · LangChainGo · Ollama + llama3.2 (free, local) · pgvector in Docker · Custom ReAct agent loop. No Python anywhere.</div>
+      </div>
+      <h4 style="font-family:'Inter',sans-serif;font-size:15px;font-weight:700;margin:20px 0 12px;color:var(--text)">Project File Structure</h4>
+      <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>infrabot/
+├── cmd/
+│   └── main.go              # Entry point + CLI chat loop
+├── internal/
+│   ├── rag.go               # RAG: load/chunk/embed/search runbooks
+│   └── agent.go             # The ReAct agent loop
+├── tools/
+│   ├── health.go            # check_service_health, list_all_services
+│   ├── logs.go              # analyze_recent_errors
+│   └── incidents.go         # create_incident_report
+├── runbooks/                 # 3 markdown runbooks (your knowledge base)
+├── incidents/                # generated incident JSON files
+├── go.mod
+└── .gitignore</code></pre></div>
+
+      <div class="phase-card" id="phase-1">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph1">Phase 1</span><span class="phase-title">Environment Setup</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <h5>Step 1.1 — Install Go</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code># macOS
+brew install go
+# Ubuntu/Debian
+sudo apt update && sudo apt install golang-go
+# Verify — should show go1.22.x or higher
+go version</code></pre></div>
+          <h5>Step 1.2 — Install Ollama (free local LLM)</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code># macOS
+brew install ollama
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+# Start Ollama
+ollama serve &
+# Pull the models
+ollama pull llama3.2
+ollama pull nomic-embed-text</code></pre></div>
+          <h5>Step 1.3 — Start PostgreSQL with pgvector (Docker)</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>docker run -d \
+  --name infrabot-db \
+  -e POSTGRES_USER=infrabot \
+  -e POSTGRES_PASSWORD=infrabot123 \
+  -e POSTGRES_DB=infrabot \
+  -p 5432:5432 \
+  pgvector/pgvector:pg16</code></pre></div>
+          <h5>Step 1.4 — Create the Project</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>mkdir infrabot && cd infrabot
+go mod init github.com/yourusername/infrabot
+git init
+mkdir -p cmd runbooks tools internal</code></pre></div>
+          <h5>Step 1.5 — Install Go Dependencies</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>go get github.com/tmc/langchaingo
+go get github.com/tmc/langchaingo/llms/ollama
+go get github.com/tmc/langchaingo/embeddings
+go get github.com/tmc/langchaingo/vectorstores/pgvector
+go get github.com/tmc/langchaingo/textsplitter
+go get github.com/jackc/pgx/v5
+go get github.com/fatih/color</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-2">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph2">Phase 2</span><span class="phase-title">Create Your Knowledge Base (Runbooks)</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <p style="color:var(--text2);margin-top:0;margin-bottom:16px;font-size:13.5px">These represent your company's infrastructure docs. Create all 3 markdown files in the <code>runbooks/</code> directory — full content available in the original course material.</p>
+          <div class="callout callout-info"><div class="callout-icon">📁</div><div class="callout-text">Files to create: <code>kubernetes_troubleshooting.md</code>, <code>deployment_procedures.md</code>, <code>monitoring_alerts.md</code>. In production, point this at your real Confluence pages or git wiki.</div></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-3">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph3">Phase 3</span><span class="phase-title">Build the RAG System — internal/rag.go</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <p style="color:var(--text2);margin-top:0;margin-bottom:16px;font-size:13.5px">Open <code>internal/rag.go</code> and write the RAG pipeline: connect to Ollama (for embeddings) and pgvector (vector store).</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">go — internal/rag.go (key structure)</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>type RAG struct {
+    store    vectorstores.VectorStore
+    embedder embeddings.Embedder
+}
+
+// NewRAG connects to Ollama + pgvector
+// IndexDocuments: reads .md files → splits → embeds → stores
+// Search: finds most relevant chunks for a query
+// FormatContext: formats chunks for the LLM prompt</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-4">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph4">Phase 4</span><span class="phase-title">Build the Tools — 3 Go files</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <p style="color:var(--text2);margin-top:0;margin-bottom:16px;font-size:13.5px">Each tool is a Go function the agent can call. In production, replace simulated data with real kubectl/Prometheus/Loki API calls.</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">go — tools overview</span></div><pre><code>// tools/health.go
+func CheckServiceHealth(serviceName string) string
+func ListAllServices() string
+
+// tools/logs.go
+func AnalyzeRecentErrors(serviceName string) string
+
+// tools/incidents.go
+func CreateIncidentReport(title, severity, service,
+    description, rootCause, action string) string</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-5">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph5">Phase 5</span><span class="phase-title">Build the Agent Loop — internal/agent.go</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <p style="color:var(--text2);margin-top:0;margin-bottom:16px;font-size:13.5px">The heart of InfraBot — the ReAct agent loop. User question → RAG search → LLM → tool call → observe → loop → final answer.</p>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">go — ReAct loop (internal/agent.go)</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>// Step 1: Search the knowledge base (RAG)
+docs, _ := a.rag.Search(ctx, userQuery, 4)
+
+// Step 2: Build messages with system prompt + RAG context
+messages := buildMessages(systemPrompt, ragContext, userQuery)
+
+// Step 3: The ReAct Loop (max 5 iterations)
+for i := 0; i < 5; i++ {
+    response := a.llm.GenerateContent(ctx, messages)
+    toolCall, isTool := parseToolCall(response)
+    if !isTool { return response } // Final answer
+    
+    // Execute the tool and feed result back to LLM
+    toolResult := executeTool(toolCall)
+    messages = append(messages, toolResult)
+}</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-6">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph6">Phase 6</span><span class="phase-title">Build the CLI Entry Point — cmd/main.go</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <div class="code-block"><div class="code-hd"><span class="code-lang">go — cmd/main.go (key flow)</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>agent := internal.NewAgent(ctx)
+agent.IndexRunbooks(ctx, "runbooks")
+
+// Interactive CLI loop
+for {
+    input := readLine("You: ")
+    response, toolsUsed, _ := agent.Run(ctx, input)
+    fmt.Println("InfraBot:", response)
+}</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-7">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph7">Phase 7</span><span class="phase-title">Run and Test InfraBot</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <div class="code-block"><div class="code-hd"><span class="code-lang">bash</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>go mod tidy
+go build -o infrabot ./cmd/main.go
+./infrabot</code></pre></div>
+          <h5>Test These 6 Scenarios</h5>
+          <div class="code-block"><div class="code-hd"><span class="code-lang">test queries</span></div><pre><code># Test 1 (RAG): Should return rollback procedure with exact commands
+How do I rollback a failed deployment?
+
+# Test 2 (Tool): Should call check_service_health
+Check the health of the payment service
+
+# Test 3 (Tool): Should call analyze_recent_errors
+What errors is the payment service throwing?
+
+# Test 4 (Multi-step): Should call BOTH tools
+The payment service seems slow. Check its health and look at recent errors.
+
+# Test 5 (RAG + Tool): Combine runbook lookup + tool call
+We're getting a PodCrashLoopBackOff on the order service. What should I do?
+
+# Test 6 (Incident): Should save a JSON file
+Create an incident report for the payment service database connection pool exhaustion.</code></pre></div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase-8">
+        <div class="phase-hd" onclick="tP(this)"><span class="phase-badge ph8">Phase 8</span><span class="phase-title">Level Up — Switch to Azure OpenAI</span><span class="phase-chev">▼</span></div>
+        <div class="phase-body">
+          <div class="code-block"><div class="code-hd"><span class="code-lang">go — swap Ollama for Azure OpenAI</span><button class="copy-btn" onclick="cC(this)">Copy</button></div><pre><code>llm, err := openai.New(
+    openai.WithModel("gpt-4o"),
+    openai.WithBaseURL(os.Getenv("AZURE_OPENAI_ENDPOINT")),
+    openai.WithToken(os.Getenv("AZURE_OPENAI_KEY")),
+    openai.WithAPIType(openai.APITypeAzure),
+)</code></pre></div>
+          <div class="callout callout-warn"><div class="callout-icon">🔐</div><div class="callout-text"><strong>Never put keys in code.</strong> Always use environment variables:<br><code>export AZURE_OPENAI_ENDPOINT="https://YOUR-RESOURCE.openai.azure.com/"</code></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="sum-section" id="summary">
+      <div class="sec-hd" style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="font-size:20px">📊</div>
+        <div>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:3px">Reference</span>
+          <div style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--text)">What You've Learned — Complete Summary</div>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Week</th><th>Concept</th><th>What You Learned</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>LLMs</td><td>How they work (tokens, transformers, attention), API usage, temperature, context windows</td></tr>
+          <tr><td>1</td><td>Prompt Engineering</td><td>Role prompting, few-shot, chain of thought, output formatting, constraint setting</td></tr>
+          <tr><td>2</td><td>RAG</td><td>The full pipeline: documents → chunks → embeddings → vector DB → retrieval → LLM</td></tr>
+          <tr><td>2</td><td>Embeddings</td><td>How text becomes vectors, semantic similarity, embedding models</td></tr>
+          <tr><td>2</td><td>Vector Databases</td><td>pgvector, similarity search, chunking strategies</td></tr>
+          <tr><td>3</td><td>AI Agents</td><td>The ReAct pattern, tools, the think-act-observe loop</td></tr>
+          <tr><td>3</td><td>LangChainGo</td><td>Framework for LLM apps, chains, retrievers, tool integration</td></tr>
+          <tr><td>4</td><td>MCP</td><td>Model Context Protocol, servers, clients, transports</td></tr>
+          <tr><td>4</td><td>AIOps</td><td>AI for operations, log analysis, incident response, k8sgpt</td></tr>
+          <tr><td>5–8</td><td>Project</td><td>Built InfraBot — Go agent with RAG, tools, ReAct loop, pgvector, Azure OpenAI</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- NEXT STEPS -->
+    <div style="margin-top:48px" id="next-steps">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="font-size:20px">🚀</div>
+        <div>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);display:block;margin-bottom:3px">After the Course</span>
+          <div style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--text)">Next Steps</div>
+        </div>
+      </div>
+      <div class="next-steps">
+        <div class="nsc"><div class="nsc-n">01</div><div class="nsc-txt"><strong>Replace simulated tools with real ones</strong>Use <code>client-go</code> for real kubectl, Prometheus API for metrics, Loki API for logs.</div></div>
+        <div class="nsc"><div class="nsc-n">02</div><div class="nsc-txt"><strong>Build an MCP server</strong>Wrap your tools using <code>modelcontextprotocol/go-sdk</code> so Claude Desktop can use them.</div></div>
+        <div class="nsc"><div class="nsc-n">03</div><div class="nsc-txt"><strong>Add a Slack bot interface</strong>Replace the CLI with a Slack bot using <code>slack-go/slack</code>.</div></div>
+        <div class="nsc"><div class="nsc-n">04</div><div class="nsc-txt"><strong>Deploy on Kubernetes</strong>Dockerize InfraBot and deploy it as a Kubernetes deployment.</div></div>
+        <div class="nsc"><div class="nsc-n">05</div><div class="nsc-txt"><strong>Study k8sgpt source code</strong>Read the CNCF project to see production Go AI patterns at <a href="https://github.com/k8sgpt-ai/k8sgpt" target="_blank">github.com/k8sgpt-ai/k8sgpt</a>.</div></div>
+        <div class="nsc"><div class="nsc-n">06</div><div class="nsc-txt"><strong>Try ByteDance's Eino</strong>When you outgrow the simple agent loop, switch to <a href="https://github.com/cloudwego/eino" target="_blank">Eino</a> for graph-based orchestration.</div></div>
+      </div>
+    </div>
+
+    <!-- QUICK REF -->
+    <div class="qref" id="quick-ref">
+      <h3>⚡ Quick Reference Card</h3>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-k">LLM</span><span class="ref-v">AI model that generates text from prompts</span></div>
+        <div class="ref-item"><span class="ref-k">Token</span><span class="ref-v">A piece of a word (~0.75 words per token). You pay per token.</span></div>
+        <div class="ref-item"><span class="ref-k">Embedding</span><span class="ref-v">Text converted to a list of numbers (vector)</span></div>
+        <div class="ref-item"><span class="ref-k">Vector DB</span><span class="ref-v">Database that stores and searches embeddings by similarity</span></div>
+        <div class="ref-item"><span class="ref-k">RAG</span><span class="ref-v">Search docs first, feed relevant parts to LLM</span></div>
+        <div class="ref-item"><span class="ref-k">Agent</span><span class="ref-v">LLM + Tools + Loop = autonomous problem solver</span></div>
+        <div class="ref-item"><span class="ref-k">ReAct</span><span class="ref-v">Think → Act → Observe → Repeat</span></div>
+        <div class="ref-item"><span class="ref-k">Tool</span><span class="ref-v">A Go function the LLM can decide to call</span></div>
+        <div class="ref-item"><span class="ref-k">MCP</span><span class="ref-v">Standard protocol for connecting AI to tools</span></div>
+        <div class="ref-item"><span class="ref-k">LangChainGo</span><span class="ref-v">Go framework for building LLM apps</span></div>
+        <div class="ref-item"><span class="ref-k">pgvector</span><span class="ref-v">PostgreSQL extension for vector search</span></div>
+        <div class="ref-item"><span class="ref-k">Ollama</span><span class="ref-v">Run LLMs locally for free — perfect for learning</span></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="prog-ring"><span id="rpct">0</span></div>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const p=d.scrollHeight-window.innerHeight;
+  const pct=p>0?Math.round(window.scrollY/p*100):0;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('rpct').textContent=pct;
+});
+const navItems=document.querySelectorAll('.nav-item');
+const allSections=document.querySelectorAll('[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  allSections.forEach(s=>{if(window.scrollY>=s.offsetTop-160)cur=s.id});
+  navItems.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+cur)a.classList.add('active')});
+},{passive:true});
+function tL(h){const l=h.parentElement;l.classList.toggle('open')}
+function tP(h){const p=h.parentElement;p.classList.toggle('open')}
+function cC(btn){
+  const pre=btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  }).catch(()=>{
+    const r=document.createRange();r.selectNode(pre);
+    window.getSelection().removeAllRanges();window.getSelection().addRange(r);
+    document.execCommand('copy');window.getSelection().removeAllRanges();
+    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+function toggleSidebar(){
+  var sb=document.getElementById('sidebar');
+  var ov=document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  if(sb.classList.contains('open')){ov.classList.add('show');document.body.style.overflow='hidden'}
+  else{ov.classList.remove('show');document.body.style.overflow=''}
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+navItems.forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=900)closeSidebar();}));
+</script>
+</body>
+</html>

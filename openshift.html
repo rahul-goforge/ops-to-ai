@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OpenShift Guide — ops→ai</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Sora:wght@600;700;800&display=swap');
+:root{
+  --red:#FF6B6B;--red-light:#FF8A8A;--red-pale:rgba(255,107,107,.1);
+  --navy:#0E1019;--navy-mid:#141722;
+  --blue:#38BDF8;--blue-soft:rgba(56,189,248,.1);
+  --teal:#00E8B0;--teal-soft:rgba(0,232,176,.08);
+  --amber:#FBBF24;--amber-soft:rgba(251,191,36,.1);
+  --green:#00E8B0;--green-soft:rgba(0,232,176,.08);
+  --purple:#7C5CFC;--purple-soft:rgba(124,92,252,.1);
+  --bg:#08090E;--surface:#0E1019;--border:rgba(255,255,255,.08);
+  --text-h:#E8ECF4;--text-b:#C0CAD8;--text-m:#8B9AB8;--text-s:#4B5672;
+  --code-bg:#141722;--sidebar-w:280px;
+  --mint:#00E8B0;--mint-dim:rgba(0,232,176,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-b);line-height:1.7;display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;}
+#sidebar{width:var(--sidebar-w);background:var(--navy);color:#8B9AB8;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:transform .3s ease;}
+#sidebar::-webkit-scrollbar{width:4px;}
+#sidebar::-webkit-scrollbar-thumb{background:#3A4E6A;border-radius:2px;}
+.sidebar-logo{padding:22px 20px 14px;border-bottom:1px solid rgba(255,255,255,.1);}
+.logo-badge{background:var(--red);color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:12px;letter-spacing:.06em;padding:3px 9px;border-radius:4px;display:inline-block;margin-bottom:7px;}
+.sidebar-logo h2{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:#fff;line-height:1.3;}
+.sidebar-logo p{font-size:11px;color:#7A8EAA;margin-top:2px;}
+.sidebar-search{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sidebar-search input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:6px;color:#fff;font-size:12px;padding:6px 11px;outline:none;font-family:'Inter',sans-serif;}
+.sidebar-search input::placeholder{color:#5A6E88;}
+.sidebar-search input:focus{border-color:var(--red);}
+.sidebar-section-label{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#4A6080;padding:12px 16px 4px;}
+.sidebar-nav a{display:flex;align-items:center;gap:9px;padding:7px 14px;color:#8AAAC0;text-decoration:none;font-size:12.5px;font-weight:500;border-left:3px solid transparent;transition:all .15s;line-height:1.3;}
+.sidebar-nav a:hover{color:#fff;background:rgba(255,255,255,.05);border-left-color:var(--red);}
+.sidebar-nav a.active{color:#fff;background:rgba(204,0,0,.16);border-left-color:var(--red);}
+.sidebar-nav a.done{color:#6A9E7A;}
+.sidebar-nav a.done::after{content:'✓';margin-left:auto;font-size:11px;color:var(--green);}
+.nav-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center;}
+.nav-badge{margin-left:auto;font-size:8.5px;padding:2px 5px;border-radius:8px;font-weight:700;letter-spacing:.03em;flex-shrink:0;}
+.badge-beginner{background:#1A7A4A;color:#fff;}
+.badge-intermediate{background:#B05A00;color:#fff;}
+.badge-advanced{background:#5C3A9E;color:#fff;}
+
+.prog-label{font-size:10.5px;color:#7A8EAA;margin-bottom:5px;display:flex;justify-content:space-between;}
+.prog-bar-wrap{background:rgba(255,255,255,.1);border-radius:4px;height:5px;}
+.prog-bar{background:var(--red);height:100%;border-radius:4px;width:0%;transition:width .4s ease;}
+#main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-breadcrumb{font-size:13px;color:var(--text-m);}
+.topbar-breadcrumb strong{color:var(--text-h);}
+.topbar-actions{display:flex;gap:10px;}
+.btn-outline{font-size:12px;font-weight:600;font-family:'Inter',sans-serif;padding:5px 14px;border:2px solid var(--green);border-radius:6px;background:transparent;color:var(--green);cursor:pointer;transition:all .15s;}
+.btn-outline:hover{background:var(--green-soft);}
+.btn-sm{font-size:12px;font-weight:600;font-family:'Inter',sans-serif;padding:5px 14px;border:none;border-radius:6px;background:var(--red);color:#fff;cursor:pointer;transition:background .15s;}
+.btn-sm:hover{background:var(--red-light);}
+#hero{background:linear-gradient(135deg,var(--navy) 0%,#253A70 100%);padding:52px 48px 48px;color:#fff;}
+.hero-tag{display:inline-block;background:rgba(0,232,176,.08);border-radius:20px;font-size:12px;font-weight:600;padding:4px 14px;letter-spacing:.04em;margin-bottom:16px;}
+#hero h1{font-family:'Outfit',sans-serif;font-size:38px;font-weight:800;line-height:1.15;margin-bottom:14px;}
+#hero h1 span{color:#FF6666;}
+#hero p{font-size:15px;color:#A8BEDD;max-width:560px;margin-bottom:24px;}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hero-stat .num{font-family:'Outfit',sans-serif;font-size:26px;font-weight:800;color:#fff;}
+.hero-stat .lbl{font-size:11px;color:#7A90B0;text-transform:uppercase;letter-spacing:.07em;}
+#content{padding:40px 48px 60px;max-width:900px;color:var(--text-b);}
+.chapter{display:none;animation:fadeIn .22s ease;}
+.chapter.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ch-title{font-family:'Outfit',sans-serif;font-size:26px;font-weight:800;color:var(--text-h);margin-bottom:6px;}
+.ch-subtitle{font-size:14px;color:var(--text-s);margin-bottom:28px;padding-bottom:18px;border-bottom:2px solid var(--border);}
+h2.section{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:var(--text-h);margin:32px 0 12px;display:flex;align-items:center;gap:10px;}
+h2.section::before{content:'';width:4px;height:20px;background:var(--red);border-radius:2px;display:inline-block;}
+h3.sub{font-size:15px;font-weight:700;color:var(--blue);margin:22px 0 8px;}
+p{margin-bottom:12px;font-size:14.5px;color:var(--text-b);}
+ul,ol{margin:8px 0 14px 20px;}
+li{font-size:14px;color:var(--text-b);margin-bottom:4px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0;}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;transition:box-shadow .15s;}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.card-icon{font-size:24px;margin-bottom:8px;}
+.card-title{font-size:13px;font-weight:700;color:var(--text-h);margin-bottom:5px;}
+.card-desc{font-size:12.5px;color:var(--text-m);line-height:1.5;}
+.callout{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:13.5px;border-left:4px solid;}
+.callout-info{background:var(--blue-soft);border-color:var(--blue);color:#0A3A70;}
+.callout-tip{background:var(--green-soft);border-color:var(--green);color:#0A4020;}
+.callout-warning{background:var(--amber-soft);border-color:var(--amber);color:#5A2E00;}
+.callout-danger{background:var(--red-pale);border-color:var(--red);color:#7A0000;}
+.callout strong{display:block;margin-bottom:4px;font-weight:700;}
+.code-block{position:relative;margin:14px 0;}
+.code-block pre{background:var(--navy);color:#C8D8F0;font-family:'JetBrains Mono',monospace;font-size:12.5px;padding:18px 20px;border-radius:8px;overflow-x:auto;line-height:1.65;}
+.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:#8AAAC0;font-size:11px;font-family:'Inter',sans-serif;padding:3px 10px;border-radius:4px;cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
+.kw{color:#FF7BAC;}.str{color:#9FD86E;}.cm{color:#5A7090;font-style:italic;}.num{color:#F0A060;}.key{color:#7EC8E3;}.val{color:#D4A0FF;}.flag{color:#FFD080;}.op{color:#FF9060;}
+table.comp{width:100%;border-collapse:collapse;margin:18px 0;font-size:13px;}
+table.comp th{background:var(--navy);color:#C8D4E8;font-weight:600;padding:10px 14px;text-align:left;}
+table.comp td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-b);}
+table.comp tr:hover td{background:#F0F4FA;}
+table.comp td.yes{color:var(--green);font-weight:600;}
+table.comp td.no{color:var(--red);font-weight:600;}
+.accordion{margin:14px 0;}
+.acc-header{background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px 18px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-h);display:flex;justify-content:space-between;align-items:center;transition:background .12s;margin-bottom:4px;}
+.acc-header:hover{background:var(--blue-soft);}
+.acc-header .acc-arrow{color:var(--text-s);transition:transform .2s;}
+.acc-header.open .acc-arrow{transform:rotate(90deg);}
+.acc-body{display:none;background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px 18px;font-size:13.5px;color:var(--text-b);margin-bottom:4px;margin-top:-4px;}
+.acc-body.open{display:block;}
+.quiz-box{background:var(--navy);border-radius:10px;padding:20px 24px;margin:24px 0;color:#C8D4E8;}
+.quiz-box h4{font-family:'Outfit',sans-serif;font-size:14px;color:#fff;margin-bottom:14px;}
+.quiz-option{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:9px 14px;margin-bottom:8px;cursor:pointer;font-size:13px;color:#A8BEDD;transition:all .14s;}
+.quiz-option:hover{background:rgba(0,232,176,.08);color:#fff;}
+.quiz-option.correct{background:rgba(26,122,74,.3);border-color:var(--green);color:#7FD4A0;}
+.quiz-option.wrong{background:rgba(204,0,0,.2);border-color:var(--red);color:#FF9090;}
+.step-list{list-style:none;margin:14px 0;padding:0;}
+.step-list li{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;font-size:13.5px;}
+.step-num{background:var(--blue);color:#fff;font-size:11px;font-weight:700;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.ch-nav{display:flex;gap:12px;margin-top:40px;padding-top:24px;border-top:2px solid var(--border);}
+.ch-nav button{font-size:13px;font-weight:600;font-family:'Inter',sans-serif;padding:9px 20px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.ch-nav .prev-btn{border:2px solid var(--border);background:transparent;color:var(--text-m);}
+.ch-nav .prev-btn:hover{border-color:var(--blue);color:var(--blue);}
+.ch-nav .next-btn{border:none;background:var(--red);color:#fff;}
+.ch-nav .next-btn:hover{background:var(--red-light);}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.tag{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:12px;}
+.tag-blue{background:var(--blue-soft);color:var(--blue);}
+.tag-green{background:var(--green-soft);color:var(--green);}
+.tag-amber{background:var(--amber-soft);color:var(--amber);}
+.tag-purple{background:var(--purple-soft);color:var(--purple);}
+.tag-red{background:var(--red-pale);color:var(--red);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.info-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;}
+.info-box h4{font-size:13px;font-weight:700;color:var(--text-h);margin-bottom:8px;}
+.info-box ul{margin:0 0 0 16px;}
+.info-box li{font-size:13px;}
+
+/* MOBILE RESPONSIVE */
+.mob-ham{display:none;position:fixed;top:10px;left:10px;z-index:500;background:#141722;border:1px solid rgba(0,232,176,.3);border-radius:8px;padding:8px 12px;cursor:pointer;color:#00E8B0;font-size:16px;font-family:'Inter',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;cursor:pointer}
+.sidebar-overlay.show{display:block}
+
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);z-index:150}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .mob-ham{display:block}
+  #hero{padding:60px 24px 40px}
+  #hero h1{font-size:28px}
+  #content{padding:24px 20px 40px}
+  #topbar{padding:10px 20px;padding-left:60px}
+  .card-grid{grid-template-columns:1fr}
+  table.comp{font-size:11px}
+  table.comp th,table.comp td{padding:6px 8px}
+}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">OCP 4.21</div>
+    <h2>OpenShift Learning Guide</h2>
+    <p>Beginner → Advanced</p>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="nav-search" placeholder="Search chapters…" oninput="filterNav(this.value)"/>
+  </div>
+  
+  </div>
+  <div class="sidebar-section-label">🟢 Beginner</div>
+  <div class="sidebar-nav" id="sidebar-nav">
+    <a href="#" onclick="showChapter(0,this)" class="active" data-label="intro"><span class="nav-icon">🚀</span>What is OpenShift?<span class="nav-badge badge-beginner">B</span></a>
+    <a href="#" onclick="showChapter(1,this)" data-label="containers"><span class="nav-icon">📦</span>Containers &amp; Images<span class="nav-badge badge-beginner">B</span></a>
+    <a href="#" onclick="showChapter(2,this)" data-label="pods"><span class="nav-icon">⚡</span>Pods &amp; Lifecycle<span class="nav-badge badge-beginner">B</span></a>
+    <a href="#" onclick="showChapter(3,this)" data-label="architecture"><span class="nav-icon">🏗️</span>Architecture Deep Dive<span class="nav-badge badge-beginner">B</span></a>
+    <div class="sidebar-section-label">🟡 Intermediate</div>
+    <a href="#" onclick="showChapter(4,this)" data-label="oc-cli"><span class="nav-icon">💻</span>oc CLI &amp; Web Console<span class="nav-badge badge-intermediate">I</span></a>
+    <a href="#" onclick="showChapter(5,this)" data-label="deployments"><span class="nav-icon">🔄</span>Deployments &amp; Services<span class="nav-badge badge-intermediate">I</span></a>
+    <a href="#" onclick="showChapter(6,this)" data-label="config"><span class="nav-icon">⚙️</span>Config, Secrets &amp; Storage<span class="nav-badge badge-intermediate">I</span></a>
+    <a href="#" onclick="showChapter(7,this)" data-label="builds"><span class="nav-icon">🔨</span>Builds, S2I &amp; ImageStreams<span class="nav-badge badge-intermediate">I</span></a>
+    <a href="#" onclick="showChapter(8,this)" data-label="networking"><span class="nav-icon">🌐</span>Networking &amp; Routes<span class="nav-badge badge-intermediate">I</span></a>
+    <a href="#" onclick="showChapter(9,this)" data-label="security"><span class="nav-icon">🔒</span>Security, RBAC &amp; SCCs<span class="nav-badge badge-intermediate">I</span></a>
+    <div class="sidebar-section-label">🔴 Advanced</div>
+    <a href="#" onclick="showChapter(10,this)" data-label="operators"><span class="nav-icon">🤖</span>Operators &amp; OLM<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(11,this)" data-label="monitoring"><span class="nav-icon">📊</span>Monitoring &amp; Logging<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(12,this)" data-label="cicd"><span class="nav-icon">🔁</span>CI/CD &amp; GitOps<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(13,this)" data-label="autoscaling"><span class="nav-icon">📈</span>Autoscaling &amp; Scheduling<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(14,this)" data-label="servicemesh"><span class="nav-icon">🕸️</span>Service Mesh<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(15,this)" data-label="admin"><span class="nav-icon">🛠️</span>Cluster Administration<span class="nav-badge badge-advanced">A</span></a>
+    <a href="#" onclick="showChapter(16,this)" data-label="commands"><span class="nav-icon">📋</span>Commands Cheat Sheet<span class="nav-badge badge-advanced">REF</span></a>
+  </div>
+</nav>
+<button class="mob-ham" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div id="main">
+  <div id="topbar">
+    <div class="topbar-breadcrumb">OpenShift Guide · <strong id="current-chapter-title">Introduction</strong></div>
+    <div class="topbar-actions">
+      <button class="btn-outline" onclick="markDone()">✓ Mark Done</button>
+      <button class="btn-sm" onclick="nextChapter()">Next →</button>
+    </div>
+  </div>
+  <div id="hero">
+    <div class="hero-tag">📚 Complete Learning Path</div>
+    <h1>Master <span>OpenShift</span><br>From Zero to Pro</h1>
+    <p>A complete hands-on guide covering every major concept in Red Hat OpenShift 4.x — from containers and pods to advanced CI/CD, autoscaling, and cluster administration.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">17</div><div class="lbl">Chapters</div></div>
+      <div class="hero-stat"><div class="num">100+</div><div class="lbl">Examples</div></div>
+      <div class="hero-stat"><div class="num">4.21</div><div class="lbl">Version</div></div>
+      <div class="hero-stat"><div class="num">0→Pro</div><div class="lbl">Journey</div></div>
+    </div>
+  </div>
+  <div id="content">
+<!-- CHAPTER 0: What is OpenShift -->
+<div class="chapter active" id="ch-0">
+  <div class="ch-title">🚀 What is OpenShift?</div>
+  <div class="ch-subtitle">Understanding Red Hat's enterprise Kubernetes platform and why it matters</div>
+
+  <h2 class="section">The Big Picture</h2>
+  <p>Red Hat OpenShift is an enterprise-grade <strong>Kubernetes distribution</strong> — think of it as Kubernetes with a comprehensive set of tools layered on top: a developer console, automated builds, integrated monitoring, advanced security, and a software lifecycle management system called the Operator Lifecycle Manager.</p>
+  <p>While vanilla Kubernetes gives you the engine, OpenShift gives you the fully assembled vehicle. It is built on top of Kubernetes and adds everything an enterprise team needs to run production workloads: security policies, image management, CI/CD pipelines, monitoring dashboards, and a curated catalog of middleware.</p>
+  <div class="callout callout-info"><strong>📌 Current Version</strong>OpenShift 4.21 (released early 2026) ships with Kubernetes 1.34 and CRI-O 1.34. The 4.x line moved to a Kubernetes-native architecture — Cluster Operators manage every component of the cluster itself.</div>
+
+  <h2 class="section">OpenShift vs Kubernetes</h2>
+  <table class="comp">
+    <tr><th>Feature</th><th>Vanilla Kubernetes</th><th>OpenShift</th></tr>
+    <tr><td>Installation</td><td>DIY (kubeadm, kops…)</td><td>Installer-Provisioned (IPI) or User-Provisioned (UPI)</td></tr>
+    <tr><td>Web Console</td><td>Basic dashboard</td><td>Full-featured developer &amp; admin console</td></tr>
+    <tr><td>Image Builds</td><td>Not included</td><td>Builds, S2I, BuildConfig built-in</td></tr>
+    <tr><td>Registry</td><td>Not included</td><td>Integrated internal registry</td></tr>
+    <tr><td>CI/CD</td><td>Not included</td><td>Tekton Pipelines + Argo CD (GitOps)</td></tr>
+    <tr><td>Monitoring</td><td>Bring your own</td><td>Prometheus + Alertmanager built-in</td></tr>
+    <tr><td>Security</td><td>RBAC only</td><td>RBAC + SCCs + OPA Gatekeeper</td></tr>
+    <tr><td>Networking</td><td>Bring your own CNI</td><td>OVN-Kubernetes (only CNI since 4.17)</td></tr>
+    <tr><td>Operators</td><td>Manual install</td><td>Operator Lifecycle Manager (OLM)</td></tr>
+    <tr><td>Updates</td><td>Manual</td><td>Over-the-air cluster updates via CVO</td></tr>
+  </table>
+
+  <h2 class="section">Flavours of OpenShift</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🏠</div><div class="card-title">OpenShift Container Platform (OCP)</div><div class="card-desc">Self-managed on bare-metal, VMware, AWS, Azure, GCP. Full control. Enterprise support.</div></div>
+    <div class="card"><div class="card-icon">☁️</div><div class="card-title">ROSA (AWS)</div><div class="card-desc">Red Hat OpenShift Service on AWS — managed control plane, billed through AWS marketplace.</div></div>
+    <div class="card"><div class="card-icon">🔷</div><div class="card-title">ARO (Azure)</div><div class="card-desc">Azure Red Hat OpenShift — jointly managed by Microsoft and Red Hat.</div></div>
+    <div class="card"><div class="card-icon">🌩️</div><div class="card-title">OpenShift Dedicated</div><div class="card-desc">Red Hat-managed single-tenant clusters on AWS or GCP. SRE team operates the cluster.</div></div>
+    <div class="card"><div class="card-icon">🧪</div><div class="card-title">OKD</div><div class="card-desc">The upstream community distribution. Free to use. OpenShift is OKD + Red Hat support + RHEL CoreOS.</div></div>
+    <div class="card"><div class="card-icon">💻</div><div class="card-title">OpenShift Local (CRC)</div><div class="card-desc">Single-node cluster running in a VM on your laptop. Perfect for learning and development.</div></div>
+  </div>
+
+  <h2 class="section">Core Concepts at a Glance</h2>
+  <p>OpenShift uses all standard Kubernetes objects (Pod, Deployment, Service, ConfigMap…) and adds its own extensions:</p>
+  <div class="tag-row">
+    <span class="tag tag-red">Project (≈ Namespace)</span>
+    <span class="tag tag-blue">Route (HTTP/S exposure)</span>
+    <span class="tag tag-green">BuildConfig</span>
+    <span class="tag tag-amber">ImageStream</span>
+    <span class="tag tag-purple">Operator</span>
+    <span class="tag tag-blue">SCC (Security Context Constraint)</span>
+    <span class="tag tag-green">ClusterOperator</span>
+    <span class="tag tag-amber">OLM CatalogSource</span>
+  </div>
+
+  <div class="quiz-box">
+    <h4>🧠 Quick Check — What is OpenShift?</h4>
+    <div class="quiz-option" onclick="answerQuiz(this,'wrong')">A) A replacement for Docker that runs containers without Kubernetes</div>
+    <div class="quiz-option" onclick="answerQuiz(this,'correct')">B) An enterprise Kubernetes distribution with built-in CI/CD, security, and lifecycle management</div>
+    <div class="quiz-option" onclick="answerQuiz(this,'wrong')">C) A cloud-only service that only runs on AWS</div>
+    <div class="quiz-option" onclick="answerQuiz(this,'wrong')">D) A container image format developed by Red Hat</div>
+  </div>
+
+  <div class="ch-nav">
+    <button class="next-btn" onclick="nextChapter()">Next: Containers &amp; Images →</button>
+  </div>
+</div>
+<!-- CHAPTER 1: Containers & Images -->
+<div class="chapter" id="ch-1">
+  <div class="ch-title">📦 Containers &amp; Images</div>
+  <div class="ch-subtitle">How containers work, OCI images, and OpenShift's internal registry</div>
+
+  <h2 class="section">What is a Container?</h2>
+  <p>A container is a <strong>process running in isolation</strong> using Linux kernel features: <em>namespaces</em> (isolate PID, network, mount, UTS, IPC) and <em>cgroups</em> (limit CPU, memory, I/O). Unlike a VM, a container shares the host kernel — it is not a full operating system, just an isolated process tree with its own filesystem view.</p>
+  <div class="callout callout-tip"><strong>💡 Key Insight</strong>Containers are not magic — they are ordinary Linux processes that can only see their own slice of the system. <code>docker run</code> and <code>podman run</code> just call the kernel APIs (clone, unshare) to set up those boundaries.</div>
+
+  <h2 class="section">Container Images</h2>
+  <p>An image is an <strong>immutable, layered filesystem</strong> in OCI (Open Container Initiative) format. Each instruction in a Dockerfile/Containerfile creates a new layer. Layers are content-addressed (SHA-256) and shared across images — if two images use the same base, they share those layers on disk.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Containerfile (OCI-standard name; Dockerfile also works)</span>
+<span class="kw">FROM</span> <span class="str">registry.access.redhat.com/ubi9/ubi-minimal:latest</span>
+<span class="kw">WORKDIR</span> <span class="str">/app</span>
+<span class="kw">COPY</span> <span class="str">target/myapp.jar .</span>
+<span class="kw">RUN</span> <span class="str">microdnf install -y java-17-openjdk-headless &amp;&amp; microdnf clean all</span>
+<span class="kw">EXPOSE</span> <span class="num">8080</span>
+<span class="kw">USER</span> <span class="num">1001</span>          <span class="cm"># Non-root — required by OpenShift SCCs</span>
+<span class="kw">CMD</span> [<span class="str">"java"</span>, <span class="str">"-jar"</span>, <span class="str">"myapp.jar"</span>]</pre></div>
+
+  <h2 class="section">OCI vs Docker Image Format</h2>
+  <p>OpenShift uses the <strong>OCI Image Specification</strong> everywhere. Docker images are also OCI-compatible. The image is stored as a manifest (JSON) pointing to a config blob and a set of layer tarballs. Any OCI-compliant runtime (CRI-O, containerd, podman) can run these images.</p>
+
+  <h2 class="section">CRI-O: OpenShift's Container Runtime</h2>
+  <p>Since OpenShift 4.0, the only supported container runtime is <strong>CRI-O</strong>. Docker is not used inside OpenShift. CRI-O was purpose-built for Kubernetes — it implements the CRI (Container Runtime Interface) and uses <code>runc</code> / <code>crun</code> to actually create containers. It is lightweight and has no daemon managing images independently of Kubernetes.</p>
+  <div class="callout callout-warning"><strong>⚠️ No Docker Socket</strong>OpenShift nodes do not have a Docker socket at <code>/var/run/docker.sock</code>. Builds that rely on Docker-in-Docker (DinD) will not work. Use Buildah, Kaniko, or OpenShift Builds instead.</div>
+
+  <h2 class="section">OpenShift Internal Registry</h2>
+  <p>Every OpenShift cluster includes an <strong>integrated image registry</strong> (Image Registry Operator). Images built by OpenShift Builds are pushed here automatically. External CI pipelines can also push images to it.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Expose the registry (if not already exposed)</span>
+<span class="key">oc</span> <span class="val">patch</span> configs.imageregistry.operator.openshift.io cluster \
+  <span class="flag">--type</span> merge <span class="flag">--patch</span> <span class="str">'{"spec":{"defaultRoute":true}}'</span>
+
+<span class="cm"># Get the registry hostname</span>
+<span class="key">oc</span> <span class="val">get</span> route default-route <span class="flag">-n</span> openshift-image-registry
+
+<span class="cm"># Log in to the internal registry using your OpenShift token</span>
+<span class="key">podman</span> <span class="val">login</span> <span class="flag">-u</span> $(oc whoami) <span class="flag">-p</span> $(oc whoami <span class="flag">-t</span>) \
+  default-route-openshift-image-registry.apps.mycluster.example.com</pre></div>
+
+  <h2 class="section">Image Pull Policy</h2>
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)">Always <span class="acc-arrow">▶</span></div>
+    <div class="acc-body">Always pull the image from the registry, even if it exists locally. Use this for <code>:latest</code> tags in dev.</div>
+    <div class="acc-header" onclick="toggleAcc(this)">IfNotPresent <span class="acc-arrow">▶</span></div>
+    <div class="acc-body">Pull only if the image is not already on the node. Default for versioned tags (e.g. <code>:1.2.3</code>).</div>
+    <div class="acc-header" onclick="toggleAcc(this)">Never <span class="acc-arrow">▶</span></div>
+    <div class="acc-body">Never pull — fail if the image isn't already on the node. Used in air-gapped environments.</div>
+  </div>
+
+  <div class="callout callout-danger"><strong>🚫 Don't use :latest in production</strong>The <code>:latest</code> tag is mutable — it can point to a different image after every push. Use immutable digests (<code>sha256:abc123…</code>) or ImageStreams (which pin a tag to a digest) for reproducible deployments.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← What is OpenShift?</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Pods &amp; Lifecycle →</button>
+  </div>
+</div>
+<!-- CHAPTER 2: Pods & Lifecycle -->
+<div class="chapter" id="ch-2">
+  <div class="ch-title">⚡ Pods &amp; Lifecycle</div>
+  <div class="ch-subtitle">The smallest deployable unit in Kubernetes and how OpenShift manages it</div>
+
+  <h2 class="section">What is a Pod?</h2>
+  <p>A Pod is a group of one or more containers that share: the same <strong>network namespace</strong> (they talk via localhost), the same <strong>UTS namespace</strong> (same hostname), and optionally the same <strong>volumes</strong>. Containers within a Pod are always co-scheduled on the same node and start/stop together.</p>
+  <p>In practice, most Pods have a single container. Multi-container Pods are used for sidecar patterns (log shipper, service mesh proxy) and init containers (setup tasks before the main app starts).</p>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># minimal Pod manifest</span>
+<span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">Pod</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app</span>
+  <span class="key">labels</span>:
+    <span class="key">app</span>: <span class="val">my-app</span>
+<span class="key">spec</span>:
+  <span class="key">containers</span>:
+  - <span class="key">name</span>: <span class="val">app</span>
+    <span class="key">image</span>: <span class="str">quay.io/myorg/my-app:1.2.0</span>
+    <span class="key">ports</span>:
+    - <span class="key">containerPort</span>: <span class="num">8080</span>
+    <span class="key">resources</span>:
+      <span class="key">requests</span>:
+        <span class="key">memory</span>: <span class="str">"128Mi"</span>
+        <span class="key">cpu</span>: <span class="str">"250m"</span>      <span class="cm"># 250 millicores = 0.25 CPU</span>
+      <span class="key">limits</span>:
+        <span class="key">memory</span>: <span class="str">"256Mi"</span>
+        <span class="key">cpu</span>: <span class="str">"500m"</span>
+    <span class="key">livenessProbe</span>:
+      <span class="key">httpGet</span>:
+        <span class="key">path</span>: <span class="str">/health/live</span>
+        <span class="key">port</span>: <span class="num">8080</span>
+      <span class="key">initialDelaySeconds</span>: <span class="num">15</span>
+    <span class="key">readinessProbe</span>:
+      <span class="key">httpGet</span>:
+        <span class="key">path</span>: <span class="str">/health/ready</span>
+        <span class="key">port</span>: <span class="num">8080</span></pre></div>
+
+  <h2 class="section">Pod Lifecycle Phases</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">⏳</div><div class="card-title">Pending</div><div class="card-desc">Pod accepted by the API server but not yet scheduled, or images are being pulled.</div></div>
+    <div class="card"><div class="card-icon">▶️</div><div class="card-title">Running</div><div class="card-desc">Pod is bound to a node. At least one container is running or starting.</div></div>
+    <div class="card"><div class="card-icon">✅</div><div class="card-title">Succeeded</div><div class="card-desc">All containers exited with code 0. Final state for Job Pods.</div></div>
+    <div class="card"><div class="card-icon">❌</div><div class="card-title">Failed</div><div class="card-desc">All containers terminated; at least one exited with non-zero code or was OOMKilled.</div></div>
+    <div class="card"><div class="card-icon">❓</div><div class="card-title">Unknown</div><div class="card-desc">Pod state cannot be obtained — usually means the node went offline.</div></div>
+  </div>
+
+  <h2 class="section">Probes</h2>
+  <p><strong>Liveness probe</strong> — If this fails repeatedly, kubelet restarts the container. Use for detecting deadlocks.</p>
+  <p><strong>Readiness probe</strong> — If this fails, the Pod is removed from Service endpoints (traffic stops). Use for checking if the app is ready to serve requests.</p>
+  <p><strong>Startup probe</strong> — Disables liveness/readiness probes until it succeeds. Critical for slow-starting apps (JVM apps, database migrations).</p>
+
+  <h2 class="section">Init Containers</h2>
+  <p>Init containers run <em>sequentially</em> before the main containers start. They must exit with code 0 for the Pod to proceed. Use cases: wait for a database to be ready, fetch secrets from Vault, pre-populate a shared volume.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">initContainers</span>:
+- <span class="key">name</span>: <span class="val">wait-for-db</span>
+  <span class="key">image</span>: <span class="str">busybox:1.36</span>
+  <span class="key">command</span>: [<span class="str">'sh'</span>, <span class="str">'-c'</span>,
+    <span class="str">'until nc -z postgres-svc 5432; do echo waiting; sleep 2; done'</span>]</pre></div>
+
+  <h2 class="section">Resource Requests vs Limits</h2>
+  <div class="callout callout-info"><strong>📌 Requests vs Limits</strong><strong>Request</strong> — the amount of CPU/memory the scheduler guarantees. The node must have this much free to place the Pod.<br><strong>Limit</strong> — the maximum the container can use. CPU is throttled at the limit; exceeding memory limit causes OOMKill.</div>
+  <p>Always set both requests and limits. Without requests, the scheduler places Pods blindly. Without limits, a runaway container can starve other workloads on the node.</p>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Containers &amp; Images</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Architecture →</button>
+  </div>
+</div>
+<!-- CHAPTER 3: Architecture -->
+<div class="chapter" id="ch-3">
+  <div class="ch-title">🏗️ Architecture Deep Dive</div>
+  <div class="ch-subtitle">Control plane, worker nodes, Cluster Operators, and RHCOS</div>
+
+  <h2 class="section">Control Plane Components</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📡</div><div class="card-title">kube-apiserver</div><div class="card-desc">The front door. All kubectl/oc commands hit this REST API. Validates and persists objects to etcd.</div></div>
+    <div class="card"><div class="card-icon">🗃️</div><div class="card-title">etcd</div><div class="card-desc">Distributed key-value store. Single source of truth for all cluster state. Runs as a 3 or 5-node cluster for HA.</div></div>
+    <div class="card"><div class="card-icon">🧠</div><div class="card-title">kube-scheduler</div><div class="card-desc">Watches for unscheduled Pods and assigns them to nodes based on resources, affinity, taints, and policies.</div></div>
+    <div class="card"><div class="card-icon">🔁</div><div class="card-title">kube-controller-manager</div><div class="card-desc">Runs control loops: ReplicaSet controller, Endpoint controller, Node controller, and dozens more.</div></div>
+    <div class="card"><div class="card-icon">🔴</div><div class="card-title">openshift-apiserver</div><div class="card-desc">Extends the Kubernetes API with OpenShift-specific resources: Routes, Builds, ImageStreams, Projects.</div></div>
+    <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Cluster Version Operator (CVO)</div><div class="card-desc">Manages over-the-air cluster updates. Reconciles ClusterOperator resources and applies upgrade payloads.</div></div>
+  </div>
+
+  <h2 class="section">Worker Node Components</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🤝</div><div class="card-title">kubelet</div><div class="card-desc">Agent on every node. Watches the API for Pods assigned to this node and manages their lifecycle via CRI-O.</div></div>
+    <div class="card"><div class="card-icon">🌐</div><div class="card-title">kube-proxy</div><div class="card-desc">Programs iptables/nftables rules for Service virtual IPs. In OVN-K mode this is handled by OVN directly.</div></div>
+    <div class="card"><div class="card-icon">🔒</div><div class="card-title">CRI-O</div><div class="card-desc">Container runtime. Pulls images, creates containers via runc/crun. No persistent daemon state.</div></div>
+    <div class="card"><div class="card-icon">🕸️</div><div class="card-title">OVN-Kubernetes</div><div class="card-desc">CNI plugin. Provides Pod networking, Network Policies, and Service load-balancing using Open Virtual Network.</div></div>
+  </div>
+
+  <h2 class="section">RHCOS — Red Hat CoreOS</h2>
+  <p>All OpenShift 4.x nodes run <strong>RHCOS</strong> (Red Hat Enterprise Linux CoreOS). RHCOS is immutable and managed by the <strong>Machine Config Operator (MCO)</strong>. You never SSH in to install software — instead you create a MachineConfig CR and MCO applies it via an in-place update (drains the node, applies the change, reboots).</p>
+  <div class="callout callout-warning"><strong>⚠️ Don't patch nodes manually</strong>Any manual changes to an RHCOS node will be overwritten the next time MCO applies a MachineConfig. All node-level config must go through MachineConfig CRs.</div>
+
+  <h2 class="section">Cluster Operators</h2>
+  <p>OpenShift manages itself through <strong>Cluster Operators (COs)</strong> — each CO is responsible for one component of the cluster (authentication, DNS, image registry, ingress, monitoring, etc.). The CVO reconciles all COs, and each CO keeps its component in the desired state.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># List all Cluster Operators and their status</span>
+<span class="key">oc</span> <span class="val">get</span> clusteroperators
+
+<span class="cm"># Example output:</span>
+<span class="cm"># NAME                      VERSION   AVAILABLE   PROGRESSING   DEGRADED</span>
+<span class="cm"># authentication            4.21.0    True        False         False</span>
+<span class="cm"># dns                       4.21.0    True        False         False</span>
+<span class="cm"># image-registry            4.21.0    True        False         False</span>
+<span class="cm"># ingress                   4.21.0    True        False         False</span>
+<span class="cm"># monitoring                4.21.0    True        False         False</span></pre></div>
+
+  <h2 class="section">Projects vs Namespaces</h2>
+  <p>An OpenShift <strong>Project</strong> is a Kubernetes Namespace with extra metadata and access controls. When you create a Project, OpenShift also creates the corresponding Namespace, sets up RBAC roles for the project admin, and applies any project template defined by the cluster admin. In all API calls and YAML, they are interchangeable — a Project IS a Namespace.</p>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Pods &amp; Lifecycle</button>
+    <button class="next-btn" onclick="nextChapter()">Next: oc CLI →</button>
+  </div>
+</div>
+<!-- CHAPTER 4: oc CLI -->
+<div class="chapter" id="ch-4">
+  <div class="ch-title">💻 oc CLI &amp; Web Console</div>
+  <div class="ch-subtitle">Day-to-day tools for interacting with OpenShift clusters</div>
+
+  <h2 class="section">Installing the oc CLI</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Download from the cluster's Downloads page (always matches your cluster version)</span>
+<span class="cm"># Or via the OpenShift mirror:</span>
+<span class="key">curl</span> <span class="flag">-L</span> https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz \
+  | <span class="key">tar</span> <span class="flag">xz</span>
+<span class="key">sudo</span> <span class="val">mv</span> oc kubectl /usr/local/bin/
+
+<span class="cm"># Verify</span>
+<span class="key">oc</span> <span class="val">version</span>
+<span class="cm"># Client Version: 4.21.x   Server Version: 4.21.x   Kubernetes Version: v1.34.x</span></pre></div>
+
+  <h2 class="section">Logging In</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Login with username/password</span>
+<span class="key">oc</span> <span class="val">login</span> https://api.mycluster.example.com:6443 \
+  <span class="flag">-u</span> admin <span class="flag">-p</span> mypassword
+
+<span class="cm"># Login via web console token (copy from: user menu → Copy login command)</span>
+<span class="key">oc</span> <span class="val">login</span> <span class="flag">--token</span>=sha256~AbCdEf... <span class="flag">--server</span>=https://api.mycluster.example.com:6443
+
+<span class="cm"># Check who you are</span>
+<span class="key">oc</span> <span class="val">whoami</span>
+<span class="key">oc</span> <span class="val">whoami</span> <span class="flag">-t</span>     <span class="cm"># print token</span></pre></div>
+
+  <h2 class="section">Essential Daily Commands</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Projects</span>
+<span class="key">oc</span> <span class="val">new-project</span> my-app           <span class="cm"># create &amp; switch to project</span>
+<span class="key">oc</span> <span class="val">project</span> my-app               <span class="cm"># switch to existing project</span>
+<span class="key">oc</span> <span class="val">get</span> projects                  <span class="cm"># list all projects you can see</span>
+
+<span class="cm"># Resources</span>
+<span class="key">oc</span> <span class="val">get</span> pods                      <span class="cm"># list pods in current project</span>
+<span class="key">oc</span> <span class="val">get</span> pods <span class="flag">-A</span>                   <span class="cm"># all namespaces</span>
+<span class="key">oc</span> <span class="val">get</span> pods <span class="flag">-o</span> wide              <span class="cm"># show node and IP</span>
+<span class="key">oc</span> <span class="val">describe</span> pod my-pod           <span class="cm"># full details + events</span>
+<span class="key">oc</span> <span class="val">logs</span> my-pod                   <span class="cm"># container logs</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">-f</span> my-pod               <span class="cm"># follow (stream) logs</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">-c</span> sidecar my-pod       <span class="cm"># specific container</span>
+
+<span class="cm"># Debug</span>
+<span class="key">oc</span> <span class="val">exec</span> <span class="flag">-it</span> my-pod <span class="flag">--</span> /bin/sh   <span class="cm"># shell into container</span>
+<span class="key">oc</span> <span class="val">debug</span> pod/my-pod              <span class="cm"># debug copy of pod</span>
+<span class="key">oc</span> <span class="val">debug</span> node/worker-1           <span class="cm"># shell on a node (as root)</span>
+
+<span class="cm"># Apply / Delete</span>
+<span class="key">oc</span> <span class="val">apply</span> <span class="flag">-f</span> deployment.yaml      <span class="cm"># create or update</span>
+<span class="key">oc</span> <span class="val">delete</span> <span class="flag">-f</span> deployment.yaml     <span class="cm"># delete by manifest</span>
+<span class="key">oc</span> <span class="val">delete</span> pod my-pod             <span class="cm"># delete specific resource</span>
+
+<span class="cm"># Events (great for debugging)</span>
+<span class="key">oc</span> <span class="val">get</span> events <span class="flag">--sort-by</span>=.lastTimestamp</pre></div>
+
+  <h2 class="section">OpenShift Web Console</h2>
+  <p>The web console is available at <code>https://console-openshift-console.apps.&lt;cluster-domain&gt;</code>. It has two perspectives:</p>
+  <div class="two-col">
+    <div class="info-box"><h4>👨‍💻 Developer Perspective</h4><ul><li>Topology view (visual app graph)</li><li>+Add wizard (Git, Dockerfile, Helm)</li><li>Build logs and pipeline runs</li><li>Observe: metrics for your project</li></ul></div>
+    <div class="info-box"><h4>🔧 Administrator Perspective</h4><ul><li>Cluster-wide resource management</li><li>Node and machine management</li><li>OperatorHub catalog</li><li>Cluster monitoring dashboards</li><li>User and RBAC management</li></ul></div>
+  </div>
+
+  <div class="callout callout-tip"><strong>💡 oc vs kubectl</strong>The <code>oc</code> CLI is a superset of <code>kubectl</code>. Every <code>kubectl</code> command works as <code>oc</code>. The <code>oc</code> CLI adds OpenShift-specific commands: <code>oc new-project</code>, <code>oc new-app</code>, <code>oc start-build</code>, <code>oc rollout</code>, <code>oc debug node/</code>, etc.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Architecture</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Deployments →</button>
+  </div>
+</div>
+<!-- CHAPTER 5: Deployments & Services -->
+<div class="chapter" id="ch-5">
+  <div class="ch-title">🔄 Deployments &amp; Services</div>
+  <div class="ch-subtitle">Managing stateless apps, rolling updates, and network service discovery</div>
+
+  <h2 class="section">Deployment</h2>
+  <p>A <strong>Deployment</strong> is the standard Kubernetes way to manage stateless application replicas. It creates a <strong>ReplicaSet</strong> that ensures the desired number of identical Pods are always running. When you update the image or config, Deployment performs a rolling update — gradually replacing old Pods with new ones with zero downtime.</p>
+  <div class="callout callout-danger"><strong>🚫 DeploymentConfig is deprecated</strong>The OpenShift-specific DeploymentConfig was deprecated in 4.14 and will be removed in a future version. Always use the standard Kubernetes <strong>Deployment</strong> object.</div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">apps/v1</span>
+<span class="key">kind</span>: <span class="val">Deployment</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app</span>
+<span class="key">spec</span>:
+  <span class="key">replicas</span>: <span class="num">3</span>
+  <span class="key">selector</span>:
+    <span class="key">matchLabels</span>:
+      <span class="key">app</span>: <span class="val">my-app</span>
+  <span class="key">strategy</span>:
+    <span class="key">type</span>: <span class="val">RollingUpdate</span>
+    <span class="key">rollingUpdate</span>:
+      <span class="key">maxSurge</span>: <span class="num">1</span>         <span class="cm"># 1 extra Pod during rollout</span>
+      <span class="key">maxUnavailable</span>: <span class="num">0</span>   <span class="cm"># no downtime</span>
+  <span class="key">template</span>:
+    <span class="key">metadata</span>:
+      <span class="key">labels</span>:
+        <span class="key">app</span>: <span class="val">my-app</span>
+    <span class="key">spec</span>:
+      <span class="key">containers</span>:
+      - <span class="key">name</span>: <span class="val">app</span>
+        <span class="key">image</span>: <span class="str">quay.io/myorg/my-app:1.2.0</span>
+        <span class="key">ports</span>:
+        - <span class="key">containerPort</span>: <span class="num">8080</span></pre></div>
+
+  <h2 class="section">Rollout Commands</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Trigger a rollout (e.g. after a config change)</span>
+<span class="key">oc</span> <span class="val">rollout</span> restart deployment/my-app
+
+<span class="cm"># Watch rollout progress</span>
+<span class="key">oc</span> <span class="val">rollout</span> status deployment/my-app
+
+<span class="cm"># Rollback to previous version</span>
+<span class="key">oc</span> <span class="val">rollout</span> undo deployment/my-app
+
+<span class="cm"># See rollout history</span>
+<span class="key">oc</span> <span class="val">rollout</span> history deployment/my-app</pre></div>
+
+  <h2 class="section">Services</h2>
+  <p>A <strong>Service</strong> gives a stable IP (ClusterIP) and DNS name to a dynamic set of Pods selected by labels. Traffic to the Service is load-balanced across healthy Pods by kube-proxy / OVN-K. Services are internal to the cluster — to expose them externally, use a Route or Ingress.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">Service</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app-svc</span>
+<span class="key">spec</span>:
+  <span class="key">selector</span>:
+    <span class="key">app</span>: <span class="val">my-app</span>       <span class="cm"># matches Pod labels</span>
+  <span class="key">ports</span>:
+  - <span class="key">name</span>: <span class="val">http</span>
+    <span class="key">port</span>: <span class="num">80</span>           <span class="cm"># Service port (DNS: my-app-svc.my-ns.svc.cluster.local:80)</span>
+    <span class="key">targetPort</span>: <span class="num">8080</span>  <span class="cm"># container port</span></pre></div>
+
+  <h2 class="section">Service Types</h2>
+  <table class="comp">
+    <tr><th>Type</th><th>Accessible From</th><th>Use Case</th></tr>
+    <tr><td>ClusterIP (default)</td><td>Inside cluster only</td><td>Service-to-service communication</td></tr>
+    <tr><td>NodePort</td><td>Any node IP + port</td><td>Dev/test; not recommended in production</td></tr>
+    <tr><td>LoadBalancer</td><td>External via cloud LB</td><td>Cloud deployments without Ingress</td></tr>
+    <tr><td>ExternalName</td><td>N/A — DNS alias</td><td>Alias an external DNS name inside cluster</td></tr>
+  </table>
+
+  <h2 class="section">Routes (OpenShift Ingress)</h2>
+  <p>A <strong>Route</strong> is OpenShift's way to expose a Service over HTTP/HTTPS via the cluster's Ingress (HAProxy-based). Each Route gets a hostname like <code>my-app-myproject.apps.mycluster.example.com</code>.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Expose a service as a Route (auto-generates hostname)</span>
+<span class="key">oc</span> <span class="val">expose</span> svc/my-app-svc
+
+<span class="cm"># Create a TLS-terminated route with a custom hostname</span>
+<span class="key">oc</span> <span class="val">create</span> route edge my-app-tls \
+  <span class="flag">--service</span>=my-app-svc \
+  <span class="flag">--hostname</span>=my-app.example.com \
+  <span class="flag">--cert</span>=tls.crt <span class="flag">--key</span>=tls.key</pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← oc CLI</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Config &amp; Storage →</button>
+  </div>
+</div>
+<!-- CHAPTER 6: Config Secrets Storage -->
+<div class="chapter" id="ch-6">
+  <div class="ch-title">⚙️ Config, Secrets &amp; Storage</div>
+  <div class="ch-subtitle">Managing application configuration, sensitive data, and persistent storage</div>
+
+  <h2 class="section">ConfigMaps</h2>
+  <p>A <strong>ConfigMap</strong> stores non-sensitive key-value configuration. It can be mounted as a volume (each key becomes a file) or injected as environment variables into a Pod.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Create from literals</span>
+<span class="key">oc</span> <span class="val">create</span> configmap app-config \
+  <span class="flag">--from-literal</span>=DB_HOST=postgres \
+  <span class="flag">--from-literal</span>=DB_PORT=5432
+
+<span class="cm"># Create from a file</span>
+<span class="key">oc</span> <span class="val">create</span> configmap app-config <span class="flag">--from-file</span>=application.properties
+
+<span class="cm"># Use in Deployment as environment variables</span>
+<span class="key">envFrom</span>:
+- <span class="key">configMapRef</span>:
+    <span class="key">name</span>: <span class="val">app-config</span>
+
+<span class="cm"># Or mount as files</span>
+<span class="key">volumes</span>:
+- <span class="key">name</span>: <span class="val">config-vol</span>
+  <span class="key">configMap</span>:
+    <span class="key">name</span>: <span class="val">app-config</span>
+<span class="key">volumeMounts</span>:
+- <span class="key">name</span>: <span class="val">config-vol</span>
+  <span class="key">mountPath</span>: <span class="str">/etc/config</span></pre></div>
+
+  <h2 class="section">Secrets</h2>
+  <p>Secrets store sensitive data (passwords, tokens, certificates). Values are base64-encoded at rest in etcd (and encrypted if EncryptionConfiguration is set). Treat Secrets like ConfigMaps in terms of usage, but follow least-privilege access — only the Pods that need them should be able to read them.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Create a generic secret</span>
+<span class="key">oc</span> <span class="val">create</span> secret generic db-creds \
+  <span class="flag">--from-literal</span>=username=admin \
+  <span class="flag">--from-literal</span>=password=s3cr3t
+
+<span class="cm"># Create a TLS secret from cert files</span>
+<span class="key">oc</span> <span class="val">create</span> secret tls my-tls \
+  <span class="flag">--cert</span>=tls.crt <span class="flag">--key</span>=tls.key
+
+<span class="cm"># Create an image pull secret for a private registry</span>
+<span class="key">oc</span> <span class="val">create</span> secret docker-registry quay-pull \
+  <span class="flag">--docker-server</span>=quay.io \
+  <span class="flag">--docker-username</span>=myuser \
+  <span class="flag">--docker-password</span>=mytoken</pre></div>
+
+  <h2 class="section">Persistent Storage</h2>
+  <p>Containers are ephemeral — their filesystem is lost when the Pod is deleted. For stateful data, use <strong>PersistentVolumes (PV)</strong> and <strong>PersistentVolumeClaims (PVC)</strong>.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># PVC: request storage from the cluster</span>
+<span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">PersistentVolumeClaim</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-data</span>
+<span class="key">spec</span>:
+  <span class="key">accessModes</span>: [<span class="val">ReadWriteOnce</span>]
+  <span class="key">resources</span>:
+    <span class="key">requests</span>:
+      <span class="key">storage</span>: <span class="str">10Gi</span>
+  <span class="key">storageClassName</span>: <span class="val">ocs-storagecluster-ceph-rbd</span>
+
+<span class="cm"># Mount the PVC in a Pod</span>
+<span class="key">volumes</span>:
+- <span class="key">name</span>: <span class="val">data</span>
+  <span class="key">persistentVolumeClaim</span>:
+    <span class="key">claimName</span>: <span class="val">my-data</span>
+<span class="key">volumeMounts</span>:
+- <span class="key">name</span>: <span class="val">data</span>
+  <span class="key">mountPath</span>: <span class="str">/var/lib/data</span></pre></div>
+
+  <h2 class="section">Access Modes</h2>
+  <table class="comp">
+    <tr><th>Mode</th><th>Abbreviation</th><th>Meaning</th></tr>
+    <tr><td>ReadWriteOnce</td><td>RWO</td><td>Mounted read-write by a single node. Most block storage.</td></tr>
+    <tr><td>ReadOnlyMany</td><td>ROX</td><td>Mounted read-only by many nodes simultaneously.</td></tr>
+    <tr><td>ReadWriteMany</td><td>RWX</td><td>Mounted read-write by many nodes. Requires NFS or CephFS.</td></tr>
+    <tr><td>ReadWriteOncePod</td><td>RWOP</td><td>Mounted read-write by exactly one Pod (Kubernetes 1.22+).</td></tr>
+  </table>
+
+  <h2 class="section">StorageClasses</h2>
+  <p>A <strong>StorageClass</strong> defines how storage is dynamically provisioned. When a PVC references a StorageClass, the cluster automatically creates a PV using the class's provisioner. Common classes in OpenShift clusters running OpenShift Data Foundation (ODF/Ceph):</p>
+  <div class="tag-row">
+    <span class="tag tag-blue">ocs-storagecluster-ceph-rbd (RWO, block)</span>
+    <span class="tag tag-green">ocs-storagecluster-cephfs (RWX, file)</span>
+    <span class="tag tag-amber">gp3-csi (AWS EBS, RWO)</span>
+    <span class="tag tag-purple">managed-premium (Azure Disk, RWO)</span>
+  </div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Deployments</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Builds &amp; S2I →</button>
+  </div>
+</div>
+<!-- CHAPTER 7: Builds S2I -->
+<div class="chapter" id="ch-7">
+  <div class="ch-title">🔨 Builds, S2I &amp; ImageStreams</div>
+  <div class="ch-subtitle">OpenShift-native CI: building container images directly in the cluster</div>
+
+  <h2 class="section">Why Build in the Cluster?</h2>
+  <p>OpenShift can build container images <em>inside the cluster</em> using the Build subsystem. This is useful when you don't have an external CI pipeline yet, or when you want a tight integration between source code and deployment. Builds run as Pods, so they are isolated, auditable, and consume cluster resources.</p>
+
+  <h2 class="section">Build Strategies</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🐍</div><div class="card-title">Source-to-Image (S2I)</div><div class="card-desc">Detects language (Python, Node, Java…) and injects your source into a builder image. No Dockerfile needed.</div></div>
+    <div class="card"><div class="card-icon">🐳</div><div class="card-title">Docker / Containerfile</div><div class="card-desc">Builds from a Dockerfile or Containerfile in your repo. Full control over the build process.</div></div>
+    <div class="card"><div class="card-icon">📦</div><div class="card-title">Custom Build</div><div class="card-desc">Your own builder image. Complete flexibility for advanced use cases.</div></div>
+    <div class="card"><div class="card-icon">🔗</div><div class="card-title">Pipeline Build (Tekton)</div><div class="card-desc">Triggers a Tekton Pipeline from a BuildConfig. Preferred for complex CI workflows.</div></div>
+  </div>
+
+  <h2 class="section">Source-to-Image (S2I) in Practice</h2>
+  <p>S2I is OpenShift's most developer-friendly build strategy. Point it at a Git repo and it figures out the runtime, injects your code, runs your build tool (mvn, npm, pip), and produces a ready-to-run image. No Dockerfile required.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Create app from Git using S2I (auto-detects Node.js)</span>
+<span class="key">oc</span> <span class="val">new-app</span> nodejs~https://github.com/myorg/my-node-app \
+  <span class="flag">--name</span>=my-app
+
+<span class="cm"># The above creates: BuildConfig, ImageStream, Deployment, Service</span>
+
+<span class="cm"># Trigger a new build manually</span>
+<span class="key">oc</span> <span class="val">start-build</span> my-app
+
+<span class="cm"># Follow build logs</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">-f</span> bc/my-app
+
+<span class="cm"># List builds</span>
+<span class="key">oc</span> <span class="val">get</span> builds</pre></div>
+
+  <h2 class="section">BuildConfig</h2>
+  <p>A <strong>BuildConfig</strong> is the blueprint for how OpenShift builds an image. It defines the source (Git URL, branch), the strategy (S2I, Docker), the output (which ImageStream tag to push to), and optional build triggers (webhook, ImageChange).</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">build.openshift.io/v1</span>
+<span class="key">kind</span>: <span class="val">BuildConfig</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app</span>
+<span class="key">spec</span>:
+  <span class="key">source</span>:
+    <span class="key">type</span>: <span class="val">Git</span>
+    <span class="key">git</span>:
+      <span class="key">uri</span>: <span class="str">https://github.com/myorg/my-app.git</span>
+      <span class="key">ref</span>: <span class="str">main</span>
+  <span class="key">strategy</span>:
+    <span class="key">type</span>: <span class="val">Source</span>
+    <span class="key">sourceStrategy</span>:
+      <span class="key">from</span>:
+        <span class="key">kind</span>: <span class="val">ImageStreamTag</span>
+        <span class="key">name</span>: <span class="str">nodejs:18-ubi9</span>
+        <span class="key">namespace</span>: <span class="val">openshift</span>
+  <span class="key">output</span>:
+    <span class="key">to</span>:
+      <span class="key">kind</span>: <span class="val">ImageStreamTag</span>
+      <span class="key">name</span>: <span class="str">my-app:latest</span>
+  <span class="key">triggers</span>:
+  - <span class="key">type</span>: <span class="val">GitHub</span>
+    <span class="key">github</span>:
+      <span class="key">secret</span>: <span class="str">my-webhook-secret</span>
+  - <span class="key">type</span>: <span class="val">ImageChange</span>   <span class="cm"># rebuild when builder image updates</span></pre></div>
+
+  <h2 class="section">ImageStreams</h2>
+  <p>An <strong>ImageStream</strong> is a virtual repository of container image references. Instead of hardcoding image digests in your Deployment, you reference an ImageStream tag. When a new image is pushed to that tag, OpenShift can automatically trigger a new rollout. This decouples the image lifecycle from the deployment spec.</p>
+  <div class="callout callout-info"><strong>📌 ImageStream tags pin to digest</strong>When you push <code>my-app:latest</code> to an ImageStream, OpenShift records the exact SHA-256 digest behind that tag. Your Deployment always runs the precise image that was current at deploy time — even if someone pushes a new <code>:latest</code> later.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Config &amp; Storage</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Networking →</button>
+  </div>
+</div>
+<!-- CHAPTER 8: Networking & Routes -->
+<div class="chapter" id="ch-8">
+  <div class="ch-title">🌐 Networking &amp; Routes</div>
+  <div class="ch-subtitle">OVN-Kubernetes, Services, Routes, Ingress, and Network Policies</div>
+
+  <h2 class="section">OVN-Kubernetes CNI</h2>
+  <p>Since OpenShift 4.17, <strong>OVN-Kubernetes</strong> is the only supported CNI plugin (OpenShift SDN was removed). OVN-K uses Open Virtual Network to create a software-defined network overlay. It provides: Pod-to-Pod communication across nodes, Service load-balancing via OVN, Network Policy enforcement (including Admin Network Policy), and EgressIP.</p>
+  <div class="callout callout-warning"><strong>⚠️ SDN removed in 4.17</strong>If you are migrating a cluster from 4.16 or earlier that used OpenShift SDN, you must migrate to OVN-K before upgrading past 4.16. The migration is in-place but requires a node drain cycle.</div>
+
+  <h2 class="section">DNS in OpenShift</h2>
+  <p>Every Service gets an automatic DNS record managed by CoreDNS running in the <code>openshift-dns</code> namespace. The full form is: <code>&lt;service&gt;.&lt;namespace&gt;.svc.cluster.local</code>. Within the same namespace you can use just the Service name (<code>postgres</code>). Cross-namespace calls need the full form (<code>postgres.data-ns.svc.cluster.local</code>).</p>
+
+  <h2 class="section">Routes — Three TLS Termination Modes</h2>
+  <table class="comp">
+    <tr><th>Mode</th><th>TLS terminated at</th><th>Backend traffic</th><th>Use when</th></tr>
+    <tr><td>Edge</td><td>Ingress router (HAProxy)</td><td>HTTP (plain)</td><td>Simple HTTPS, cert managed by cluster</td></tr>
+    <tr><td>Passthrough</td><td>Application Pod</td><td>TLS end-to-end</td><td>App handles its own TLS (mutual TLS, custom cipher)</td></tr>
+    <tr><td>Re-encrypt</td><td>Ingress router</td><td>TLS (new cert)</td><td>Compliance requires E2E encryption with different certs</td></tr>
+  </table>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Edge route (TLS at router, HTTP to pod)</span>
+<span class="key">oc</span> <span class="val">create</span> route edge <span class="flag">--service</span>=my-app --hostname=app.example.com
+
+<span class="cm"># Passthrough route (TLS goes all the way to the pod)</span>
+<span class="key">oc</span> <span class="val">create</span> route passthrough <span class="flag">--service</span>=my-app --hostname=secure.example.com
+
+<span class="cm"># Route with custom cert (edge)</span>
+<span class="key">oc</span> <span class="val">create</span> route edge my-tls-route \
+  <span class="flag">--service</span>=my-app \
+  <span class="flag">--cert</span>=tls.crt \
+  <span class="flag">--key</span>=tls.key \
+  <span class="flag">--ca-cert</span>=ca.crt \
+  <span class="flag">--hostname</span>=app.example.com</pre></div>
+
+  <h2 class="section">Network Policies</h2>
+  <p>By default in OpenShift, all Pods in a namespace can communicate with each other, but are isolated from other namespaces. You can restrict this further with <strong>NetworkPolicy</strong> objects.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Allow only traffic from pods in same namespace with label app=frontend</span>
+<span class="key">apiVersion</span>: <span class="val">networking.k8s.io/v1</span>
+<span class="key">kind</span>: <span class="val">NetworkPolicy</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">allow-frontend-only</span>
+<span class="key">spec</span>:
+  <span class="key">podSelector</span>:
+    <span class="key">matchLabels</span>:
+      <span class="key">app</span>: <span class="val">backend</span>
+  <span class="key">ingress</span>:
+  - <span class="key">from</span>:
+    - <span class="key">podSelector</span>:
+        <span class="key">matchLabels</span>:
+          <span class="key">app</span>: <span class="val">frontend</span>
+    <span class="key">ports</span>:
+    - <span class="key">protocol</span>: <span class="val">TCP</span>
+      <span class="key">port</span>: <span class="num">8080</span></pre></div>
+
+  <h2 class="section">EgressIP</h2>
+  <p>OVN-Kubernetes supports <strong>EgressIP</strong> — assigning a specific stable outbound IP to all traffic from a namespace (or set of Pods). This is essential for firewalls and external services that allowlist by IP.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Label a namespace for EgressIP</span>
+<span class="key">oc</span> <span class="val">label</span> namespace my-ns k8s.ovn.org/egress-assignable=<span class="str">""</span>
+
+<span class="cm"># Create the EgressIP object</span>
+<span class="key">apiVersion</span>: <span class="val">k8s.ovn.org/v1</span>
+<span class="key">kind</span>: <span class="val">EgressIP</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">prod-egress</span>
+<span class="key">spec</span>:
+  <span class="key">egressIPs</span>: [<span class="str">"10.0.100.50"</span>]
+  <span class="key">namespaceSelector</span>:
+    <span class="key">matchLabels</span>:
+      <span class="key">kubernetes.io/metadata.name</span>: <span class="val">my-ns</span></pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Builds &amp; S2I</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Security &amp; RBAC →</button>
+  </div>
+</div>
+<!-- CHAPTER 9: Security RBAC SCCs -->
+<div class="chapter" id="ch-9">
+  <div class="ch-title">🔒 Security, RBAC &amp; SCCs</div>
+  <div class="ch-subtitle">Role-Based Access Control, Security Context Constraints, and pod security</div>
+
+  <h2 class="section">RBAC Fundamentals</h2>
+  <p>OpenShift uses standard Kubernetes RBAC to control who can do what to which resources. The four key objects are: <strong>Role</strong>, <strong>ClusterRole</strong>, <strong>RoleBinding</strong>, and <strong>ClusterRoleBinding</strong>.</p>
+  <div class="two-col">
+    <div class="info-box"><h4>Role / RoleBinding</h4><ul><li>Scoped to a single namespace/project</li><li>RoleBinding links a Role to users/groups/SAs</li><li>Example: give dev team edit access in dev-ns</li></ul></div>
+    <div class="info-box"><h4>ClusterRole / ClusterRoleBinding</h4><ul><li>Cluster-wide scope</li><li>Can also be bound per-namespace via RoleBinding</li><li>Example: cluster-admin, view, edit built-in roles</li></ul></div>
+  </div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Give user Alice edit access in my-project</span>
+<span class="key">oc</span> <span class="val">adm</span> policy add-role-to-user edit alice <span class="flag">-n</span> my-project
+
+<span class="cm"># Give group dev-team view access cluster-wide</span>
+<span class="key">oc</span> <span class="val">adm</span> policy add-cluster-role-to-group view dev-team
+
+<span class="cm"># Create a custom Role</span>
+<span class="key">oc</span> <span class="val">create</span> role pod-reader \
+  <span class="flag">--verb</span>=get,list,watch \
+  <span class="flag">--resource</span>=pods <span class="flag">-n</span> my-project
+
+<span class="cm"># Bind the custom Role to a ServiceAccount</span>
+<span class="key">oc</span> <span class="val">create</span> rolebinding pod-reader-binding \
+  <span class="flag">--role</span>=pod-reader \
+  <span class="flag">--serviceaccount</span>=my-project:my-sa <span class="flag">-n</span> my-project</pre></div>
+
+  <h2 class="section">Security Context Constraints (SCCs)</h2>
+  <p>SCCs are OpenShift's powerful admission control mechanism for Pod security. They define what a Pod is <em>allowed</em> to do on the node: run as root, use host networking, mount host paths, use certain Linux capabilities, etc. Every Pod must be admitted by at least one SCC that the Pod's ServiceAccount has access to.</p>
+  <div class="callout callout-danger"><strong>🚫 Don't use anyuid in production</strong>The <code>anyuid</code> SCC allows a container to run as any UID including root. Grant it only to trusted workloads that genuinely require it. Prefer <code>nonroot</code> or a custom SCC.</div>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🔐</div><div class="card-title">restricted-v2</div><div class="card-desc">Default. Non-root UID, no privilege escalation, no host access. Most workloads should use this.</div></div>
+    <div class="card"><div class="card-icon">🔓</div><div class="card-title">nonroot</div><div class="card-desc">Any non-root UID. Allows the container to choose its own UID as long as it's not 0.</div></div>
+    <div class="card"><div class="card-icon">⚠️</div><div class="card-title">anyuid</div><div class="card-desc">Any UID including root. Required for legacy images that hard-code UID 0.</div></div>
+    <div class="card"><div class="card-icon">🖥️</div><div class="card-title">privileged</div><div class="card-desc">Full access to host resources. Only for trusted infrastructure components (CNI, storage drivers).</div></div>
+  </div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Grant a ServiceAccount the anyuid SCC (use sparingly)</span>
+<span class="key">oc</span> <span class="val">adm</span> policy add-scc-to-user anyuid \
+  <span class="flag">-z</span> my-service-account <span class="flag">-n</span> my-project
+
+<span class="cm"># Check which SCC a Pod actually ran under</span>
+<span class="key">oc</span> <span class="val">get</span> pod my-pod <span class="flag">-o</span> jsonpath=<span class="str">'{.metadata.annotations.openshift\.io/scc}'</span>
+
+<span class="cm"># See which SCCs a ServiceAccount can use</span>
+<span class="key">oc</span> <span class="val">adm</span> policy who-can use scc anyuid</pre></div>
+
+  <h2 class="section">Service Accounts</h2>
+  <p>Every Pod runs as a <strong>ServiceAccount (SA)</strong>. If you don't specify one, it uses the <code>default</code> SA of the namespace. Best practice: create a dedicated SA per application and grant it only the permissions it needs (principle of least privilege).</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Create a ServiceAccount</span>
+<span class="key">oc</span> <span class="val">create</span> sa my-app-sa <span class="flag">-n</span> my-project
+
+<span class="cm"># Use it in a Deployment</span>
+<span class="key">spec</span>:
+  <span class="key">serviceAccountName</span>: <span class="val">my-app-sa</span></pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Networking</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Operators →</button>
+  </div>
+</div>
+<!-- CHAPTER 10: Operators & OLM -->
+<div class="chapter" id="ch-10">
+  <div class="ch-title">🤖 Operators &amp; OLM</div>
+  <div class="ch-subtitle">Extending Kubernetes with custom controllers and the Operator Lifecycle Manager</div>
+
+  <h2 class="section">What is an Operator?</h2>
+  <p>An Operator is a Kubernetes controller that encodes <em>human operational knowledge</em> about a specific application. Instead of a human following a runbook to install, upgrade, and manage PostgreSQL, an Operator automates all of that by watching <strong>Custom Resources (CRs)</strong> and reconciling the cluster state to match the desired state defined in those CRs.</p>
+  <p>Operators use the <strong>Operator SDK</strong> (Go, Ansible, or Helm) to scaffold the controller code. The controller implements a reconcile loop: watch CRs → compare desired vs actual → take action.</p>
+
+  <h2 class="section">Key Concepts</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📜</div><div class="card-title">CRD (CustomResourceDefinition)</div><div class="card-desc">Extends the Kubernetes API with new resource types, e.g. <code>Kafka</code>, <code>PostgresCluster</code>, <code>Elasticsearch</code>.</div></div>
+    <div class="card"><div class="card-icon">📋</div><div class="card-title">CR (Custom Resource)</div><div class="card-desc">An instance of a CRD. E.g. a <code>PostgresCluster</code> CR describes a specific database cluster you want.</div></div>
+    <div class="card"><div class="card-icon">🔄</div><div class="card-title">Controller / Operator</div><div class="card-desc">Watches CRs and reconciles cluster state. Creates/updates Deployments, Services, Secrets as needed.</div></div>
+    <div class="card"><div class="card-icon">📦</div><div class="card-title">CSV (ClusterServiceVersion)</div><div class="card-desc">OLM's packaging unit. Describes the Operator's CRDs, RBAC, install strategy, and upgrade paths.</div></div>
+  </div>
+
+  <h2 class="section">Operator Lifecycle Manager (OLM)</h2>
+  <p>OLM manages the installation, upgrade, and lifecycle of Operators on OpenShift. It provides a curated catalog (<strong>OperatorHub</strong> in the web console) with hundreds of certified and community Operators. OLM handles dependency resolution and upgrade approval workflows.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># List available operators in the catalog</span>
+<span class="key">oc</span> <span class="val">get</span> packagemanifests <span class="flag">-n</span> openshift-marketplace
+
+<span class="cm"># Create a Subscription to install an Operator</span>
+<span class="key">apiVersion</span>: <span class="val">operators.coreos.com/v1alpha1</span>
+<span class="key">kind</span>: <span class="val">Subscription</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-operator</span>
+  <span class="key">namespace</span>: <span class="val">openshift-operators</span>
+<span class="key">spec</span>:
+  <span class="key">channel</span>: <span class="val">stable</span>
+  <span class="key">name</span>: <span class="val">my-operator</span>
+  <span class="key">source</span>: <span class="val">redhat-operators</span>
+  <span class="key">sourceNamespace</span>: <span class="val">openshift-marketplace</span>
+  <span class="key">installPlanApproval</span>: <span class="val">Automatic</span>   <span class="cm"># or Manual for gated upgrades</span>
+
+<span class="cm"># Check Operator installation status</span>
+<span class="key">oc</span> <span class="val">get</span> csv <span class="flag">-n</span> openshift-operators
+<span class="key">oc</span> <span class="val">get</span> installplan <span class="flag">-n</span> openshift-operators</pre></div>
+
+  <h2 class="section">Using an Operator: Crunchy Postgres Example</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># After installing the Crunchy Postgres Operator, create a cluster CR:</span>
+<span class="key">apiVersion</span>: <span class="val">postgres-operator.crunchydata.com/v1beta1</span>
+<span class="key">kind</span>: <span class="val">PostgresCluster</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-pg</span>
+<span class="key">spec</span>:
+  <span class="key">postgresVersion</span>: <span class="num">16</span>
+  <span class="key">instances</span>:
+  - <span class="key">name</span>: <span class="val">instance1</span>
+    <span class="key">replicas</span>: <span class="num">2</span>
+    <span class="key">dataVolumeClaimSpec</span>:
+      <span class="key">accessModes</span>: [<span class="val">ReadWriteOnce</span>]
+      <span class="key">resources</span>:
+        <span class="key">requests</span>:
+          <span class="key">storage</span>: <span class="str">20Gi</span>
+  <span class="key">backups</span>:
+    <span class="key">pgbackrest</span>:
+      <span class="key">repos</span>:
+      - <span class="key">name</span>: <span class="val">repo1</span>
+        <span class="key">volume</span>:
+          <span class="key">volumeClaimSpec</span>:
+            <span class="key">accessModes</span>: [<span class="val">ReadWriteOnce</span>]
+            <span class="key">resources</span>:
+              <span class="key">requests</span>:
+                <span class="key">storage</span>: <span class="str">10Gi</span></pre></div>
+
+  <div class="callout callout-tip"><strong>💡 Operator Maturity Levels</strong>OLM defines 5 maturity levels: Basic Install → Seamless Upgrades → Full Lifecycle → Deep Insights → Auto Pilot. Check an Operator's maturity before adopting it in production. Red Hat Certified operators are verified to work on OpenShift.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Security &amp; RBAC</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Monitoring →</button>
+  </div>
+</div>
+<!-- CHAPTER 11: Monitoring & Logging -->
+<div class="chapter" id="ch-11">
+  <div class="ch-title">📊 Monitoring &amp; Logging</div>
+  <div class="ch-subtitle">Built-in Prometheus stack, Alertmanager, Loki, and observability best practices</div>
+
+  <h2 class="section">Built-in Monitoring Stack</h2>
+  <p>OpenShift ships a fully managed monitoring stack in the <code>openshift-monitoring</code> namespace. It cannot be deleted or disabled — it monitors the cluster's own components. You can also enable a separate stack for user workloads.</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📈</div><div class="card-title">Prometheus</div><div class="card-desc">Scrapes metrics from cluster components every 30s. Long-term storage via Thanos Querier.</div></div>
+    <div class="card"><div class="card-icon">🔔</div><div class="card-title">Alertmanager</div><div class="card-desc">Routes alerts to PagerDuty, Slack, email. Deduplicates and groups alerts.</div></div>
+    <div class="card"><div class="card-icon">🔍</div><div class="card-title">Thanos Querier</div><div class="card-desc">Provides a unified query API across platform and user workload metrics.</div></div>
+    <div class="card"><div class="card-icon">📊</div><div class="card-title">Console Observe</div><div class="card-desc">Built-in dashboards in the web console. Replaces the stand-alone Grafana (removed in 4.11).</div></div>
+  </div>
+
+  <h2 class="section">Enabling User Workload Monitoring</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Enable user workload monitoring (one-time cluster-admin task)</span>
+<span class="key">oc</span> <span class="val">apply</span> <span class="flag">-f</span> - &lt;&lt;<span class="str">EOF</span>
+<span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">ConfigMap</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">cluster-monitoring-config</span>
+  <span class="key">namespace</span>: <span class="val">openshift-monitoring</span>
+<span class="key">data</span>:
+  <span class="key">config.yaml</span>: |
+    <span class="key">enableUserWorkload</span>: <span class="val">true</span>
+<span class="str">EOF</span></pre></div>
+
+  <h2 class="section">Exposing Custom Metrics (ServiceMonitor)</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Tell Prometheus to scrape your app's /metrics endpoint</span>
+<span class="key">apiVersion</span>: <span class="val">monitoring.coreos.com/v1</span>
+<span class="key">kind</span>: <span class="val">ServiceMonitor</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app-monitor</span>
+  <span class="key">labels</span>:
+    <span class="key">app</span>: <span class="val">my-app</span>
+<span class="key">spec</span>:
+  <span class="key">selector</span>:
+    <span class="key">matchLabels</span>:
+      <span class="key">app</span>: <span class="val">my-app</span>
+  <span class="key">endpoints</span>:
+  - <span class="key">port</span>: <span class="val">http</span>
+    <span class="key">path</span>: <span class="str">/metrics</span>
+    <span class="key">interval</span>: <span class="str">30s</span></pre></div>
+
+  <h2 class="section">Creating Alerts (PrometheusRule)</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">monitoring.coreos.com/v1</span>
+<span class="key">kind</span>: <span class="val">PrometheusRule</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app-alerts</span>
+<span class="key">spec</span>:
+  <span class="key">groups</span>:
+  - <span class="key">name</span>: <span class="val">my-app.rules</span>
+    <span class="key">rules</span>:
+    - <span class="key">alert</span>: <span class="val">HighErrorRate</span>
+      <span class="key">expr</span>: <span class="str">rate(http_requests_total{status=~"5.."}[5m]) > 0.1</span>
+      <span class="key">for</span>: <span class="str">2m</span>
+      <span class="key">labels</span>:
+        <span class="key">severity</span>: <span class="val">critical</span>
+      <span class="key">annotations</span>:
+        <span class="key">summary</span>: <span class="str">"High error rate on {{ $labels.instance }}"</span></pre></div>
+
+  <h2 class="section">Logging with Loki + Vector</h2>
+  <p>OpenShift Logging 6.0+ uses <strong>Loki</strong> (log aggregation store) and <strong>Vector</strong> (log collector/forwarder), replacing the older EFK (Elasticsearch + Fluentd + Kibana) stack. Install via the Red Hat OpenShift Logging Operator from OperatorHub.</p>
+  <div class="callout callout-info"><strong>📌 EFK is gone</strong>The EFK stack (Elasticsearch, Fluentd, Kibana) was removed in OpenShift Logging 6.0. Migrate to the Loki stack or forward logs to an external SIEM. The <code>ClusterLogging</code> and <code>ClusterLogForwarder</code> CRDs are still used but reference the new components.</div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Forward all application logs to an external Elasticsearch</span>
+<span class="key">apiVersion</span>: <span class="val">logging.openshift.io/v1</span>
+<span class="key">kind</span>: <span class="val">ClusterLogForwarder</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">instance</span>
+<span class="key">spec</span>:
+  <span class="key">outputs</span>:
+  - <span class="key">name</span>: <span class="val">elastic-out</span>
+    <span class="key">type</span>: <span class="val">elasticsearch</span>
+    <span class="key">url</span>: <span class="str">https://my-elastic.example.com:9200</span>
+  <span class="key">pipelines</span>:
+  - <span class="key">name</span>: <span class="val">app-logs</span>
+    <span class="key">inputRefs</span>: [<span class="val">application</span>]
+    <span class="key">outputRefs</span>: [<span class="val">elastic-out</span>]</pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Operators</button>
+    <button class="next-btn" onclick="nextChapter()">Next: CI/CD &amp; GitOps →</button>
+  </div>
+</div>
+<!-- CHAPTER 12: CI/CD GitOps -->
+<div class="chapter" id="ch-12">
+  <div class="ch-title">🔁 CI/CD: Pipelines &amp; GitOps</div>
+  <div class="ch-subtitle">Tekton Pipelines, OpenShift GitOps (Argo CD), and end-to-end delivery</div>
+
+  <h2 class="section">Tekton Pipelines</h2>
+  <p>OpenShift Pipelines (based on Tekton) is a cloud-native CI/CD framework. Unlike Jenkins, Tekton runs each pipeline step as a separate <strong>Pod</strong> — fully isolated, scalable, and Kubernetes-native. There is no persistent CI server to manage.</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🔧</div><div class="card-title">Task</div><div class="card-desc">A unit of work. Contains one or more Steps (containers). E.g. "run unit tests", "build image".</div></div>
+    <div class="card"><div class="card-icon">📋</div><div class="card-title">Pipeline</div><div class="card-desc">A directed graph of Tasks. Tasks can run sequentially or in parallel.</div></div>
+    <div class="card"><div class="card-icon">▶️</div><div class="card-title">PipelineRun</div><div class="card-desc">An execution instance of a Pipeline. Provides parameters and workspace bindings.</div></div>
+    <div class="card"><div class="card-icon">🗂️</div><div class="card-title">Workspace</div><div class="card-desc">Shared storage between Tasks in a Pipeline run. Backed by a PVC or ConfigMap.</div></div>
+    <div class="card"><div class="card-icon">📦</div><div class="card-title">ClusterTask / Tekton Hub</div><div class="card-desc">Reusable community Tasks: git-clone, buildah, kubectl-deploy, s2i-*, trivy-scan…</div></div>
+  </div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Trigger a PipelineRun with the tkn CLI</span>
+<span class="key">tkn</span> <span class="val">pipeline</span> start build-deploy \
+  <span class="flag">--param</span> git-url=https://github.com/myorg/my-app \
+  <span class="flag">--param</span> image=quay.io/myorg/my-app:$(git rev-parse --short HEAD) \
+  <span class="flag">--workspace</span> name=source,claimName=pipeline-pvc \
+  <span class="flag">-n</span> my-project <span class="flag">--showlog</span>
+
+<span class="cm"># Watch pipeline runs</span>
+<span class="key">tkn</span> <span class="val">pipelinerun</span> list <span class="flag">-n</span> my-project
+<span class="key">tkn</span> <span class="val">pipelinerun</span> logs <span class="flag">-f</span> build-deploy-run-xyz</pre></div>
+
+  <h2 class="section">A Simple Pipeline Example</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">tekton.dev/v1</span>
+<span class="key">kind</span>: <span class="val">Pipeline</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">build-deploy</span>
+<span class="key">spec</span>:
+  <span class="key">params</span>:
+  - <span class="key">name</span>: <span class="val">git-url</span>
+  - <span class="key">name</span>: <span class="val">image</span>
+  <span class="key">workspaces</span>:
+  - <span class="key">name</span>: <span class="val">source</span>
+  <span class="key">tasks</span>:
+  - <span class="key">name</span>: <span class="val">clone</span>
+    <span class="key">taskRef</span>:
+      <span class="key">name</span>: <span class="val">git-clone</span>
+      <span class="key">kind</span>: <span class="val">ClusterTask</span>
+    <span class="key">params</span>:
+    - <span class="key">name</span>: <span class="val">url</span>
+      <span class="key">value</span>: <span class="str">$(params.git-url)</span>
+    <span class="key">workspaces</span>:
+    - <span class="key">name</span>: <span class="val">output</span>
+      <span class="key">workspace</span>: <span class="val">source</span>
+  - <span class="key">name</span>: <span class="val">build</span>
+    <span class="key">runAfter</span>: [<span class="val">clone</span>]
+    <span class="key">taskRef</span>:
+      <span class="key">name</span>: <span class="val">buildah</span>
+      <span class="key">kind</span>: <span class="val">ClusterTask</span>
+    <span class="key">params</span>:
+    - <span class="key">name</span>: <span class="val">IMAGE</span>
+      <span class="key">value</span>: <span class="str">$(params.image)</span>
+    <span class="key">workspaces</span>:
+    - <span class="key">name</span>: <span class="val">source</span>
+      <span class="key">workspace</span>: <span class="val">source</span></pre></div>
+
+  <h2 class="section">OpenShift GitOps (Argo CD)</h2>
+  <p>OpenShift GitOps installs Argo CD as an Operator. With GitOps, your cluster state is defined in a Git repository. Argo CD continuously watches the repo and syncs any drift — ensuring that what's in Git is what's running in the cluster. This gives you: audit trail, easy rollback, pull-based deployments, and environment promotion.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Create an Argo CD Application</span>
+<span class="key">apiVersion</span>: <span class="val">argoproj.io/v1alpha1</span>
+<span class="key">kind</span>: <span class="val">Application</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app</span>
+  <span class="key">namespace</span>: <span class="val">openshift-gitops</span>
+<span class="key">spec</span>:
+  <span class="key">project</span>: <span class="val">default</span>
+  <span class="key">source</span>:
+    <span class="key">repoURL</span>: <span class="str">https://github.com/myorg/gitops-config</span>
+    <span class="key">targetRevision</span>: <span class="val">main</span>
+    <span class="key">path</span>: <span class="str">apps/my-app/overlays/production</span>
+  <span class="key">destination</span>:
+    <span class="key">server</span>: <span class="str">https://kubernetes.default.svc</span>
+    <span class="key">namespace</span>: <span class="val">my-app-prod</span>
+  <span class="key">syncPolicy</span>:
+    <span class="key">automated</span>:
+      <span class="key">prune</span>: <span class="val">true</span>
+      <span class="key">selfHeal</span>: <span class="val">true</span></pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Monitoring</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Autoscaling →</button>
+  </div>
+</div>
+<!-- CHAPTER 13: Autoscaling & Scheduling -->
+<div class="chapter" id="ch-13">
+  <div class="ch-title">📈 Autoscaling &amp; Scheduling</div>
+  <div class="ch-subtitle">HPA, VPA, KEDA, cluster autoscaler, node affinity, and taints/tolerations</div>
+
+  <h2 class="section">Horizontal Pod Autoscaler (HPA)</h2>
+  <p>HPA automatically adjusts the number of Pod replicas based on observed metrics (CPU, memory, or custom). It queries the metrics API every 15 seconds and scales up/down within the defined min/max bounds.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># HPA targeting 70% CPU utilization</span>
+<span class="key">apiVersion</span>: <span class="val">autoscaling/v2</span>
+<span class="key">kind</span>: <span class="val">HorizontalPodAutoscaler</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app-hpa</span>
+<span class="key">spec</span>:
+  <span class="key">scaleTargetRef</span>:
+    <span class="key">apiVersion</span>: <span class="val">apps/v1</span>
+    <span class="key">kind</span>: <span class="val">Deployment</span>
+    <span class="key">name</span>: <span class="val">my-app</span>
+  <span class="key">minReplicas</span>: <span class="num">2</span>
+  <span class="key">maxReplicas</span>: <span class="num">10</span>
+  <span class="key">metrics</span>:
+  - <span class="key">type</span>: <span class="val">Resource</span>
+    <span class="key">resource</span>:
+      <span class="key">name</span>: <span class="val">cpu</span>
+      <span class="key">target</span>:
+        <span class="key">type</span>: <span class="val">Utilization</span>
+        <span class="key">averageUtilization</span>: <span class="num">70</span></pre></div>
+
+  <h2 class="section">KEDA (Event-Driven Autoscaling)</h2>
+  <p>KEDA (Kubernetes Event-Driven Autoscaling) extends HPA with scalers for 60+ event sources: Kafka lag, RabbitMQ queue depth, Prometheus metrics, Redis list length, AWS SQS, etc. KEDA can scale deployments to zero replicas (no traffic = 0 Pods). Install via OperatorHub.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Scale based on Kafka consumer lag</span>
+<span class="key">apiVersion</span>: <span class="val">keda.sh/v1alpha1</span>
+<span class="key">kind</span>: <span class="val">ScaledObject</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">kafka-consumer-scaler</span>
+<span class="key">spec</span>:
+  <span class="key">scaleTargetRef</span>:
+    <span class="key">name</span>: <span class="val">kafka-consumer</span>
+  <span class="key">minReplicaCount</span>: <span class="num">0</span>    <span class="cm"># scale to zero!</span>
+  <span class="key">maxReplicaCount</span>: <span class="num">20</span>
+  <span class="key">triggers</span>:
+  - <span class="key">type</span>: <span class="val">kafka</span>
+    <span class="key">metadata</span>:
+      <span class="key">bootstrapServers</span>: <span class="str">kafka:9092</span>
+      <span class="key">topic</span>: <span class="str">my-topic</span>
+      <span class="key">lagThreshold</span>: <span class="str">"50"</span></pre></div>
+
+  <h2 class="section">Node Affinity</h2>
+  <p>Node affinity lets you constrain which nodes a Pod can be scheduled on, based on node labels. Use <code>requiredDuringScheduling</code> for hard constraints and <code>preferredDuringScheduling</code> for soft preferences.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">affinity</span>:
+  <span class="key">nodeAffinity</span>:
+    <span class="key">requiredDuringSchedulingIgnoredDuringExecution</span>:
+      <span class="key">nodeSelectorTerms</span>:
+      - <span class="key">matchExpressions</span>:
+        - <span class="key">key</span>: <span class="val">node-role.kubernetes.io/infra</span>
+          <span class="key">operator</span>: <span class="val">Exists</span></pre></div>
+
+  <h2 class="section">Taints &amp; Tolerations</h2>
+  <p>A <strong>taint</strong> on a node repels Pods unless they have a matching <strong>toleration</strong>. Use taints to dedicate nodes to specific workloads (GPU nodes, infra nodes, high-memory nodes).</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Add a taint to a node</span>
+<span class="key">oc</span> <span class="val">adm</span> taint node worker-gpu gpu=true:NoSchedule
+
+<span class="cm"># Pod that tolerates the taint</span>
+<span class="key">tolerations</span>:
+- <span class="key">key</span>: <span class="val">gpu</span>
+  <span class="key">operator</span>: <span class="val">Equal</span>
+  <span class="key">value</span>: <span class="str">"true"</span>
+  <span class="key">effect</span>: <span class="val">NoSchedule</span></pre></div>
+
+  <h2 class="section">Cluster Autoscaler</h2>
+  <p>The <strong>Cluster Autoscaler</strong> (installed via the Machine API) automatically adds or removes worker nodes when Pods are pending due to insufficient resources, or when nodes are consistently underutilized. Works alongside MachineSet to provision actual cloud VMs.</p>
+  <div class="callout callout-tip"><strong>💡 Scale to zero</strong>With KEDA + Cluster Autoscaler, you can achieve true scale-to-zero: no work = no Pods = no nodes. This is especially cost-effective for batch and event-driven workloads in cloud environments.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← CI/CD &amp; GitOps</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Service Mesh →</button>
+  </div>
+</div>
+<!-- CHAPTER 14: Service Mesh -->
+<div class="chapter" id="ch-14">
+  <div class="ch-title">🕸️ Service Mesh &amp; Serverless</div>
+  <div class="ch-subtitle">OpenShift Service Mesh 3.x (Sail Operator), Istio, and OpenShift Serverless (Knative)</div>
+
+  <h2 class="section">OpenShift Service Mesh 3.x</h2>
+  <p>OpenShift Service Mesh 3.x (OSSM 3) is a major rewrite. It uses the <strong>Sail Operator</strong> to install and manage upstream Istio directly, replacing the old Maistra fork (OSSM 2.x). OSSM 3 brings OpenShift closer to upstream Istio — many concepts and APIs are now identical to vanilla Istio.</p>
+  <div class="callout callout-danger"><strong>🚫 OSSM 2.x is end-of-life</strong>OSSM 2.x (Maistra) is deprecated. If you are running OSSM 2.x, plan a migration to OSSM 3.x. The CRD API names changed — <code>ServiceMeshControlPlane</code> is replaced by <code>Istio</code> CR in OSSM 3.</div>
+
+  <h2 class="section">Core Service Mesh Concepts</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">💉</div><div class="card-title">Sidecar Proxy (Envoy)</div><div class="card-desc">Injected into every Pod. Intercepts all traffic in/out. Handles mTLS, retries, circuit breaking, telemetry.</div></div>
+    <div class="card"><div class="card-icon">🗺️</div><div class="card-title">VirtualService</div><div class="card-desc">Defines traffic routing rules: canary split (90/10), header-based routing, fault injection.</div></div>
+    <div class="card"><div class="card-icon">🚪</div><div class="card-title">DestinationRule</div><div class="card-desc">Defines load balancing policy, connection pool settings, and outlier detection (circuit breaking) per service.</div></div>
+    <div class="card"><div class="card-icon">🌉</div><div class="card-title">Gateway</div><div class="card-desc">Configures inbound traffic at the mesh boundary. Replaces standard Ingress for mesh-aware traffic.</div></div>
+    <div class="card"><div class="card-icon">🔐</div><div class="card-title">PeerAuthentication</div><div class="card-desc">Enforces mTLS between services. Set to STRICT to require mutual TLS for all in-mesh traffic.</div></div>
+    <div class="card"><div class="card-icon">📊</div><div class="card-title">Kiali</div><div class="card-desc">Service mesh observability UI. Visualizes service topology, traffic flow, and health at a glance.</div></div>
+  </div>
+
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># VirtualService: 90% stable, 10% canary</span>
+<span class="key">apiVersion</span>: <span class="val">networking.istio.io/v1</span>
+<span class="key">kind</span>: <span class="val">VirtualService</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">my-app</span>
+<span class="key">spec</span>:
+  <span class="key">hosts</span>: [<span class="val">my-app</span>]
+  <span class="key">http</span>:
+  - <span class="key">route</span>:
+    - <span class="key">destination</span>:
+        <span class="key">host</span>: <span class="val">my-app</span>
+        <span class="key">subset</span>: <span class="val">stable</span>
+      <span class="key">weight</span>: <span class="num">90</span>
+    - <span class="key">destination</span>:
+        <span class="key">host</span>: <span class="val">my-app</span>
+        <span class="key">subset</span>: <span class="val">canary</span>
+      <span class="key">weight</span>: <span class="num">10</span></pre></div>
+
+  <h2 class="section">OpenShift Serverless (Knative)</h2>
+  <p>OpenShift Serverless is built on <strong>Knative</strong>. It provides: <strong>Knative Serving</strong> (auto-scaling HTTP workloads to zero), and <strong>Knative Eventing</strong> (event-driven architecture with CloudEvents, Brokers, and Triggers).</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Deploy a Knative Service (scales to zero automatically)</span>
+<span class="key">apiVersion</span>: <span class="val">serving.knative.dev/v1</span>
+<span class="key">kind</span>: <span class="val">Service</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">hello-serverless</span>
+<span class="key">spec</span>:
+  <span class="key">template</span>:
+    <span class="key">metadata</span>:
+      <span class="key">annotations</span>:
+        <span class="key">autoscaling.knative.dev/minScale</span>: <span class="str">"0"</span>
+        <span class="key">autoscaling.knative.dev/maxScale</span>: <span class="str">"10"</span>
+    <span class="key">spec</span>:
+      <span class="key">containers</span>:
+      - <span class="key">image</span>: <span class="str">quay.io/myorg/hello:latest</span>
+        <span class="key">env</span>:
+        - <span class="key">name</span>: <span class="val">TARGET</span>
+          <span class="key">value</span>: <span class="str">World</span></pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Autoscaling</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Cluster Admin →</button>
+  </div>
+</div>
+<!-- CHAPTER 15: Cluster Administration -->
+<div class="chapter" id="ch-15">
+  <div class="ch-title">🛠️ Cluster Administration</div>
+  <div class="ch-subtitle">Updates, etcd backup, node management, resource quotas, and LimitRanges</div>
+
+  <h2 class="section">Cluster Updates (CVO)</h2>
+  <p>OpenShift updates are fully automated via the <strong>Cluster Version Operator</strong>. Updates are delivered as payloads from the Red Hat update graph. You can update from the web console (Administration → Cluster Settings) or via CLI. OpenShift supports minor version hops following the update graph — you can't skip versions arbitrarily.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># Check available update channels</span>
+<span class="key">oc</span> <span class="val">get</span> clusterversion
+
+<span class="cm"># List available updates</span>
+<span class="key">oc</span> <span class="val">adm</span> upgrade
+
+<span class="cm"># Trigger update to a specific version</span>
+<span class="key">oc</span> <span class="val">adm</span> upgrade <span class="flag">--to</span>=4.21.3
+
+<span class="cm"># Monitor update progress</span>
+<span class="key">oc</span> <span class="val">get</span> clusterversion <span class="flag">-w</span>
+<span class="key">oc</span> <span class="val">get</span> clusteroperators     <span class="cm"># all should be Available=True when done</span></pre></div>
+
+  <h2 class="section">etcd Backup</h2>
+  <p>Always back up etcd before a cluster update or major change. The backup captures all cluster state. In a disaster, you can restore from an etcd backup to recover the cluster to a known good state.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># SSH to a master node and run the backup script (as root)</span>
+<span class="key">oc</span> <span class="val">debug</span> node/master-0
+
+<span class="cm"># Inside the debug pod:</span>
+chroot /host
+/usr/local/bin/cluster-backup.sh /home/core/backup
+
+<span class="cm"># The backup creates:</span>
+<span class="cm"># /home/core/backup/snapshot_TIMESTAMP.db  (etcd snapshot)</span>
+<span class="cm"># /home/core/backup/static-pod-resources/  (static pod manifests)</span></pre></div>
+
+  <h2 class="section">ResourceQuotas</h2>
+  <p>ResourceQuotas limit the total resources a namespace can consume — total CPU requests, memory limits, number of Pods, PVCs, Services, etc. Enforced by the admission controller.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">ResourceQuota</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">project-quota</span>
+<span class="key">spec</span>:
+  <span class="key">hard</span>:
+    <span class="key">pods</span>: <span class="str">"20"</span>
+    <span class="key">requests.cpu</span>: <span class="str">"4"</span>
+    <span class="key">requests.memory</span>: <span class="str">8Gi</span>
+    <span class="key">limits.cpu</span>: <span class="str">"8"</span>
+    <span class="key">limits.memory</span>: <span class="str">16Gi</span>
+    <span class="key">persistentvolumeclaims</span>: <span class="str">"5"</span>
+    <span class="key">services</span>: <span class="str">"10"</span></pre></div>
+
+  <h2 class="section">LimitRanges</h2>
+  <p>LimitRanges set default and maximum resource requests/limits per container or Pod in a namespace. They prevent Pods without resource specs from being scheduled without any limits — which would violate quota.</p>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">apiVersion</span>: <span class="val">v1</span>
+<span class="key">kind</span>: <span class="val">LimitRange</span>
+<span class="key">metadata</span>:
+  <span class="key">name</span>: <span class="val">default-limits</span>
+<span class="key">spec</span>:
+  <span class="key">limits</span>:
+  - <span class="key">type</span>: <span class="val">Container</span>
+    <span class="key">default</span>:                   <span class="cm"># applied if not set</span>
+      <span class="key">cpu</span>: <span class="str">500m</span>
+      <span class="key">memory</span>: <span class="str">512Mi</span>
+    <span class="key">defaultRequest</span>:
+      <span class="key">cpu</span>: <span class="str">100m</span>
+      <span class="key">memory</span>: <span class="str">128Mi</span>
+    <span class="key">max</span>:                       <span class="cm"># hard ceiling per container</span>
+      <span class="key">cpu</span>: <span class="str">2</span>
+      <span class="key">memory</span>: <span class="str">2Gi</span></pre></div>
+
+  <h2 class="section">Node Management</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cm"># List nodes with role labels</span>
+<span class="key">oc</span> <span class="val">get</span> nodes <span class="flag">-L</span> node-role.kubernetes.io/worker
+
+<span class="cm"># Drain a node (evict pods) for maintenance</span>
+<span class="key">oc</span> <span class="val">adm</span> drain worker-1 <span class="flag">--ignore-daemonsets</span> <span class="flag">--delete-emptydir-data</span>
+
+<span class="cm"># Mark node as unschedulable (no new pods)</span>
+<span class="key">oc</span> <span class="val">adm</span> cordon worker-1
+
+<span class="cm"># Return node to service</span>
+<span class="key">oc</span> <span class="val">adm</span> uncordon worker-1
+
+<span class="cm"># Force-delete a stuck pod</span>
+<span class="key">oc</span> <span class="val">delete</span> pod stuck-pod <span class="flag">--grace-period</span>=0 <span class="flag">--force</span></pre></div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Service Mesh</button>
+    <button class="next-btn" onclick="nextChapter()">Next: Cheat Sheet →</button>
+  </div>
+</div>
+<!-- CHAPTER 16: Commands Cheat Sheet -->
+<div class="chapter" id="ch-16">
+  <div class="ch-title">📋 Commands Cheat Sheet</div>
+  <div class="ch-subtitle">The most important oc / kubectl commands for day-to-day OpenShift work</div>
+
+  <h2 class="section">Authentication &amp; Context</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">login</span> &lt;API_URL&gt; <span class="flag">-u</span> &lt;user&gt; <span class="flag">-p</span> &lt;pass&gt;   <span class="cm"># Login</span>
+<span class="key">oc</span> <span class="val">logout</span>                                    <span class="cm"># Logout</span>
+<span class="key">oc</span> <span class="val">whoami</span>                                    <span class="cm"># Current user</span>
+<span class="key">oc</span> <span class="val">whoami</span> <span class="flag">--show-server</span>                      <span class="cm"># API URL</span>
+<span class="key">oc</span> <span class="val">config</span> get-contexts                       <span class="cm"># List kubeconfig contexts</span>
+<span class="key">oc</span> <span class="val">config</span> use-context &lt;name&gt;                 <span class="cm"># Switch context</span></pre></div>
+
+  <h2 class="section">Projects &amp; Namespaces</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">new-project</span> &lt;name&gt;                        <span class="cm"># Create project</span>
+<span class="key">oc</span> <span class="val">project</span> &lt;name&gt;                            <span class="cm"># Switch project</span>
+<span class="key">oc</span> <span class="val">projects</span>                                  <span class="cm"># List accessible projects</span>
+<span class="key">oc</span> <span class="val">delete</span> project &lt;name&gt;                     <span class="cm"># Delete project + all resources</span></pre></div>
+
+  <h2 class="section">Getting Resources</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">get</span> &lt;resource&gt;                            <span class="cm"># List in current namespace</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">-A</span>                         <span class="cm"># All namespaces</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">-o</span> yaml                    <span class="cm"># Full YAML output</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">-o</span> json                    <span class="cm"># JSON output</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">-o</span> wide                    <span class="cm"># Extra columns</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">--watch</span>                    <span class="cm"># Live updates</span>
+<span class="key">oc</span> <span class="val">get</span> &lt;resource&gt; <span class="flag">-l</span> app=my-app              <span class="cm"># Filter by label</span>
+<span class="key">oc</span> <span class="val">describe</span> &lt;resource&gt; &lt;name&gt;               <span class="cm"># Detailed info + events</span>
+<span class="key">oc</span> <span class="val">explain</span> pod.spec.containers               <span class="cm"># Schema help</span></pre></div>
+
+  <h2 class="section">Pods &amp; Logs</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">logs</span> &lt;pod&gt;                               <span class="cm"># Container logs</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">-f</span> &lt;pod&gt;                            <span class="cm"># Follow / stream</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">--previous</span> &lt;pod&gt;                    <span class="cm"># Previous (crashed) container</span>
+<span class="key">oc</span> <span class="val">logs</span> <span class="flag">-c</span> &lt;container&gt; &lt;pod&gt;               <span class="cm"># Specific container in pod</span>
+<span class="key">oc</span> <span class="val">exec</span> <span class="flag">-it</span> &lt;pod&gt; <span class="flag">--</span> bash                  <span class="cm"># Shell into container</span>
+<span class="key">oc</span> <span class="val">cp</span> &lt;pod&gt;:/remote/path ./local/path        <span class="cm"># Copy files from pod</span>
+<span class="key">oc</span> <span class="val">port-forward</span> &lt;pod&gt; 8080:8080             <span class="cm"># Local port forwarding</span>
+<span class="key">oc</span> <span class="val">debug</span> pod/&lt;pod&gt;                          <span class="cm"># Debug clone of pod</span>
+<span class="key">oc</span> <span class="val">debug</span> node/&lt;node&gt;                        <span class="cm"># Root shell on node</span></pre></div>
+
+  <h2 class="section">Deployments</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">rollout</span> status deployment/&lt;name&gt;         <span class="cm"># Watch rollout progress</span>
+<span class="key">oc</span> <span class="val">rollout</span> history deployment/&lt;name&gt;        <span class="cm"># Rollout history</span>
+<span class="key">oc</span> <span class="val">rollout</span> undo deployment/&lt;name&gt;           <span class="cm"># Rollback</span>
+<span class="key">oc</span> <span class="val">rollout</span> restart deployment/&lt;name&gt;        <span class="cm"># Force restart all pods</span>
+<span class="key">oc</span> <span class="val">scale</span> deployment/&lt;name&gt; <span class="flag">--replicas</span>=5    <span class="cm"># Manual scale</span>
+<span class="key">oc</span> <span class="val">set</span> image deployment/&lt;name&gt; app=img:tag  <span class="cm"># Update image</span>
+<span class="key">oc</span> <span class="val">set</span> env deployment/&lt;name&gt; KEY=VALUE      <span class="cm"># Set env var</span></pre></div>
+
+  <h2 class="section">Builds</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">start-build</span> &lt;bc-name&gt;                    <span class="cm"># Trigger a build</span>
+<span class="key">oc</span> <span class="val">start-build</span> &lt;bc-name&gt; <span class="flag">--follow</span>          <span class="cm"># Trigger and tail logs</span>
+<span class="key">oc</span> <span class="val">cancel-build</span> &lt;build-name&gt;               <span class="cm"># Cancel running build</span>
+<span class="key">oc</span> <span class="val">get</span> builds                               <span class="cm"># List builds</span>
+<span class="key">oc</span> <span class="val">logs</span> build/&lt;build-name&gt;                  <span class="cm"># Build logs</span></pre></div>
+
+  <h2 class="section">RBAC &amp; Security</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">adm</span> policy add-role-to-user edit &lt;user&gt;  <span class="cm"># Grant edit role</span>
+<span class="key">oc</span> <span class="val">adm</span> policy add-scc-to-user anyuid <span class="flag">-z</span> &lt;sa&gt; <span class="cm"># Grant SCC to SA</span>
+<span class="key">oc</span> <span class="val">auth</span> can-i create pods                    <span class="cm"># Check own permission</span>
+<span class="key">oc</span> <span class="val">auth</span> can-i create pods <span class="flag">--as</span>=&lt;user&gt;       <span class="cm"># Check another user's permission</span>
+<span class="key">oc</span> <span class="val">get</span> rolebindings <span class="flag">-o</span> wide                  <span class="cm"># List role bindings</span></pre></div>
+
+  <h2 class="section">Cluster Administration</h2>
+  <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="key">oc</span> <span class="val">get</span> nodes                                <span class="cm"># List nodes</span>
+<span class="key">oc</span> <span class="val">get</span> clusteroperators                     <span class="cm"># Health of cluster operators</span>
+<span class="key">oc</span> <span class="val">get</span> clusterversion                       <span class="cm"># Cluster version + update status</span>
+<span class="key">oc</span> <span class="val">adm</span> upgrade                              <span class="cm"># Check / trigger updates</span>
+<span class="key">oc</span> <span class="val">adm</span> drain &lt;node&gt; <span class="flag">--ignore-daemonsets</span>    <span class="cm"># Drain node for maintenance</span>
+<span class="key">oc</span> <span class="val">adm</span> cordon &lt;node&gt;                        <span class="cm"># Mark unschedulable</span>
+<span class="key">oc</span> <span class="val">adm</span> uncordon &lt;node&gt;                      <span class="cm"># Return to service</span>
+<span class="key">oc</span> <span class="val">get</span> events <span class="flag">-A</span> <span class="flag">--sort-by</span>=.lastTimestamp   <span class="cm"># Recent cluster events</span>
+<span class="key">oc</span> <span class="val">top</span> nodes                                <span class="cm"># Node resource usage</span>
+<span class="key">oc</span> <span class="val">top</span> pods <span class="flag">-A</span>                              <span class="cm"># Pod resource usage (all ns)</span></pre></div>
+
+  <div class="callout callout-tip"><strong>🎉 You've completed the guide!</strong>You now have a comprehensive understanding of OpenShift from containers and pods all the way through advanced topics like Operators, GitOps, Service Mesh, and cluster administration. Keep practicing with <code>oc explain</code> to explore any resource's schema, and refer back to this cheat sheet whenever you need it.</div>
+
+  <div class="ch-nav">
+    <button class="prev-btn" onclick="prevChapter()">← Cluster Admin</button>
+    <button class="next-btn" onclick="showChapter(0, document.querySelector('.sidebar-nav a'))">↩ Back to Start</button>
+  </div>
+</div>
+  </div><!-- end #content -->
+</div><!-- end #main -->
+
+<script>
+const chapters = [
+  "What is OpenShift?","Containers & Images","Pods & Lifecycle","Architecture Deep Dive",
+  "oc CLI & Web Console","Deployments & Services","Config, Secrets & Storage",
+  "Builds, S2I & ImageStreams","Networking & Routes","Security, RBAC & SCCs",
+  "Operators & OLM","Monitoring & Logging","CI/CD & GitOps",
+  "Autoscaling & Scheduling","Service Mesh & Serverless","Cluster Administration","Commands Cheat Sheet"
+];
+let current = 0;
+const done = new Set(JSON.parse(localStorage.getItem('os-done') || '[]'));
+const navLinks = document.querySelectorAll('.sidebar-nav a[data-label]');
+
+function updateProgress() {
+  const pct = Math.round((done.size / chapters.length) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+  localStorage.setItem('os-done', JSON.stringify([...done]));
+}
+
+function markDone() {
+  done.add(current);
+  navLinks[current].classList.add('done');
+  updateProgress();
+}
+
+function showChapter(idx, el) {
+  document.querySelectorAll('.chapter').forEach(c => c.classList.remove('active'));
+  document.getElementById('ch-' + idx).classList.add('active');
+  navLinks.forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('current-chapter-title').textContent = chapters[idx];
+  document.getElementById('main').scrollTo({top: 0, behavior: 'smooth'});
+  current = idx;
+  return false;
+}
+
+function nextChapter() {
+  if (current < chapters.length - 1) {
+    showChapter(current + 1, navLinks[current + 1]);
+  }
+}
+function prevChapter() {
+  if (current > 0) {
+    showChapter(current - 1, navLinks[current - 1]);
+  }
+}
+
+function toggleAcc(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function answerQuiz(el, result) {
+  const box = el.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(o => {
+    o.style.pointerEvents = 'none';
+    o.classList.remove('correct', 'wrong');
+  });
+  el.classList.add(result);
+  if (result === 'correct') {
+    el.textContent = '✅ ' + el.textContent + ' — Correct!';
+  } else {
+    el.textContent = '❌ ' + el.textContent + ' — Not quite.';
+    box.querySelectorAll('.quiz-option').forEach(o => {
+      if (o.onclick && o.getAttribute('onclick') && o.getAttribute('onclick').includes("'correct'")) {
+        o.classList.add('correct');
+      }
+    });
+  }
+}
+
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1600);
+  });
+}
+
+function filterNav(q) {
+  const lower = q.toLowerCase();
+  navLinks.forEach(a => {
+    const text = a.textContent.toLowerCase();
+    a.style.display = (!q || text.includes(lower)) ? '' : 'none';
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextChapter();
+  if (e.key === 'ArrowLeft') prevChapter();
+});
+
+// Restore done state
+done.forEach(i => { if (navLinks[i]) navLinks[i].classList.add('done'); });
+updateProgress();
+
+function toggleSidebar(){
+  var sb=document.getElementById('sidebar');
+  var ov=document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  if(sb.classList.contains('open')){ov.classList.add('show');document.body.style.overflow='hidden'}
+  else{ov.classList.remove('show');document.body.style.overflow=''}
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+// Close sidebar on nav click (mobile)
+document.querySelectorAll('#sidebar a').forEach(function(a){
+  a.addEventListener('click',function(){if(window.innerWidth<=900)closeSidebar()});
+});
+</script>
+</body>
+</html>

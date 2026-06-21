@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ops → ai — The free learning path for DevOps, SRE & Platform Engineers</title>
+<meta name="description" content="From Operations to AI Engineering. Free, project-based courses for DevOps, SRE and Platform Engineers learning AI, Kubernetes, CI/CD, and more."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --d-bg:#08090E;--d-s1:#0E1019;--d-s2:#141722;--d-s3:#1A1E2E;
+  --d-text:#E8ECF4;--d-text2:#8B9AB8;--d-text3:#4B5672;
+  --d-border:rgba(255,255,255,.06);--d-border2:rgba(255,255,255,.1);
+  --l-bg:#F5F3EE;--l-s1:#FFFFFF;--l-s2:#EDE9E3;
+  --l-text:#1A1A2E;--l-text2:#5A5E72;--l-text3:#8B8FA0;
+  --l-border:rgba(0,0,0,.08);--l-border2:rgba(0,0,0,.12);
+  --mint:#00E8B0;--mint-d:#00A67D;--mint-dim:rgba(0,232,176,.1);--mint-glow:rgba(0,232,176,.18);
+  --violet:#7C5CFC;--violet-dim:rgba(124,92,252,.1);
+  --sky:#38BDF8;--amber:#FBBF24;--rose:#FB7185;
+  --radius:14px;
+}
+html{-webkit-font-smoothing:antialiased}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(--d-text);line-height:1.7;overflow-x:hidden}
+::selection{background:rgba(0,232,176,.25);color:#fff}
+::-webkit-scrollbar{width:0px;background:transparent}
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--mint),var(--violet));z-index:300;width:0%;box-shadow:0 0 10px var(--mint)}
+
+/* ===== NAVBAR ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:250;padding:0 clamp(20px,4vw,48px);height:64px;display:flex;align-items:center;justify-content:space-between;transition:background .35s,border-color .35s}
+.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--d-border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-signal{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint),0 0 4px var(--mint);animation:signal 2.5s ease-in-out infinite}
+@keyframes signal{0%,100%{opacity:1;box-shadow:0 0 12px var(--mint),0 0 4px var(--mint)}50%{opacity:.5;box-shadow:0 0 22px var(--mint),0 0 8px var(--mint)}}
+.logo-word{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.logo-word .arr{color:var(--mint);margin:0 1px}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{font-size:13.5px;font-weight:500;color:var(--d-text2);text-decoration:none;padding:7px 14px;border-radius:8px;transition:all .15s}
+.nav-link:hover{color:var(--d-text);background:rgba(255,255,255,.05)}
+.nav-cta{font-size:13px;font-weight:600;color:var(--d-bg);background:var(--mint);padding:8px 18px;border-radius:8px;text-decoration:none;transition:all .2s;margin-left:8px}
+.nav-cta:hover{background:#00d4a0;transform:translateY(-1px);box-shadow:0 4px 16px var(--mint-glow)}
+.nav-ham{display:none;background:none;border:1px solid var(--d-border2);border-radius:8px;padding:8px 10px;color:var(--d-text);font-size:18px;cursor:pointer}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;z-index:240;background:rgba(8,9,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--d-border);flex-direction:column;padding:12px}
+.mob-menu.open{display:flex}
+.mob-menu a{color:var(--d-text2);text-decoration:none;font-size:15px;font-weight:500;padding:14px 16px;border-radius:8px;transition:all .15s}
+.mob-menu a:hover,.mob-menu a:active{color:var(--mint);background:rgba(255,255,255,.05)}
+
+/* ===== MAGNETIC BUTTON ===== */
+.btn{position:relative;display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;transition:background .25s,box-shadow .25s,transform .15s;cursor:pointer;border:none;will-change:transform}
+.btn-mint{color:var(--d-bg);background:var(--mint)}
+.btn-mint:hover{background:#00d4a0;box-shadow:0 8px 30px var(--mint-glow)}
+.btn-ghost-dark{color:var(--d-text);background:rgba(255,255,255,.06);border:1px solid var(--d-border2)}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.1)}
+.btn-ghost-light{color:var(--l-text);background:rgba(0,0,0,.04);border:1px solid var(--l-border2)}
+.btn-ghost-light:hover{background:rgba(0,0,0,.08)}
+.btn .btn-arrow{transition:transform .2s}
+.btn:hover .btn-arrow{transform:translateX(3px)}
+
+/* ===== HERO (DARK) ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px clamp(20px,6vw,80px) 80px;position:relative;overflow:hidden;background:var(--d-bg)}
+.hero-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
+.orb-1{width:600px;height:600px;background:var(--mint);top:-200px;right:-100px;opacity:.05}
+.orb-2{width:500px;height:500px;background:var(--violet);bottom:-100px;left:-100px;opacity:.05}
+.orb-3{width:300px;height:300px;background:var(--sky);top:40%;left:55%;opacity:.03}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%)}
+.hero-content{position:relative;z-index:1;max-width:820px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--mint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:32px;opacity:0}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--mint)}
+.hero h1{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(52px,7.5vw,94px);line-height:.95;letter-spacing:-3.5px;color:#fff;margin-bottom:28px}
+.hero h1 .line{display:block;overflow:hidden;padding-bottom:.05em}
+.hero h1 .line-inner{display:inline-block;transform:translateY(110%)}
+.hero h1 .ops{color:var(--d-text2)}
+.hero h1 .arrow-anim{color:var(--mint);display:inline-block}
+.hero h1 .ai{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(16px,1.8vw,20px);color:var(--d-text2);max-width:560px;line-height:1.75;margin-bottom:40px;opacity:0}
+.hero-sub strong{color:var(--d-text);font-weight:600}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;opacity:0}
+.hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--d-text3);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:0}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--mint),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3;height:40px}50%{opacity:1;height:28px}}
+
+/* ===== TICKER ===== */
+.ticker{border-top:1px solid var(--d-border);padding:16px 0;overflow:hidden;position:relative;background:var(--d-bg)}
+.ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--d-bg),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--d-bg),transparent)}
+.ticker-track{display:flex;gap:48px;width:max-content;will-change:transform}
+.ticker-item{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;color:var(--d-text3);white-space:nowrap;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ticker-item::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--mint);opacity:.5}
+
+/* ===== PINNED STORY (DARK) ===== */
+.story{position:relative;height:300vh;background:var(--d-bg)}
+.story-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 24px}
+.story-track{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.story-panel{position:absolute;text-align:center;max-width:640px;opacity:0;will-change:transform,opacity}
+.story-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mint);letter-spacing:.2em;margin-bottom:20px}
+.story-panel h2{font-family:'Outfit',sans-serif;font-size:clamp(30px,4.5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:18px}
+.story-panel h2 span{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.story-panel p{font-size:clamp(15px,1.6vw,18px);color:var(--d-text2);line-height:1.7}
+.story-progress{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.sp-dot{width:28px;height:3px;border-radius:2px;background:var(--d-border2);transition:background .3s}
+.sp-dot.active{background:var(--mint)}
+
+/* ===== SECTION SHARED ===== */
+.sec-dark{background:var(--d-bg);color:var(--d-text)}
+.sec-light{background:var(--l-bg);color:var(--l-text)}
+.section-pad{padding:clamp(80px,10vw,130px) clamp(20px,6vw,80px)}
+.section-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--mint-d);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-dark .section-label{color:var(--mint)}
+.section-label::before{content:'';width:20px;height:1px;background:currentColor}
+.section-title{font-family:'Outfit',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1.5px;line-height:1.08;margin-bottom:18px;max-width:700px}
+.sec-dark .section-title{color:#fff}
+.sec-light .section-title{color:var(--l-text)}
+.section-desc{font-size:clamp(15px,1.5vw,17px);max-width:540px;line-height:1.7;margin-bottom:48px}
+.sec-dark .section-desc{color:var(--d-text2)}
+.sec-light .section-desc{color:var(--l-text2)}
+
+/* ===== STATS BAR (DARK) ===== */
+.stats-bar{display:flex;justify-content:center;gap:clamp(32px,6vw,80px);flex-wrap:wrap;max-width:900px;margin:0 auto;padding:clamp(50px,7vw,80px) 24px;border-top:1px solid var(--d-border);border-bottom:1px solid var(--d-border)}
+.stat{text-align:center}
+.stat-num{font-family:'Outfit',sans-serif;font-size:clamp(40px,5.5vw,64px);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:12.5px;color:var(--d-text2);text-transform:uppercase;letter-spacing:.1em;margin-top:10px}
+
+/* ===== TWO TRACKS (LIGHT) ===== */
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:0 auto}
+.track-card{background:var(--l-s1);border:1px solid var(--l-border);border-radius:var(--radius);padding:clamp(28px,3vw,40px);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;box-shadow:0 2px 12px rgba(0,0,0,.04);will-change:transform}
+.track-card:hover{border-color:var(--l-border2);transform:translateY(-6px);box-shadow:0 18px 50px rgba(0,0,0,.1)}
+.track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.track-card:hover::before{opacity:1}
+.track-ops::before{background:linear-gradient(90deg,var(--sky),var(--violet))}
+.track-ai::before{background:linear-gradient(90deg,var(--mint),#00C9FF)}
+.track-icon{font-size:32px;margin-bottom:20px;display:block}
+.track-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:5px 12px;border-radius:20px;display:inline-block;margin-bottom:16px}
+.badge-ops{background:rgba(56,189,248,.1);color:#0C7FD4;border:1px solid rgba(56,189,248,.25)}
+.badge-ai{background:rgba(0,232,176,.1);color:var(--mint-d);border:1px solid rgba(0,232,176,.25)}
+.track-name{font-family:'Outfit',sans-serif;font-size:clamp(20px,2.5vw,26px);font-weight:800;color:var(--l-text);letter-spacing:-.5px;line-height:1.15;margin-bottom:12px}
+.track-desc{font-size:14px;color:var(--l-text2);line-height:1.7;margin-bottom:24px}
+.track-list{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:28px}
+.track-list li{font-size:13px;color:var(--l-text2);display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;transition:background .15s}
+.track-list li:hover{background:rgba(0,0,0,.03)}
+.tl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.track-ops .tl-dot{background:var(--sky)}
+.track-ai .tl-dot{background:var(--mint)}
+.tl-label{flex:1}
+.tl-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--l-text3);flex-shrink:0}
+.track-link{font-size:14px;font-weight:600;color:var(--mint-d);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.track-link:hover{gap:10px}
+
+/* ===== COURSES (DARK) ===== */
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;max-width:1100px;margin:0 auto}
+.course-card{background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden;will-change:transform}
+.course-card:hover{border-color:var(--d-border2);transform:translateY(-6px);box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.course-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+.course-card:hover::after{opacity:1}
+.cc-live::after{background:linear-gradient(90deg,var(--mint),var(--sky))}
+.cc-glow{position:absolute;inset:0;opacity:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(0,232,176,.06),transparent 40%);transition:opacity .3s;pointer-events:none}
+.course-card:hover .cc-glow{opacity:1}
+.cc-soon{opacity:.5;cursor:default}
+.cc-soon:hover{transform:none;border-color:var(--d-border);box-shadow:none}
+.cc-soon::after{display:none}
+.cc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:18px;position:relative}
+.cc-emoji{font-size:28px;line-height:1}
+.cc-status{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:16px}
+.status-live{background:var(--mint-dim);color:var(--mint);border:1px solid rgba(0,232,176,.2)}
+.status-soon{background:rgba(255,255,255,.04);color:var(--d-text3);border:1px solid var(--d-border)}
+.cc-title{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:8px;line-height:1.25;position:relative}
+.cc-desc{font-size:13px;color:var(--d-text2);line-height:1.65;margin-bottom:18px;flex:1;position:relative}
+.cc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:relative}
+.cc-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid var(--d-border);color:var(--d-text3)}
+.cc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--d-border);position:relative}
+.cc-meta{font-size:12px;color:var(--d-text3)}
+.cc-action{font-size:13px;font-weight:600;color:var(--mint)}
+.cc-soon .cc-action{color:var(--d-text3)}
+
+/* ===== ROADMAP (LIGHT) ===== */
+.roadmap{max-width:700px;margin:0 auto;position:relative}
+.roadmap::before{content:'';position:absolute;left:23px;top:0;bottom:0;width:2px;background:var(--l-border);z-index:0}
+.roadmap-fill{position:absolute;left:23px;top:0;width:2px;background:linear-gradient(to bottom,var(--mint),var(--violet));z-index:1;height:0%;will-change:height}
+.rm-step{display:flex;align-items:flex-start;gap:24px;padding:24px 0;position:relative;z-index:2}
+.rm-dot{width:48px;height:48px;border-radius:50%;border:2px solid var(--l-border2);background:var(--l-s1);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;color:var(--l-text3);flex-shrink:0;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.rm-step:hover .rm-dot{border-color:var(--mint);color:var(--mint-d);box-shadow:0 4px 20px var(--mint-glow)}
+.rm-dot.active{border-color:var(--mint);color:var(--mint-d);background:rgba(0,232,176,.06)}
+.rm-content{padding-top:4px}
+.rm-eyebrow{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--violet);margin-bottom:6px}
+.rm-name{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:var(--l-text);margin-bottom:6px;letter-spacing:-.2px}
+.rm-desc{font-size:13.5px;color:var(--l-text2);line-height:1.65}
+
+/* ===== WHY (DARK) ===== */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;max-width:1100px;margin:0 auto}
+.why-card{padding:28px;background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);transition:transform .3s,border-color .3s;will-change:transform}
+.why-card:hover{border-color:var(--d-border2);transform:translateY(-4px)}
+.why-emoji{font-size:24px;margin-bottom:16px;display:block}
+.why-title{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.2px}
+.why-desc{font-size:13.5px;color:var(--d-text2);line-height:1.65}
+
+/* ===== CTA (DARK) ===== */
+.cta-section{text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--d-border)}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,var(--mint-glow),transparent 60%);pointer-events:none}
+.cta-inner{position:relative;z-index:1;max-width:600px;margin:0 auto}
+.cta-inner h2{font-family:'Outfit',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;color:#fff;letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
+.cta-inner h2 span{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-inner p{font-size:17px;color:var(--d-text2);margin-bottom:40px;line-height:1.7}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ===== FOOTER ===== */
+footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);background:var(--d-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-logo{font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;color:var(--d-text2)}
+.foot-logo .arr{color:var(--mint)}
+.foot-sub{font-size:12px;color:var(--d-text3)}
+.foot-links{display:flex;align-items:center;gap:16px;font-size:12.5px}
+.foot-links a{color:var(--d-text3);text-decoration:none;transition:color .15s}
+.foot-links a:hover{color:var(--mint)}
+.foot-links span{color:var(--d-text3)}
+
+/* ===== REVEALS ===== */
+.reveal{opacity:0;transform:translateY(30px)}
+.reveal-left{opacity:0;transform:translateX(-30px)}
+.reveal-right{opacity:0;transform:translateX(30px)}
+.reveal-scale{opacity:0;transform:scale(.95)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .tracks{grid-template-columns:1fr}
+  .nav-links .nav-link{display:none}
+  .nav-cta{display:none}
+  .nav-ham{display:block}
+  .story{height:auto}
+  .story-pin{position:relative;height:auto;padding:40px 20px;gap:0}
+  .story-track{position:relative;flex-direction:column;height:auto;gap:0}
+  .story-panel{position:relative;opacity:1!important;transform:none!important;padding:40px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .story-panel:last-child{border-bottom:none}
+  .story-progress{display:none}
+}
+@media(max-width:600px){
+  .hero h1{letter-spacing:-2px;font-size:clamp(44px,13vw,64px)}
+  .hero-actions{flex-direction:column}
+  .hero-actions .btn{width:100%;justify-content:center}
+  .course-grid{grid-template-columns:1fr}
+  .cta-btns{flex-direction:column;align-items:center}
+  .cta-btns .btn{width:100%;justify-content:center}
+  .hero-scroll{display:none}
+  .section-pad{padding:60px 20px}
+  .hero{padding:100px 20px 60px}
+  .stats-bar{gap:24px;padding:40px 20px}
+  .stat-num{font-size:clamp(36px,10vw,52px)}
+  .why-grid{grid-template-columns:1fr}
+  .tracks{gap:16px}
+  .section-title{font-size:clamp(28px,8vw,40px);letter-spacing:-1px}
+  .track-list li{padding:7px 8px}
+  .roadmap{padding:0 4px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .hero h1 .line-inner{transform:none!important}
+  .reveal,.reveal-left,.reveal-right,.reveal-scale,.story-panel{opacity:1!important;transform:none!important}
+}
+
+/* ===== FAILSAFE: GSAP failed to load — reveal everything ===== */
+.no-gsap .hero-eyebrow,.no-gsap .hero-sub,.no-gsap .hero-actions,.no-gsap .hero-scroll{opacity:1!important}
+.no-gsap .hero h1 .line-inner{transform:none!important}
+.no-gsap .reveal,.no-gsap .reveal-left,.no-gsap .reveal-right,.no-gsap .reveal-scale{opacity:1!important;transform:none!important}
+.no-gsap .story{height:auto}
+.no-gsap .story-pin{position:relative;height:auto;padding:40px 20px}
+.no-gsap .story-track{position:relative;flex-direction:column;height:auto}
+.no-gsap .story-panel{position:relative;opacity:1!important;transform:none!important;padding:40px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.no-gsap .story-panel:last-child{border-bottom:none}
+.no-gsap .story-progress{display:none}
+.no-gsap .stat-num{font-size:clamp(40px,5.5vw,64px)}
+</style>
+</head>
+<body>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-signal"></div>
+    <div class="logo-word">ops<span class="arr">→</span>ai</div>
+  </a>
+  <div class="nav-links">
+    <a href="#tracks" class="nav-link">Tracks</a>
+    <a href="#courses" class="nav-link">Courses</a>
+    <a href="roadmap.html" class="nav-link">Roadmap</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+    <a href="#courses" class="nav-cta">Start learning</a>
+  </div>
+  <button class="nav-ham" id="navHam" aria-label="Menu">☰</button>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#tracks">Tracks</a>
+  <a href="#courses">Courses</a>
+  <a href="roadmap.html">Interactive Roadmap</a>
+  <a href="blog.html">Community Blog</a>
+  <a href="#why">About</a>
+  <a href="ai-devops.html">Start AI course →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero sec-dark" id="top">
+  <div class="hero-bg">
+    <div class="hero-grid" id="heroGrid"></div>
+    <div class="hero-orb orb-1" data-speed="0.3"></div>
+    <div class="hero-orb orb-2" data-speed="0.5"></div>
+    <div class="hero-orb orb-3" data-speed="0.2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Free &amp; open-source learning platform</div>
+    <h1>
+      <span class="line"><span class="line-inner"><span class="ops">Ops</span> <span class="arrow-anim">→</span></span></span>
+      <span class="line"><span class="line-inner"><span class="ai">AI</span></span></span>
+    </h1>
+    <p class="hero-sub">Every DevOps, SRE, and Platform engineer is asking the same question: <strong>where do I start with AI?</strong> This is the answer. Free courses, real projects, real code in Go. No fluff, no paywall.</p>
+    <div class="hero-actions">
+      <a href="#courses" class="btn btn-mint" data-magnetic>Start learning <span class="btn-arrow">→</span></a>
+      <a href="#tracks" class="btn btn-ghost-dark" data-magnetic>See the tracks</a>
+    </div>
+  </div>
+  <div class="hero-scroll" id="heroScroll"><div class="scroll-line"></div>scroll</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item">Kubernetes</span><span class="ticker-item">AI Agents</span><span class="ticker-item">LLM Foundations</span><span class="ticker-item">RAG Systems</span><span class="ticker-item">Docker</span><span class="ticker-item">GitHub Actions</span><span class="ticker-item">Terraform</span><span class="ticker-item">MCP Protocol</span><span class="ticker-item">Prometheus</span><span class="ticker-item">Go Programming</span><span class="ticker-item">ArgoCD</span><span class="ticker-item">OpenShift</span><span class="ticker-item">Vector Databases</span><span class="ticker-item">SRE Practices</span><span class="ticker-item">AIOps</span><span class="ticker-item">Grafana</span><span class="ticker-item">LangChainGo</span>
+    <span class="ticker-item">Kubernetes</span><span class="ticker-item">AI Agents</span><span class="ticker-item">LLM Foundations</span><span class="ticker-item">RAG Systems</span><span class="ticker-item">Docker</span><span class="ticker-item">GitHub Actions</span><span class="ticker-item">Terraform</span><span class="ticker-item">MCP Protocol</span><span class="ticker-item">Prometheus</span><span class="ticker-item">Go Programming</span><span class="ticker-item">ArgoCD</span><span class="ticker-item">OpenShift</span><span class="ticker-item">Vector Databases</span><span class="ticker-item">SRE Practices</span><span class="ticker-item">AIOps</span><span class="ticker-item">Grafana</span><span class="ticker-item">LangChainGo</span>
+  </div>
+</div>
+
+<!-- PINNED STORY -->
+<section class="story" id="story">
+  <div class="story-pin">
+    <div class="story-track">
+      <div class="story-panel" data-panel="0">
+        <div class="story-num">01 — THE SHIFT</div>
+        <h2>The ground is <span>moving</span> under Ops</h2>
+        <p>AI isn't coming to operations. It's already here. Incident response, log analysis, runbook automation — all being reshaped. The engineers who adapt will lead. The ones who wait will be left explaining why they didn't.</p>
+      </div>
+      <div class="story-panel" data-panel="1">
+        <div class="story-num">02 — THE GAP</div>
+        <h2>But the learning path <span>doesn't exist</span></h2>
+        <p>Every AI course assumes you're a Python data scientist. None of them speak to the engineer who lives in Kubernetes, Go, and bash — who wants to use AI in production, not in a notebook.</p>
+      </div>
+      <div class="story-panel" data-panel="2">
+        <div class="story-num">03 — THE BRIDGE</div>
+        <h2>So we built the <span>bridge</span></h2>
+        <p>From your first container to your first AI agent. A clear, efficient path that respects what you already know and shows you exactly what's new. This is ops → ai.</p>
+      </div>
+    </div>
+    <div class="story-progress">
+      <div class="sp-dot active" data-dot="0"></div>
+      <div class="sp-dot" data-dot="1"></div>
+      <div class="sp-dot" data-dot="2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="sec-dark">
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" data-count="2">0</div><div class="stat-label">Courses live</div></div>
+    <div class="stat"><div class="stat-num" data-count="20">0</div><div class="stat-label">Planned courses</div></div>
+    <div class="stat"><div class="stat-num" data-count="100" data-suffix="%">0</div><div class="stat-label">Free, forever</div></div>
+    <div class="stat"><div class="stat-num" data-count="0" data-prefix="$">0</div><div class="stat-label">To get started</div></div>
+  </div>
+</div>
+
+<!-- TWO TRACKS (LIGHT) -->
+<section class="sec-light section-pad" id="tracks">
+  <div class="section-label reveal">Two tracks, one destination</div>
+  <h2 class="section-title reveal">Pick your starting point</h2>
+  <p class="section-desc reveal">Whether you need to strengthen your Ops fundamentals or dive straight into AI — there's a path for you. They converge where the real opportunity is: <strong style="color:var(--mint-d)">AI-powered operations.</strong></p>
+  <div class="tracks">
+    <div class="track-card track-ops reveal-left">
+      <span class="track-icon">⚙️</span>
+      <span class="track-badge badge-ops">Ops Core Track</span>
+      <h3 class="track-name">The technologies every Ops engineer must know</h3>
+      <p class="track-desc">The foundational stack that 82% of production environments run. Master these and you can work anywhere.</p>
+      <ul class="track-list">
+        <li><span class="tl-dot"></span><span class="tl-label">Linux &amp; Networking</span><span class="tl-time">2 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">Docker &amp; Containers</span><span class="tl-time">1.5 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">Kubernetes Fundamentals</span><span class="tl-time">3 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">OpenShift</span><span class="tl-time">2 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">CI/CD — GitHub Actions</span><span class="tl-time">1.5 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">Terraform / OpenTofu</span><span class="tl-time">2 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">Observability — Prometheus, Grafana, Loki</span><span class="tl-time">2 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">SRE Practices &amp; Incident Management</span><span class="tl-time">1.5 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">GitOps — ArgoCD</span><span class="tl-time">1 wk</span></li>
+      </ul>
+      <a href="#courses" class="track-link">Browse Ops courses →</a>
+    </div>
+    <div class="track-card track-ai reveal-right">
+      <span class="track-icon">🧠</span>
+      <span class="track-badge badge-ai">AI Bridge Track</span>
+      <h3 class="track-name">How to bring AI into your Ops work</h3>
+      <p class="track-desc">Already know Ops? This is the fast track. Learn AI from an engineer's perspective, build real tools in Go.</p>
+      <ul class="track-list">
+        <li><span class="tl-dot"></span><span class="tl-label">LLM Foundations &amp; Prompt Engineering</span><span class="tl-time">1 wk</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">RAG &amp; Vector Databases</span><span class="tl-time">1.5 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">MCP — Model Context Protocol</span><span class="tl-time">1 wk</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">Building AI Agents in Go</span><span class="tl-time">2 wks</span></li>
+        <li><span class="tl-dot"></span><span class="tl-label">AIOps — k8sgpt, kagent, kubectl-ai</span><span class="tl-time">1.5 wks</span></li>
+      </ul>
+      <a href="ai-devops.html" class="track-link">Start the AI Bridge →</a>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES (DARK) -->
+<section class="sec-dark section-pad" id="courses">
+  <div class="section-label reveal">Courses</div>
+  <h2 class="section-title reveal">What's ready, what's next</h2>
+  <p class="section-desc reveal">Each course is project-based and built for engineers who ship — not students in a classroom.</p>
+  <div class="course-grid">
+    <a href="ai-devops.html" class="course-card cc-live reveal-scale"><div class="cc-glow"></div>
+      <div class="cc-head"><span class="cc-emoji">🤖</span><span class="cc-status status-live">Live</span></div>
+      <div class="cc-title">AI for DevOps Engineers — Go Edition</div>
+      <div class="cc-desc">LLMs, RAG, AI Agents, MCP, and AIOps — then build InfraBot, a real AI agent in Go that reads your runbooks and checks service health.</div>
+      <div class="cc-tags"><span class="cc-tag">Go</span><span class="cc-tag">LangChainGo</span><span class="cc-tag">RAG</span><span class="cc-tag">MCP</span><span class="cc-tag">Ollama</span></div>
+      <div class="cc-foot"><span class="cc-meta">8 weeks · 4 theory + 8 project phases</span><span class="cc-action">Start →</span></div>
+    </a>
+    <a href="openshift.html" class="course-card cc-live reveal-scale"><div class="cc-glow"></div>
+      <div class="cc-head"><span class="cc-emoji">🚀</span><span class="cc-status status-live">Live</span></div>
+      <div class="cc-title">OpenShift — Beginner to Advanced</div>
+      <div class="cc-desc">Complete guide to Red Hat OpenShift: architecture, oc CLI, deployments, RBAC, Operators, CI/CD with GitOps, and cluster administration.</div>
+      <div class="cc-tags"><span class="cc-tag">OpenShift</span><span class="cc-tag">Kubernetes</span><span class="cc-tag">RBAC</span><span class="cc-tag">Operators</span></div>
+      <div class="cc-foot"><span class="cc-meta">17 chapters · Beginner to Advanced</span><span class="cc-action">Read →</span></div>
+    </a>
+    <div class="course-card cc-soon reveal-scale">
+      <div class="cc-head"><span class="cc-emoji">☸️</span><span class="cc-status status-soon">Coming soon</span></div>
+      <div class="cc-title">Kubernetes Deep Dive</div>
+      <div class="cc-desc">Production Kubernetes for platform teams — networking, storage, RBAC, multi-tenancy, Helm, and troubleshooting.</div>
+      <div class="cc-tags"><span class="cc-tag">Kubernetes</span><span class="cc-tag">Helm</span><span class="cc-tag">Networking</span></div>
+      <div class="cc-foot"><span class="cc-meta">~3 weeks</span><span class="cc-action">Coming soon</span></div>
+    </div>
+    <div class="course-card cc-soon reveal-scale">
+      <div class="cc-head"><span class="cc-emoji">🔄</span><span class="cc-status status-soon">Coming soon</span></div>
+      <div class="cc-title">CI/CD with GitHub Actions</div>
+      <div class="cc-desc">Build, test, scan, and deploy — pipeline-as-code from scratch. The CI tool used by 62% of developers.</div>
+      <div class="cc-tags"><span class="cc-tag">GitHub Actions</span><span class="cc-tag">CI/CD</span></div>
+      <div class="cc-foot"><span class="cc-meta">~1.5 weeks</span><span class="cc-action">Coming soon</span></div>
+    </div>
+    <div class="course-card cc-soon reveal-scale">
+      <div class="cc-head"><span class="cc-emoji">📊</span><span class="cc-status status-soon">Coming soon</span></div>
+      <div class="cc-title">Observability — Prometheus, Grafana &amp; Loki</div>
+      <div class="cc-desc">Metrics, logs, and traces. Dashboards, PromQL, alerts, and incident troubleshooting with real data.</div>
+      <div class="cc-tags"><span class="cc-tag">Prometheus</span><span class="cc-tag">Grafana</span><span class="cc-tag">OpenTelemetry</span></div>
+      <div class="cc-foot"><span class="cc-meta">~2 weeks</span><span class="cc-action">Coming soon</span></div>
+    </div>
+    <div class="course-card cc-soon reveal-scale">
+      <div class="cc-head"><span class="cc-emoji">🏗️</span><span class="cc-status status-soon">Coming soon</span></div>
+      <div class="cc-title">Terraform / OpenTofu</div>
+      <div class="cc-desc">Infrastructure as Code — HCL, state, providers, modules, and the Terraform vs OpenTofu licensing landscape.</div>
+      <div class="cc-tags"><span class="cc-tag">Terraform</span><span class="cc-tag">OpenTofu</span><span class="cc-tag">IaC</span></div>
+      <div class="cc-foot"><span class="cc-meta">~2 weeks</span><span class="cc-action">Coming soon</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP (LIGHT) -->
+<section class="sec-light section-pad" id="roadmap">
+  <div class="section-label reveal">Learning path</div>
+  <h2 class="section-title reveal">The most efficient order</h2>
+  <p class="section-desc reveal">Don't wander. Follow this path. Each step builds on the last — designed so you can complete it part-time without burning out. <a href="roadmap.html" style="color:var(--mint-d);text-decoration:none;font-weight:600">Open interactive roadmap →</a></p>
+  <div class="roadmap" id="roadmap">
+    <div class="roadmap-fill" id="roadmapFill"></div>
+    <div class="rm-step reveal">
+      <div class="rm-dot active">1</div>
+      <div class="rm-content"><div class="rm-eyebrow">Start here</div><div class="rm-name">OpenShift or Kubernetes fundamentals</div><div class="rm-desc">Understand containers, pods, and the platform. If your company uses OpenShift, start there. Otherwise, learn vanilla Kubernetes first.</div></div>
+    </div>
+    <div class="rm-step reveal">
+      <div class="rm-dot active">2</div>
+      <div class="rm-content"><div class="rm-eyebrow">AI Week 1–2</div><div class="rm-name">LLM foundations &amp; RAG</div><div class="rm-desc">Understand what LLMs are, how tokens work, and how to make AI answer from YOUR documentation using RAG. The most immediately useful AI skill for Ops.</div></div>
+    </div>
+    <div class="rm-step reveal">
+      <div class="rm-dot">3</div>
+      <div class="rm-content"><div class="rm-eyebrow">AI Week 3–4</div><div class="rm-name">MCP, Agents &amp; AIOps tools</div><div class="rm-desc">Go from "AI answers questions" to "AI takes actions." Learn MCP, build an agent in Go, and discover tools like k8sgpt you can use at work today.</div></div>
+    </div>
+    <div class="rm-step reveal">
+      <div class="rm-dot">4</div>
+      <div class="rm-content"><div class="rm-eyebrow">Ops deepening</div><div class="rm-name">CI/CD, Observability, IaC &amp; SRE</div><div class="rm-desc">Round out your Ops stack: GitHub Actions, Prometheus + Grafana, Terraform, ArgoCD, and SRE practices. Each course is self-contained.</div></div>
+    </div>
+    <div class="rm-step reveal">
+      <div class="rm-dot">5</div>
+      <div class="rm-content"><div class="rm-eyebrow">Build &amp; ship</div><div class="rm-name">InfraBot — your portfolio AI project</div><div class="rm-desc">Build a working AI agent in Go that searches runbooks, checks services, and creates incident reports. Put it on GitHub. Write about it on LinkedIn.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY (DARK) -->
+<section class="sec-dark section-pad" id="why">
+  <div class="section-label reveal">Why this exists</div>
+  <h2 class="section-title reveal">The problem is real</h2>
+  <p class="section-desc reveal">I faced this problem. I saw others facing it. So I built this.</p>
+  <div class="why-grid">
+    <div class="why-card reveal-scale"><span class="why-emoji">😤</span><div class="why-title">The learning landscape is a mess</div><div class="why-desc">AI courses are built for ML researchers or Python devs. Nothing exists for Ops engineers who live in Go and bash and want to use AI at work — not in a Jupyter notebook.</div></div>
+    <div class="why-card reveal-scale"><span class="why-emoji">🎯</span><div class="why-title">You already have the hardest skill</div><div class="why-desc">You understand systems, reliability, and production. You know what an incident is. That context makes you incredibly well-positioned for AI — if someone shows you how.</div></div>
+    <div class="why-card reveal-scale"><span class="why-emoji">🔓</span><div class="why-title">Free, forever, no catches</div><div class="why-desc">No course fees, no subscriptions, no paywalls, no email gates. If these guides help you, share them with someone else who needs them.</div></div>
+    <div class="why-card reveal-scale"><span class="why-emoji">⚡</span><div class="why-title">Built with AI, curated by an engineer</div><div class="why-desc">Built using Claude AI and curated by a working engineer in DevOps and SRE. Real tools, real code, real concepts — not repackaged generic tutorials.</div></div>
+  </div>
+</section>
+
+<!-- CTA (DARK) -->
+<section class="sec-dark section-pad cta-section">
+  <div class="cta-inner reveal-scale">
+    <h2>Ready to go<br>from Ops<br>to <span>AI</span>?</h2>
+    <p>Start with the AI for DevOps course. It's free, runs locally with Ollama — no API keys, no costs. Just learning.</p>
+    <div class="cta-btns">
+      <a href="ai-devops.html" class="btn btn-mint" data-magnetic>Start AI for DevOps <span class="btn-arrow">→</span></a>
+      <a href="openshift.html" class="btn btn-ghost-dark" data-magnetic>Or start with OpenShift</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="foot-logo">ops<span class="arr">→</span>ai</div>
+    <div class="foot-sub">Free learning for DevOps, SRE &amp; Platform Engineers</div>
+  </div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+var reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ===== FAILSAFE: if GSAP didn't load, reveal everything via CSS and stop ===== */
+if(typeof gsap==='undefined'){
+  document.documentElement.classList.add('no-gsap');
+}else{
+gsap.registerPlugin(ScrollTrigger);
+
+/* ===== LENIS SMOOTH SCROLL (with safe fallback) ===== */
+var lenis;
+if(!reduceMotion && typeof Lenis!=='undefined'){
+  try{
+    lenis=new Lenis({duration:1.1,easing:function(t){return Math.min(1,1.001-Math.pow(2,-10*t))},wheelMultiplier:1,smoothWheel:true});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(function(time){lenis.raf(time*1000)});
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click',function(e){
+        var id=this.getAttribute('href');
+        if(id.length>1){e.preventDefault();lenis.scrollTo(id,{offset:-64})}
+      });
+    });
+  }catch(err){lenis=null}
+}
+/* If Lenis unavailable, native smooth-scroll for anchors */
+if(!lenis){
+  document.documentElement.style.scrollBehavior='smooth';
+}
+
+/* ===== SCROLL PROGRESS BAR ===== */
+var prog=document.getElementById('scrollProg');
+function updateProg(){
+  var h=document.documentElement.scrollHeight-window.innerHeight;
+  var s=window.scrollY||document.documentElement.scrollTop;
+  prog.style.width=(h>0?(s/h*100):0)+'%';
+}
+ScrollTrigger.create({start:0,end:'max',onUpdate:updateProg});
+window.addEventListener('scroll',updateProg,{passive:true});
+
+/* ===== NAVBAR ===== */
+ScrollTrigger.create({start:'top -80',onUpdate:function(self){document.getElementById('nav').classList.toggle('scrolled',self.scroll()>80)}});
+
+/* ===== HERO ENTRANCE ===== */
+var heroTL=gsap.timeline({defaults:{ease:'power3.out'}});
+heroTL
+  .to('.hero-eyebrow',{opacity:1,duration:.6,delay:.3})
+  .to('.hero h1 .line-inner',{y:0,duration:.9,stagger:.15,ease:'power4.out'},'<0.2')
+  .to('.hero-sub',{opacity:1,duration:.7},'<0.4')
+  .to('.hero-actions',{opacity:1,duration:.6},'<0.2')
+  .to('#heroScroll',{opacity:1,duration:.5},'<0.3');
+gsap.to('.arrow-anim',{x:8,duration:1.5,repeat:-1,yoyo:true,ease:'power1.inOut'});
+
+/* ===== HERO PARALLAX (orbs + grid move on scroll) ===== */
+if(!reduceMotion){
+  gsap.to('.orb-1',{yPercent:30,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.orb-2',{yPercent:-20,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.hero-grid',{yPercent:15,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.hero-content',{yPercent:20,opacity:.3,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+}
+
+/* ===== TICKER (scroll-velocity aware) ===== */
+var tickerX=0,tickerTrack=document.getElementById('tickerTrack'),trackHalf=0;
+function setTrackHalf(){trackHalf=tickerTrack.scrollWidth/2}
+setTrackHalf();window.addEventListener('resize',setTrackHalf);
+gsap.ticker.add(function(){
+  tickerX-=0.6;
+  if(Math.abs(tickerX)>=trackHalf)tickerX=0;
+  tickerTrack.style.transform='translateX('+tickerX+'px)';
+});
+
+/* ===== PINNED STORY ===== */
+if(!reduceMotion && window.innerWidth>900){
+  var panels=gsap.utils.toArray('.story-panel');
+  var dots=gsap.utils.toArray('.sp-dot');
+  gsap.set(panels[0],{opacity:1,y:0});
+  gsap.set([panels[1],panels[2]],{opacity:0,y:60});
+  var storyTL=gsap.timeline({scrollTrigger:{trigger:'#story',start:'top top',end:'bottom bottom',scrub:1,onUpdate:function(self){
+    var idx=Math.min(2,Math.floor(self.progress*3));
+    dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
+  }}});
+  storyTL
+    .to(panels[0],{opacity:0,y:-60,duration:1})
+    .to(panels[1],{opacity:1,y:0,duration:1},'<0.3')
+    .to(panels[1],{opacity:0,y:-60,duration:1},'+=1')
+    .to(panels[2],{opacity:1,y:0,duration:1},'<0.3')
+    .to(panels[2],{duration:1});
+}
+
+/* ===== STAT COUNTERS ===== */
+gsap.utils.toArray('.stat-num').forEach(function(el){
+  var target=parseFloat(el.getAttribute('data-count'));
+  var prefix=el.getAttribute('data-prefix')||'';
+  var suffix=el.getAttribute('data-suffix')||'';
+  var obj={val:0};
+  ScrollTrigger.create({trigger:el,start:'top 85%',once:true,onEnter:function(){
+    gsap.to(obj,{val:target,duration:1.6,ease:'power2.out',onUpdate:function(){el.textContent=prefix+Math.round(obj.val)+suffix}});
+  }});
+});
+
+/* ===== SCROLL REVEALS ===== */
+gsap.utils.toArray('.reveal').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,y:0,duration:.7,ease:'power2.out'})});
+gsap.utils.toArray('.reveal-left').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,x:0,duration:.8,ease:'power2.out'})});
+gsap.utils.toArray('.reveal-right').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,x:0,duration:.8,ease:'power2.out',delay:.15})});
+ScrollTrigger.batch('.reveal-scale',{start:'top 88%',onEnter:function(b){gsap.to(b,{opacity:1,scale:1,stagger:.08,duration:.5,ease:'back.out(1.2)'})}});
+
+/* ===== ROADMAP LINE FILL (scrubbed) ===== */
+if(!reduceMotion){
+  gsap.to('#roadmapFill',{height:'100%',ease:'none',scrollTrigger:{trigger:'#roadmap',start:'top 60%',end:'bottom 70%',scrub:true}});
+}
+
+/* ===== MAGNETIC BUTTONS ===== */
+if(!reduceMotion && window.matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('[data-magnetic]').forEach(function(btn){
+    btn.addEventListener('mousemove',function(e){
+      var r=btn.getBoundingClientRect();
+      var x=e.clientX-r.left-r.width/2;
+      var y=e.clientY-r.top-r.height/2;
+      gsap.to(btn,{x:x*0.3,y:y*0.4,duration:.4,ease:'power2.out'});
+    });
+    btn.addEventListener('mouseleave',function(){gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,0.4)'})});
+  });
+}
+
+/* ===== COURSE CARD CURSOR GLOW ===== */
+document.querySelectorAll('.course-card').forEach(function(card){
+  card.addEventListener('mousemove',function(e){
+    var r=card.getBoundingClientRect();
+    card.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    card.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+});
+
+ScrollTrigger.refresh();
+
+/* ===== MOBILE MENU ===== */
+var navHam=document.getElementById('navHam'),mobMenu=document.getElementById('mobMenu');
+if(navHam){
+  navHam.addEventListener('click',function(){mobMenu.classList.toggle('open');navHam.textContent=mobMenu.classList.contains('open')?'✕':'☰'});
+  mobMenu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mobMenu.classList.remove('open');navHam.textContent='☰'})});
+}
+} /* end GSAP-available block */
+
+/* Mobile menu must work even without GSAP */
+if(typeof gsap==='undefined'){
+  /* Set counters to final values */
+  document.querySelectorAll('.stat-num').forEach(function(el){
+    var t=el.getAttribute('data-count');
+    var pre=el.getAttribute('data-prefix')||'';
+    var suf=el.getAttribute('data-suffix')||'';
+    el.textContent=pre+t+suf;
+  });
+  var nh=document.getElementById('navHam'),mm=document.getElementById('mobMenu');
+  if(nh){
+    nh.addEventListener('click',function(){mm.classList.toggle('open');nh.textContent=mm.classList.contains('open')?'✕':'☰'});
+    mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mm.classList.remove('open');nh.textContent='☰'})});
+  }
+}
+
+</script>
+</body>
+</html>
