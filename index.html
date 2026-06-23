@@ -23,38 +23,38 @@
   --sky:#38BDF8;--amber:#FBBF24;--rose:#FB7185;
   --radius:14px;
 }
-html{-webkit-font-smoothing:antialiased}
-html.lenis,html.lenis body{height:auto}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-stopped{overflow:hidden}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(--d-text);line-height:1.7;overflow-x:hidden}
 ::selection{background:rgba(0,232,176,.25);color:#fff}
 ::-webkit-scrollbar{width:0px;background:transparent}
+img{max-width:100%;display:block}
 
 /* ===== SCROLL PROGRESS BAR ===== */
-.scroll-prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--mint),var(--violet));z-index:300;width:0%;box-shadow:0 0 10px var(--mint)}
+.scroll-prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--mint),var(--violet));z-index:300;width:0%;box-shadow:0 0 10px var(--mint);will-change:width}
 
 /* ===== NAVBAR ===== */
 .nav{position:fixed;top:0;left:0;right:0;z-index:250;padding:0 clamp(20px,4vw,48px);height:64px;display:flex;align-items:center;justify-content:space-between;transition:background .35s,border-color .35s}
-.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--d-border)}
+.nav.scrolled{background:rgba(8,9,14,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--d-border)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-signal{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint),0 0 4px var(--mint);animation:signal 2.5s ease-in-out infinite}
-@keyframes signal{0%,100%{opacity:1;box-shadow:0 0 12px var(--mint),0 0 4px var(--mint)}50%{opacity:.5;box-shadow:0 0 22px var(--mint),0 0 8px var(--mint)}}
+@keyframes signal{0%,100%{opacity:1}50%{opacity:.5}}
 .logo-word{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
-.logo-word .arr{color:var(--mint);margin:0 1px}
+.logo-word .arr{color:var(--mint);display:inline-block;margin:0 1px}
 .nav-links{display:flex;align-items:center;gap:4px}
-.nav-link{font-size:13.5px;font-weight:500;color:var(--d-text2);text-decoration:none;padding:7px 14px;border-radius:8px;transition:all .15s}
+.nav-link{font-size:13.5px;font-weight:500;color:var(--d-text2);text-decoration:none;padding:7px 14px;border-radius:8px;transition:color .15s,background .15s}
 .nav-link:hover{color:var(--d-text);background:rgba(255,255,255,.05)}
-.nav-cta{font-size:13px;font-weight:600;color:var(--d-bg);background:var(--mint);padding:8px 18px;border-radius:8px;text-decoration:none;transition:all .2s;margin-left:8px}
-.nav-cta:hover{background:#00d4a0;transform:translateY(-1px);box-shadow:0 4px 16px var(--mint-glow)}
-.nav-ham{display:none;background:none;border:1px solid var(--d-border2);border-radius:8px;padding:8px 10px;color:var(--d-text);font-size:18px;cursor:pointer}
-.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;z-index:240;background:rgba(8,9,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--d-border);flex-direction:column;padding:12px}
+.nav-cta{font-size:13px;font-weight:600;color:var(--d-bg);background:var(--mint);padding:8px 18px;border-radius:8px;text-decoration:none;transition:background .2s,transform .2s;margin-left:8px}
+.nav-cta:hover{background:#00d4a0;transform:translateY(-1px)}
+.nav-ham{display:none;background:none;border:1px solid var(--d-border2);border-radius:8px;padding:8px 10px;color:var(--d-text);font-size:18px;cursor:pointer;line-height:1}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;z-index:240;background:rgba(8,9,14,.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--d-border);flex-direction:column;padding:12px}
 .mob-menu.open{display:flex}
-.mob-menu a{color:var(--d-text2);text-decoration:none;font-size:15px;font-weight:500;padding:14px 16px;border-radius:8px;transition:all .15s}
+.mob-menu a{color:var(--d-text2);text-decoration:none;font-size:15px;font-weight:500;padding:14px 16px;border-radius:8px;transition:color .15s,background .15s}
 .mob-menu a:hover,.mob-menu a:active{color:var(--mint);background:rgba(255,255,255,.05)}
 
-/* ===== MAGNETIC BUTTON ===== */
-.btn{position:relative;display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;transition:background .25s,box-shadow .25s,transform .15s;cursor:pointer;border:none;will-change:transform}
+/* ===== MAGNETIC BUTTON / BTN ===== */
+.btn{position:relative;display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;transition:background .25s,box-shadow .25s,transform .15s;cursor:pointer;border:none}
 .btn-mint{color:var(--d-bg);background:var(--mint)}
 .btn-mint:hover{background:#00d4a0;box-shadow:0 8px 30px var(--mint-glow)}
 .btn-ghost-dark{color:var(--d-text);background:rgba(255,255,255,.06);border:1px solid var(--d-border2)}
@@ -64,16 +64,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .btn .btn-arrow{transition:transform .2s}
 .btn:hover .btn-arrow{transform:translateX(3px)}
 
-/* ===== HERO (DARK) ===== */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px clamp(20px,6vw,80px) 80px;position:relative;overflow:hidden;background:var(--d-bg)}
+/* ===== HERO ===== */
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:120px clamp(20px,6vw,80px) 80px;position:relative;overflow:hidden;background:var(--d-bg)}
 .hero-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
-.orb-1{width:600px;height:600px;background:var(--mint);top:-200px;right:-100px;opacity:.05}
-.orb-2{width:500px;height:500px;background:var(--violet);bottom:-100px;left:-100px;opacity:.05}
-.orb-3{width:300px;height:300px;background:var(--sky);top:40%;left:55%;opacity:.03}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%)}
+.hero-orb{position:absolute;border-radius:50%}
+/* Reduced blur radius dramatically (was 120px → 70px) and smaller orbs for mobile perf */
+.orb-1{width:480px;height:480px;background:var(--mint);top:-160px;right:-80px;opacity:.05;filter:blur(70px)}
+.orb-2{width:420px;height:420px;background:var(--violet);bottom:-80px;left:-80px;opacity:.05;filter:blur(70px)}
+.orb-3{width:260px;height:260px;background:var(--sky);top:40%;left:55%;opacity:.03;filter:blur(70px)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 75%)}
 .hero-content{position:relative;z-index:1;max-width:820px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--mint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:32px;opacity:0}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--mint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:32px;opacity:0;transform:translateY(20px)}
 .hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--mint)}
 .hero h1{font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(52px,7.5vw,94px);line-height:.95;letter-spacing:-3.5px;color:#fff;margin-bottom:28px}
 .hero h1 .line{display:block;overflow:hidden;padding-bottom:.05em}
@@ -81,27 +82,46 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .hero h1 .ops{color:var(--d-text2)}
 .hero h1 .arrow-anim{color:var(--mint);display:inline-block}
 .hero h1 .ai{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:clamp(16px,1.8vw,20px);color:var(--d-text2);max-width:560px;line-height:1.75;margin-bottom:40px;opacity:0}
+.hero-sub{font-size:clamp(16px,1.8vw,20px);color:var(--d-text2);max-width:560px;line-height:1.75;margin-bottom:40px;opacity:0;transform:translateY(20px)}
 .hero-sub strong{color:var(--d-text);font-weight:600}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;opacity:0}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
 .hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--d-text3);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:0}
 .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--mint),transparent);animation:scrollPulse 2s ease-in-out infinite}
-@keyframes scrollPulse{0%,100%{opacity:.3;height:40px}50%{opacity:1;height:28px}}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* HERO ENTRANCE — pure CSS, triggered by body.loaded */
+body.loaded .hero-eyebrow{animation:fadeUp .6s .3s ease-out forwards}
+body.loaded .hero h1 .line-inner{animation:slideUp .9s ease-out forwards}
+body.loaded .hero h1 .line:nth-child(1) .line-inner{animation-delay:.4s}
+body.loaded .hero h1 .line:nth-child(2) .line-inner{animation-delay:.55s}
+body.loaded .hero-sub{animation:fadeUp .7s .8s ease-out forwards}
+body.loaded .hero-actions{animation:fadeUp .6s 1s ease-out forwards}
+body.loaded .hero-scroll{animation:fadeIn .5s 1.3s ease-out forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{to{transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+.arrow-anim{animation:arrowFloat 1.5s ease-in-out infinite}
+@keyframes arrowFloat{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
 
 /* ===== TICKER ===== */
 .ticker{border-top:1px solid var(--d-border);padding:16px 0;overflow:hidden;position:relative;background:var(--d-bg)}
 .ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
 .ticker::before{left:0;background:linear-gradient(90deg,var(--d-bg),transparent)}
 .ticker::after{right:0;background:linear-gradient(-90deg,var(--d-bg),transparent)}
-.ticker-track{display:flex;gap:48px;width:max-content;will-change:transform}
+.ticker-track{display:flex;gap:48px;width:max-content}
 .ticker-item{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:500;color:var(--d-text3);white-space:nowrap;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .ticker-item::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--mint);opacity:.5}
+/* Mobile + no-JS: CSS animation drives the ticker (GPU-only, no JS frame work) */
+@media(max-width:900px){
+  .ticker-track{animation:tickerScroll 30s linear infinite}
+  @keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+}
 
-/* ===== PINNED STORY (DARK) ===== */
+/* ===== PINNED STORY (desktop) ===== */
 .story{position:relative;height:300vh;background:var(--d-bg)}
 .story-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:0 24px}
 .story-track{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.story-panel{position:absolute;text-align:center;max-width:640px;opacity:0;will-change:transform,opacity}
+.story-panel{position:absolute;text-align:center;max-width:640px;opacity:0}
 .story-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mint);letter-spacing:.2em;margin-bottom:20px}
 .story-panel h2{font-family:'Outfit',sans-serif;font-size:clamp(30px,4.5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:18px}
 .story-panel h2 span{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -110,7 +130,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .sp-dot{width:28px;height:3px;border-radius:2px;background:var(--d-border2);transition:background .3s}
 .sp-dot.active{background:var(--mint)}
 
-/* ===== SECTION SHARED ===== */
+/* ===== SECTIONS ===== */
 .sec-dark{background:var(--d-bg);color:var(--d-text)}
 .sec-light{background:var(--l-bg);color:var(--l-text)}
 .section-pad{padding:clamp(80px,10vw,130px) clamp(20px,6vw,80px)}
@@ -124,15 +144,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .sec-dark .section-desc{color:var(--d-text2)}
 .sec-light .section-desc{color:var(--l-text2)}
 
-/* ===== STATS BAR (DARK) ===== */
-.stats-bar{display:flex;justify-content:center;gap:clamp(32px,6vw,80px);flex-wrap:wrap;max-width:900px;margin:0 auto;padding:clamp(50px,7vw,80px) 24px;border-top:1px solid var(--d-border);border-bottom:1px solid var(--d-border)}
-.stat{text-align:center}
-.stat-num{font-family:'Outfit',sans-serif;font-size:clamp(40px,5.5vw,64px);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-label{font-size:12.5px;color:var(--d-text2);text-transform:uppercase;letter-spacing:.1em;margin-top:10px}
-
-/* ===== TWO TRACKS (LIGHT) ===== */
+/* ===== TWO TRACKS ===== */
 .tracks{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:0 auto}
-.track-card{background:var(--l-s1);border:1px solid var(--l-border);border-radius:var(--radius);padding:clamp(28px,3vw,40px);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;box-shadow:0 2px 12px rgba(0,0,0,.04);will-change:transform}
+.track-card{background:var(--l-s1);border:1px solid var(--l-border);border-radius:var(--radius);padding:clamp(28px,3vw,40px);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;box-shadow:0 2px 12px rgba(0,0,0,.04)}
 .track-card:hover{border-color:var(--l-border2);transform:translateY(-6px);box-shadow:0 18px 50px rgba(0,0,0,.1)}
 .track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
 .track-card:hover::before{opacity:1}
@@ -155,9 +169,15 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .track-link{font-size:14px;font-weight:600;color:var(--mint-d);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
 .track-link:hover{gap:10px}
 
-/* ===== COURSES (DARK) ===== */
+/* ===== STATS ===== */
+.stats-bar{display:flex;justify-content:center;gap:clamp(32px,6vw,80px);flex-wrap:wrap;max-width:900px;margin:0 auto;padding:clamp(50px,7vw,80px) 24px;border-top:1px solid var(--d-border);border-bottom:1px solid var(--d-border)}
+.stat{text-align:center}
+.stat-num{font-family:'Outfit',sans-serif;font-size:clamp(40px,5.5vw,64px);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:12.5px;color:var(--d-text2);text-transform:uppercase;letter-spacing:.1em;margin-top:10px}
+
+/* ===== COURSES ===== */
 .course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;max-width:1100px;margin:0 auto}
-.course-card{background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden;will-change:transform}
+.course-card{background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden}
 .course-card:hover{border-color:var(--d-border2);transform:translateY(-6px);box-shadow:0 22px 50px rgba(0,0,0,.45)}
 .course-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
 .course-card:hover::after{opacity:1}
@@ -181,12 +201,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .cc-action{font-size:13px;font-weight:600;color:var(--mint)}
 .cc-soon .cc-action{color:var(--d-text3)}
 
-/* ===== ROADMAP (LIGHT) ===== */
+/* ===== ROADMAP ===== */
 .roadmap{max-width:700px;margin:0 auto;position:relative}
 .roadmap::before{content:'';position:absolute;left:23px;top:0;bottom:0;width:2px;background:var(--l-border);z-index:0}
-.roadmap-fill{position:absolute;left:23px;top:0;width:2px;background:linear-gradient(to bottom,var(--mint),var(--violet));z-index:1;height:0%;will-change:height}
+.roadmap-fill{position:absolute;left:23px;top:0;width:2px;background:linear-gradient(to bottom,var(--mint),var(--violet));z-index:1;height:0%}
 .rm-step{display:flex;align-items:flex-start;gap:24px;padding:24px 0;position:relative;z-index:2}
-.rm-dot{width:48px;height:48px;border-radius:50%;border:2px solid var(--l-border2);background:var(--l-s1);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;color:var(--l-text3);flex-shrink:0;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.rm-dot{width:48px;height:48px;border-radius:50%;border:2px solid var(--l-border2);background:var(--l-s1);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;color:var(--l-text3);flex-shrink:0;transition:border-color .3s,color .3s,box-shadow .3s;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .rm-step:hover .rm-dot{border-color:var(--mint);color:var(--mint-d);box-shadow:0 4px 20px var(--mint-glow)}
 .rm-dot.active{border-color:var(--mint);color:var(--mint-d);background:rgba(0,232,176,.06)}
 .rm-content{padding-top:4px}
@@ -194,17 +214,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--d-bg);color:var(-
 .rm-name{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:var(--l-text);margin-bottom:6px;letter-spacing:-.2px}
 .rm-desc{font-size:13.5px;color:var(--l-text2);line-height:1.65}
 
-/* ===== WHY (DARK) ===== */
+/* ===== WHY ===== */
 .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;max-width:1100px;margin:0 auto}
-.why-card{padding:28px;background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);transition:transform .3s,border-color .3s;will-change:transform}
+.why-card{padding:28px;background:var(--d-s1);border:1px solid var(--d-border);border-radius:var(--radius);transition:transform .3s,border-color .3s}
 .why-card:hover{border-color:var(--d-border2);transform:translateY(-4px)}
 .why-emoji{font-size:24px;margin-bottom:16px;display:block}
 .why-title{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.2px}
 .why-desc{font-size:13.5px;color:var(--d-text2);line-height:1.65}
 
-/* ===== CTA (DARK) ===== */
+/* ===== CTA ===== */
 .cta-section{text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--d-border)}
-.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,var(--mint-glow),transparent 60%);pointer-events:none}
+.cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,var(--mint-glow),transparent 60%);pointer-events:none}
 .cta-inner{position:relative;z-index:1;max-width:600px;margin:0 auto}
 .cta-inner h2{font-family:'Outfit',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;color:#fff;letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
 .cta-inner h2 span{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -216,27 +236,24 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
 .foot-logo{font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;color:var(--d-text2)}
 .foot-logo .arr{color:var(--mint)}
 .foot-sub{font-size:12px;color:var(--d-text3)}
-.foot-links{display:flex;align-items:center;gap:16px;font-size:12.5px}
-.foot-links a{color:var(--d-text3);text-decoration:none;transition:color .15s}
-.foot-links a:hover{color:var(--mint)}
-.foot-links span{color:var(--d-text3)}
 
-/* ===== REVEALS ===== */
-.reveal{opacity:0;transform:translateY(30px)}
-.reveal-left{opacity:0;transform:translateX(-30px)}
-.reveal-right{opacity:0;transform:translateX(30px)}
-.reveal-scale{opacity:0;transform:scale(.95)}
+/* ===== REVEAL ANIMATIONS (IntersectionObserver-driven) ===== */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease-out,transform .7s ease-out}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity .8s ease-out,transform .8s ease-out}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity .8s ease-out,transform .8s ease-out}
+.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .5s ease-out,transform .5s ease-out}
+.reveal.in-view,.reveal-left.in-view,.reveal-right.in-view,.reveal-scale.in-view{opacity:1;transform:none}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:900px){
   .tracks{grid-template-columns:1fr}
-  .nav-links .nav-link{display:none}
-  .nav-cta{display:none}
+  .nav-links{display:none}
   .nav-ham{display:block}
+  /* Story becomes stacked cards on mobile — no pinning, no JS */
   .story{height:auto}
-  .story-pin{position:relative;height:auto;padding:40px 20px;gap:0}
-  .story-track{position:relative;flex-direction:column;height:auto;gap:0}
-  .story-panel{position:relative;opacity:1!important;transform:none!important;padding:40px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .story-pin{position:relative;height:auto;padding:0;display:block}
+  .story-track{position:relative;flex-direction:column;height:auto;display:block}
+  .story-panel{position:relative;opacity:1;max-width:none;padding:50px 24px;border-bottom:1px solid var(--d-border);text-align:left}
   .story-panel:last-child{border-bottom:none}
   .story-progress{display:none}
 }
@@ -255,26 +272,22 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
   .why-grid{grid-template-columns:1fr}
   .tracks{gap:16px}
   .section-title{font-size:clamp(28px,8vw,40px);letter-spacing:-1px}
-  .track-list li{padding:7px 8px}
   .roadmap{padding:0 4px}
-}
-@media(prefers-reduced-motion:reduce){
-  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  .hero h1 .line-inner{transform:none!important}
-  .reveal,.reveal-left,.reveal-right,.reveal-scale,.story-panel{opacity:1!important;transform:none!important}
+  /* Reduce orb blur further on small screens for max perf */
+  .hero-orb{filter:blur(50px)}
+  .orb-3{display:none}
 }
 
-/* ===== FAILSAFE: GSAP failed to load — reveal everything ===== */
-.no-gsap .hero-eyebrow,.no-gsap .hero-sub,.no-gsap .hero-actions,.no-gsap .hero-scroll{opacity:1!important}
-.no-gsap .hero h1 .line-inner{transform:none!important}
-.no-gsap .reveal,.no-gsap .reveal-left,.no-gsap .reveal-right,.no-gsap .reveal-scale{opacity:1!important;transform:none!important}
-.no-gsap .story{height:auto}
-.no-gsap .story-pin{position:relative;height:auto;padding:40px 20px}
-.no-gsap .story-track{position:relative;flex-direction:column;height:auto}
-.no-gsap .story-panel{position:relative;opacity:1!important;transform:none!important;padding:40px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.no-gsap .story-panel:last-child{border-bottom:none}
-.no-gsap .story-progress{display:none}
-.no-gsap .stat-num{font-size:clamp(40px,5.5vw,64px)}
+/* ===== REDUCED MOTION ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .ticker-track{animation:none}
+  .hero h1 .line-inner{transform:none}
+  .hero-eyebrow,.hero-sub,.hero-actions{opacity:1;transform:none}
+  .reveal,.reveal-left,.reveal-right,.reveal-scale,.story-panel{opacity:1;transform:none}
+  .arrow-anim{animation:none}
+  .logo-signal{animation:none}
+}
 </style>
 </head>
 <body>
@@ -528,168 +541,213 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
 
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-var reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Detect mobile/touch — these devices get the lightweight path
+  var isMobile = window.matchMedia('(max-width: 900px)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
-/* ===== FAILSAFE: if GSAP didn't load, reveal everything via CSS and stop ===== */
-if(typeof gsap==='undefined'){
-  document.documentElement.classList.add('no-gsap');
-}else{
-gsap.registerPlugin(ScrollTrigger);
+  // ============================================
+  // MOBILE MENU (works always, no dependencies)
+  // ============================================
+  var navHam = document.getElementById('navHam');
+  var mobMenu = document.getElementById('mobMenu');
+  if (navHam && mobMenu) {
+    navHam.addEventListener('click', function(){
+      var open = mobMenu.classList.toggle('open');
+      navHam.textContent = open ? '✕' : '☰';
+    });
+    mobMenu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ mobMenu.classList.remove('open'); navHam.textContent='☰'; });
+    });
+  }
 
-/* ===== LENIS SMOOTH SCROLL (with safe fallback) ===== */
-var lenis;
-if(!reduceMotion && typeof Lenis!=='undefined'){
-  try{
-    lenis=new Lenis({duration:1.1,easing:function(t){return Math.min(1,1.001-Math.pow(2,-10*t))},wheelMultiplier:1,smoothWheel:true});
-    lenis.on('scroll',ScrollTrigger.update);
-    gsap.ticker.add(function(time){lenis.raf(time*1000)});
-    gsap.ticker.lagSmoothing(0);
-    document.querySelectorAll('a[href^="#"]').forEach(function(a){
-      a.addEventListener('click',function(e){
-        var id=this.getAttribute('href');
-        if(id.length>1){e.preventDefault();lenis.scrollTo(id,{offset:-64})}
+  // ============================================
+  // NAVBAR scroll state (lightweight, passive)
+  // ============================================
+  var nav = document.getElementById('nav');
+  var scrollProg = document.getElementById('scrollProg');
+  var ticking = false;
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var y = window.scrollY || document.documentElement.scrollTop;
+      if (nav) nav.classList.toggle('scrolled', y > 80);
+      if (scrollProg) {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        scrollProg.style.width = (h > 0 ? (y / h * 100) : 0) + '%';
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ============================================
+  // COUNTERS (shared — cheap, runs once)
+  // ============================================
+  function animateCounter(el){
+    var target = parseFloat(el.getAttribute('data-count'));
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    if (reduceMotion) { el.textContent = prefix + target + suffix; return; }
+    var start = null, dur = 1400;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ============================================
+  // INTERSECTION OBSERVER REVEALS (shared, GPU-cheap)
+  // This is how we reveal content on BOTH mobile and desktop
+  // without scroll-linked work every frame.
+  // ============================================
+  var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          if (entry.target.classList.contains('stat-num')) animateCounter(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    revealEls.forEach(function(el){ io.observe(el); });
+    document.querySelectorAll('.stat-num').forEach(function(el){ io.observe(el); });
+  } else {
+    // No IO or reduced motion → show everything immediately
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+    document.querySelectorAll('.stat-num').forEach(function(el){
+      el.textContent = (el.getAttribute('data-prefix')||'') + el.getAttribute('data-count') + (el.getAttribute('data-suffix')||'');
+    });
+  }
+
+  // ============================================
+  // STORY PANELS — on mobile, show as stacked cards (CSS handles it).
+  // Reveal them with the same IO.
+  // ============================================
+  document.querySelectorAll('.story-panel').forEach(function(p){
+    if (isMobile || reduceMotion) { p.classList.add('in-view'); }
+  });
+
+  // ============================================
+  // HERO ENTRANCE — pure CSS animation via class.
+  // Add 'loaded' class to trigger the CSS keyframes.
+  // ============================================
+  requestAnimationFrame(function(){
+    document.body.classList.add('loaded');
+  });
+
+  // ============================================
+  // DESKTOP-ONLY rich effects (GSAP + Lenis)
+  // Loaded conditionally so mobile never pays for them.
+  // ============================================
+  if (!isMobile && !reduceMotion) {
+    loadDesktopEnhancements();
+  } else {
+    // Mobile: native CSS ticker is used (see CSS). Story dots hidden.
+    // Smooth anchor scrolling via native CSS scroll-behavior.
+    document.documentElement.style.scrollBehavior = 'smooth';
+  }
+
+  function loadScript(src, cb){
+    var s = document.createElement('script');
+    s.src = src; s.onload = cb; s.onerror = function(){ /* fail silently */ };
+    document.head.appendChild(s);
+  }
+
+  function loadDesktopEnhancements(){
+    // Load GSAP, then ScrollTrigger, then Lenis — only on desktop
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js', function(){
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js', function(){
+        if (typeof gsap === 'undefined') return;
+        gsap.registerPlugin(ScrollTrigger);
+        initDesktopAnimations();
+        loadScript('https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js', function(){
+          initLenis();
+        });
       });
     });
-  }catch(err){lenis=null}
-}
-/* If Lenis unavailable, native smooth-scroll for anchors */
-if(!lenis){
-  document.documentElement.style.scrollBehavior='smooth';
-}
-
-/* ===== SCROLL PROGRESS BAR ===== */
-var prog=document.getElementById('scrollProg');
-function updateProg(){
-  var h=document.documentElement.scrollHeight-window.innerHeight;
-  var s=window.scrollY||document.documentElement.scrollTop;
-  prog.style.width=(h>0?(s/h*100):0)+'%';
-}
-ScrollTrigger.create({start:0,end:'max',onUpdate:updateProg});
-window.addEventListener('scroll',updateProg,{passive:true});
-
-/* ===== NAVBAR ===== */
-ScrollTrigger.create({start:'top -80',onUpdate:function(self){document.getElementById('nav').classList.toggle('scrolled',self.scroll()>80)}});
-
-/* ===== HERO ENTRANCE ===== */
-var heroTL=gsap.timeline({defaults:{ease:'power3.out'}});
-heroTL
-  .to('.hero-eyebrow',{opacity:1,duration:.6,delay:.3})
-  .to('.hero h1 .line-inner',{y:0,duration:.9,stagger:.15,ease:'power4.out'},'<0.2')
-  .to('.hero-sub',{opacity:1,duration:.7},'<0.4')
-  .to('.hero-actions',{opacity:1,duration:.6},'<0.2')
-  .to('#heroScroll',{opacity:1,duration:.5},'<0.3');
-gsap.to('.arrow-anim',{x:8,duration:1.5,repeat:-1,yoyo:true,ease:'power1.inOut'});
-
-/* ===== HERO PARALLAX (orbs + grid move on scroll) ===== */
-if(!reduceMotion){
-  gsap.to('.orb-1',{yPercent:30,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.to('.orb-2',{yPercent:-20,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.to('.hero-grid',{yPercent:15,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.to('.hero-content',{yPercent:20,opacity:.3,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-}
-
-/* ===== TICKER (scroll-velocity aware) ===== */
-var tickerX=0,tickerTrack=document.getElementById('tickerTrack'),trackHalf=0;
-function setTrackHalf(){trackHalf=tickerTrack.scrollWidth/2}
-setTrackHalf();window.addEventListener('resize',setTrackHalf);
-gsap.ticker.add(function(){
-  tickerX-=0.6;
-  if(Math.abs(tickerX)>=trackHalf)tickerX=0;
-  tickerTrack.style.transform='translateX('+tickerX+'px)';
-});
-
-/* ===== PINNED STORY ===== */
-if(!reduceMotion && window.innerWidth>900){
-  var panels=gsap.utils.toArray('.story-panel');
-  var dots=gsap.utils.toArray('.sp-dot');
-  gsap.set(panels[0],{opacity:1,y:0});
-  gsap.set([panels[1],panels[2]],{opacity:0,y:60});
-  var storyTL=gsap.timeline({scrollTrigger:{trigger:'#story',start:'top top',end:'bottom bottom',scrub:1,onUpdate:function(self){
-    var idx=Math.min(2,Math.floor(self.progress*3));
-    dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
-  }}});
-  storyTL
-    .to(panels[0],{opacity:0,y:-60,duration:1})
-    .to(panels[1],{opacity:1,y:0,duration:1},'<0.3')
-    .to(panels[1],{opacity:0,y:-60,duration:1},'+=1')
-    .to(panels[2],{opacity:1,y:0,duration:1},'<0.3')
-    .to(panels[2],{duration:1});
-}
-
-/* ===== STAT COUNTERS ===== */
-gsap.utils.toArray('.stat-num').forEach(function(el){
-  var target=parseFloat(el.getAttribute('data-count'));
-  var prefix=el.getAttribute('data-prefix')||'';
-  var suffix=el.getAttribute('data-suffix')||'';
-  var obj={val:0};
-  ScrollTrigger.create({trigger:el,start:'top 85%',once:true,onEnter:function(){
-    gsap.to(obj,{val:target,duration:1.6,ease:'power2.out',onUpdate:function(){el.textContent=prefix+Math.round(obj.val)+suffix}});
-  }});
-});
-
-/* ===== SCROLL REVEALS ===== */
-gsap.utils.toArray('.reveal').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,y:0,duration:.7,ease:'power2.out'})});
-gsap.utils.toArray('.reveal-left').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,x:0,duration:.8,ease:'power2.out'})});
-gsap.utils.toArray('.reveal-right').forEach(function(el){gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,x:0,duration:.8,ease:'power2.out',delay:.15})});
-ScrollTrigger.batch('.reveal-scale',{start:'top 88%',onEnter:function(b){gsap.to(b,{opacity:1,scale:1,stagger:.08,duration:.5,ease:'back.out(1.2)'})}});
-
-/* ===== ROADMAP LINE FILL (scrubbed) ===== */
-if(!reduceMotion){
-  gsap.to('#roadmapFill',{height:'100%',ease:'none',scrollTrigger:{trigger:'#roadmap',start:'top 60%',end:'bottom 70%',scrub:true}});
-}
-
-/* ===== MAGNETIC BUTTONS ===== */
-if(!reduceMotion && window.matchMedia('(pointer:fine)').matches){
-  document.querySelectorAll('[data-magnetic]').forEach(function(btn){
-    btn.addEventListener('mousemove',function(e){
-      var r=btn.getBoundingClientRect();
-      var x=e.clientX-r.left-r.width/2;
-      var y=e.clientY-r.top-r.height/2;
-      gsap.to(btn,{x:x*0.3,y:y*0.4,duration:.4,ease:'power2.out'});
-    });
-    btn.addEventListener('mouseleave',function(){gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,0.4)'})});
-  });
-}
-
-/* ===== COURSE CARD CURSOR GLOW ===== */
-document.querySelectorAll('.course-card').forEach(function(card){
-  card.addEventListener('mousemove',function(e){
-    var r=card.getBoundingClientRect();
-    card.style.setProperty('--mx',(e.clientX-r.left)+'px');
-    card.style.setProperty('--my',(e.clientY-r.top)+'px');
-  });
-});
-
-ScrollTrigger.refresh();
-
-/* ===== MOBILE MENU ===== */
-var navHam=document.getElementById('navHam'),mobMenu=document.getElementById('mobMenu');
-if(navHam){
-  navHam.addEventListener('click',function(){mobMenu.classList.toggle('open');navHam.textContent=mobMenu.classList.contains('open')?'✕':'☰'});
-  mobMenu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mobMenu.classList.remove('open');navHam.textContent='☰'})});
-}
-} /* end GSAP-available block */
-
-/* Mobile menu must work even without GSAP */
-if(typeof gsap==='undefined'){
-  /* Set counters to final values */
-  document.querySelectorAll('.stat-num').forEach(function(el){
-    var t=el.getAttribute('data-count');
-    var pre=el.getAttribute('data-prefix')||'';
-    var suf=el.getAttribute('data-suffix')||'';
-    el.textContent=pre+t+suf;
-  });
-  var nh=document.getElementById('navHam'),mm=document.getElementById('mobMenu');
-  if(nh){
-    nh.addEventListener('click',function(){mm.classList.toggle('open');nh.textContent=mm.classList.contains('open')?'✕':'☰'});
-    mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mm.classList.remove('open');nh.textContent='☰'})});
   }
-}
 
+  function initLenis(){
+    if (typeof Lenis === 'undefined') return;
+    try {
+      var lenis = new Lenis({ duration: 1.1, easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10*t)); }, smoothWheel: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      document.querySelectorAll('a[href^="#"]').forEach(function(a){
+        a.addEventListener('click', function(e){
+          var id = this.getAttribute('href');
+          if (id.length > 1){ e.preventDefault(); lenis.scrollTo(id, { offset: -64 }); }
+        });
+      });
+    } catch(err){}
+  }
+
+  function initDesktopAnimations(){
+    // Parallax orbs (desktop only — cheap here)
+    gsap.to('.orb-1', { yPercent: 25, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }});
+    gsap.to('.orb-2', { yPercent: -15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }});
+    gsap.to('.hero-grid', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }});
+
+    // Ticker — JS-driven only on desktop
+    var tickerTrack = document.getElementById('tickerTrack');
+    if (tickerTrack) {
+      var tickerX = 0, trackHalf = tickerTrack.scrollWidth / 2;
+      window.addEventListener('resize', function(){ trackHalf = tickerTrack.scrollWidth / 2; });
+      gsap.ticker.add(function(){
+        tickerX -= 0.6;
+        if (Math.abs(tickerX) >= trackHalf) tickerX = 0;
+        tickerTrack.style.transform = 'translateX(' + tickerX + 'px)';
+      });
+    }
+
+    // Pinned story (desktop only)
+    var panels = gsap.utils.toArray('.story-panel');
+    var dots = gsap.utils.toArray('.sp-dot');
+    if (panels.length === 3) {
+      gsap.set(panels[0], { opacity: 1, y: 0 });
+      gsap.set([panels[1], panels[2]], { opacity: 0, y: 60 });
+      var storyTL = gsap.timeline({ scrollTrigger: { trigger: '#story', start: 'top top', end: 'bottom bottom', scrub: 1, onUpdate: function(self){
+        var idx = Math.min(2, Math.floor(self.progress * 3));
+        dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
+      }}});
+      storyTL
+        .to(panels[0], { opacity: 0, y: -60, duration: 1 })
+        .to(panels[1], { opacity: 1, y: 0, duration: 1 }, '<0.3')
+        .to(panels[1], { opacity: 0, y: -60, duration: 1 }, '+=1')
+        .to(panels[2], { opacity: 1, y: 0, duration: 1 }, '<0.3')
+        .to(panels[2], { duration: 1 });
+    }
+
+    // Roadmap line fill
+    var rmFill = document.getElementById('roadmapFill');
+    if (rmFill) {
+      gsap.to(rmFill, { height: '100%', ease: 'none', scrollTrigger: { trigger: '#roadmap', start: 'top 60%', end: 'bottom 70%', scrub: true }});
+    }
+
+    // Magnetic buttons (desktop, fine pointer only)
+    if (window.matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('[data-magnetic]').forEach(function(btn){
+        btn.addEventListener('mousemove', function(e){
+          var r = btn.getBoundingClientRect();
+          gsap.to(btn, { x: (e.clientX - r.left - r.width/2) * 0.3, y: (e.clientY - r.top - r.height/2) * 0.4, duration: 0.4, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', function(){ gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)' }); });
+      });
+    }
+  }
+})();
 </script>
 </body>
 </html>
