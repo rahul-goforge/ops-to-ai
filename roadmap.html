@@ -4,6 +4,20 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Learning Roadmap — DevOps to AI | ops → ai"/>
+<meta property="og:description" content="An interactive skill tree for DevOps, SRE and Platform Engineers moving into AI. Track your progress through the most efficient learning path."/>
+<meta property="og:url" content="https://opstoai.com/roadmap"/>
+<meta property="og:image" content="https://opstoai.com/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:site_name" content="ops → ai"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Learning Roadmap — DevOps to AI | ops → ai"/>
+<meta name="twitter:description" content="An interactive skill tree for DevOps, SRE and Platform Engineers moving into AI. Track your progress through the most efficient learning path."/>
+<meta name="twitter:image" content="https://opstoai.com/og-image.png"/>
+<meta name="theme-color" content="#08090E"/>
+<link rel="canonical" href="https://opstoai.com/roadmap"/>
 <title>Learning Roadmap — ops → ai</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -156,7 +170,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div id="authArea">
       <button class="auth-btn auth-login" id="loginBtn" onclick="signInWithGitHub()">Sign in with GitHub</button>
       <div class="auth-hide auth-group" id="userArea">
-        <img class="auth-avatar" id="userAvatar" src="" style="display:none" alt=""/>
+        <img class="auth-avatar" id="userAvatar" style="display:none" alt=""/>
         <span class="auth-name" id="userName"></span>
         <button class="auth-logout" onclick="handleSignOut()">Sign out</button>
       </div>
@@ -467,7 +481,9 @@ function saveProgress(skillId) {
     sb.from('progress').upsert({
       user_id: currentUser.id,
       skill_id: skillId
-    }, { onConflict: 'user_id,skill_id' }).then(function() {});
+    }, { onConflict: 'user_id,skill_id' }).then(function(res) {
+      if (res && res.error) console.error('[ops-to-ai] saveProgress error:', res.error);
+    });
   }
 }
 
@@ -479,30 +495,40 @@ function removeProgress(skillId) {
     sb.from('progress').delete()
       .eq('user_id', currentUser.id)
       .eq('skill_id', skillId)
-      .then(function() {});
+      .then(function(res) {
+        if (res && res.error) console.error('[ops-to-ai] removeProgress error:', res.error);
+      });
   }
 }
 
 async function loadProgress() {
-  // Try Supabase first
   var sb = getSupabase();
+
+  // If logged in, Supabase is the SINGLE source of truth (even if empty).
   if (sb && currentUser) {
     try {
       var res = await sb.from('progress').select('skill_id').eq('user_id', currentUser.id);
-      if (res.data && res.data.length > 0) {
-        completedSkills = {};
+      completedSkills = {};
+      if (res.data) {
         res.data.forEach(function(r) { completedSkills[r.skill_id] = true; });
-        localStorage.setItem('ota-progress', JSON.stringify(completedSkills));
-        return;
       }
-    } catch (e) {}
+      // Mirror to localStorage as an offline cache for this logged-in user
+      localStorage.setItem('ota-progress', JSON.stringify(completedSkills));
+      return;
+    } catch (e) {
+      console.error('[ops-to-ai] loadProgress error:', e);
+      completedSkills = {};
+      return;
+    }
   }
 
-  // Fall back to localStorage
+  // Not logged in → use localStorage (anonymous local progress)
   try {
     var stored = localStorage.getItem('ota-progress');
-    if (stored) completedSkills = JSON.parse(stored);
-  } catch (e) {}
+    completedSkills = stored ? JSON.parse(stored) : {};
+  } catch (e) {
+    completedSkills = {};
+  }
 }
 
 // ============================================
@@ -538,10 +564,14 @@ async function initAuth() {
     var ua = document.getElementById('userArea');
     ua.classList.remove('auth-hide');
     var profile = await getUserProfile(currentUser.id);
-    var name = profile ? profile.display_name : currentUser.email;
+    var name = profile ? (profile.display_name || profile.username) : (currentUser.email || 'You');
     var avatar = profile ? profile.avatar_url : '';
-    document.getElementById('userBtn').innerHTML =
-      (avatar ? '<img src="' + escHTML(safeURL(avatar)) + '" class="auth-avatar"/>' : '') + escHTML(name);
+    document.getElementById('userName').textContent = name;
+    if (avatar) {
+      var img = document.getElementById('userAvatar');
+      img.src = safeURL(avatar);
+      img.style.display = 'block';
+    }
   }
 
   await loadProgress();

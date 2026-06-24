@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="OpenShift — Beginner to Advanced | ops → ai"/>
+<meta property="og:description" content="Complete free guide to Red Hat OpenShift: architecture, oc CLI, deployments, RBAC, Operators, CI/CD with GitOps, and cluster administration."/>
+<meta property="og:url" content="https://opstoai.com/openshift"/>
+<meta property="og:image" content="https://opstoai.com/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:site_name" content="ops → ai"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="OpenShift — Beginner to Advanced | ops → ai"/>
+<meta name="twitter:description" content="Complete free guide to Red Hat OpenShift: architecture, oc CLI, deployments, RBAC, Operators, CI/CD with GitOps, and cluster administration."/>
+<meta name="twitter:image" content="https://opstoai.com/og-image.png"/>
+<meta name="theme-color" content="#08090E"/>
+<link rel="canonical" href="https://opstoai.com/openshift"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>OpenShift Guide — ops→ai</title>
 <style>
@@ -1477,8 +1491,10 @@ const navLinks = document.querySelectorAll('.sidebar-nav a[data-label]');
 
 function updateProgress() {
   const pct = Math.round((done.size / chapters.length) * 100);
-  document.getElementById('prog-pct').textContent = pct + '%';
-  document.getElementById('prog-bar').style.width = pct + '%';
+  var pctEl = document.getElementById('prog-pct');
+  var barEl = document.getElementById('prog-bar');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (barEl) barEl.style.width = pct + '%';
   localStorage.setItem('os-done', JSON.stringify([...done]));
 }
 
