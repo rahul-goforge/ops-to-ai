@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<title>404 — Page not found | ops → ai</title>
+<meta name="robots" content="noindex"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090E;--mint:#00E8B0;--violet:#7C5CFC;--text:#E8ECF4;--text2:#8B9AB8;--text3:#4B5672;--border:rgba(255,255,255,.1)}
+html{-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-x:hidden;overflow-y:auto;position:relative;width:100%;max-width:100vw}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.orb1{width:400px;height:400px;background:var(--mint);opacity:.06;top:-100px;right:0}
+.orb2{width:350px;height:350px;background:var(--violet);opacity:.06;bottom:-80px;left:0}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 20%,transparent 75%)}
+.content{position:relative;z-index:1;text-align:center;max-width:520px}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:48px}
+.logo-dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+.logo-word{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:#fff}
+.logo-word .arr{color:var(--mint)}
+.big{font-family:'Outfit',sans-serif;font-size:clamp(90px,20vw,160px);font-weight:900;line-height:1;letter-spacing:-6px;background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.code{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text3);margin-bottom:24px}
+h1{font-family:'Outfit',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:14px}
+p{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:36px}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:13px 26px;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-mint{background:var(--mint);color:var(--bg)}
+.btn-mint:hover{background:#00d4a0;transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.links{margin-top:40px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13px}
+.links a{color:var(--text3);text-decoration:none;transition:color .15s}
+.links a:hover{color:var(--mint)}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="grid"></div>
+<div class="content">
+  <a href="/" class="logo"><span class="logo-dot"></span><span class="logo-word">ops<span class="arr">→</span>ai</span></a>
+  <div class="big">404</div>
+  <div class="code">// route not found in cluster</div>
+  <h1>This page took a different path</h1>
+  <p>The page you're looking for doesn't exist or was moved. Let's get you back on the learning path.</p>
+  <div class="actions">
+    <a href="/" class="btn btn-mint">← Back to home</a>
+    <a href="/roadmap" class="btn btn-ghost">View the roadmap</a>
+  </div>
+  <div class="links">
+    <a href="/ai-devops">AI for DevOps</a>
+    <a href="/openshift">OpenShift</a>
+    <a href="/blog">Blog</a>
+    <a href="/roadmap">Roadmap</a>
+  </div>
+</div>
+</body>
+</html>

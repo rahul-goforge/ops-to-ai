@@ -1,0 +1,8 @@
+# Clean URLs — serve .html files at extension-less paths
+/ai-devops    /ai-devops.html    200
+/openshift    /openshift.html    200
+/roadmap      /roadmap.html      200
+/blog         /blog.html         200
+
+# 404 fallback for anything not found
+/*    /404.html    404

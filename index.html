@@ -8,6 +8,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="ops → ai — Free DevOps to AI Learning Path"/>
+<meta property="og:description" content="From Operations to AI Engineering. Free, project-based courses for DevOps, SRE and Platform Engineers learning AI, Kubernetes, CI/CD, and Go."/>
+<meta property="og:url" content="https://opstoai.com/"/>
+<meta property="og:image" content="https://opstoai.com/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:site_name" content="ops → ai"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ops → ai — Free DevOps to AI Learning Path"/>
+<meta name="twitter:description" content="From Operations to AI Engineering. Free, project-based courses for DevOps, SRE and Platform Engineers learning AI, Kubernetes, CI/CD, and Go."/>
+<meta name="twitter:image" content="https://opstoai.com/og-image.png"/>
+<meta name="theme-color" content="#08090E"/>
+<link rel="canonical" href="https://opstoai.com/"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -288,6 +302,87 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
   .arrow-anim{animation:none}
   .logo-signal{animation:none}
 }
+/* ===== WHAT'S NEW TODAY (horizontal scroll feed) ===== */
+.whatsnew{background:var(--d-bg);padding:clamp(60px,8vw,100px) 0 clamp(60px,8vw,100px)}
+.wn-head{padding:0 clamp(20px,6vw,80px);max-width:1200px;margin:0 auto 36px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.wn-head-left{flex:1;min-width:260px}
+.wn-live{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--mint);margin-bottom:14px}
+.wn-live-dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 0 var(--mint);animation:wnPulse 2s infinite}
+@keyframes wnPulse{0%{box-shadow:0 0 0 0 rgba(0,232,176,.5)}70%{box-shadow:0 0 0 8px rgba(0,232,176,0)}100%{box-shadow:0 0 0 0 rgba(0,232,176,0)}}
+.wn-title{font-family:'Outfit',sans-serif;font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-1.4px;line-height:1.05;color:#fff;margin-bottom:10px}
+.wn-title span{background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.wn-sub{font-size:clamp(14px,1.4vw,16px);color:var(--d-text2);line-height:1.6;max-width:440px}
+.wn-controls{display:flex;gap:8px;align-items:center}
+.wn-arrow{width:44px;height:44px;border-radius:50%;border:1px solid var(--d-border2);background:var(--d-s1);color:var(--d-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .1s;flex-shrink:0}
+.wn-arrow:hover{background:var(--d-s3);border-color:var(--mint)}
+.wn-arrow:active{transform:scale(.94)}
+.wn-arrow:disabled{opacity:.3;cursor:not-allowed}
+.wn-arrow:disabled:hover{background:var(--d-s1);border-color:var(--d-border2)}
+
+/* Scroll rail */
+.wn-rail-wrap{position:relative}
+.wn-rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:6px clamp(20px,6vw,80px) 24px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.wn-rail::-webkit-scrollbar{display:none}
+
+/* Card */
+.wn-card{scroll-snap-align:start;flex:0 0 auto;width:340px;max-width:82vw;background:linear-gradient(160deg,var(--d-s2),var(--d-s1));border:1px solid var(--d-border);border-radius:18px;padding:26px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s}
+.wn-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--mint),var(--violet));opacity:0;transition:opacity .3s}
+.wn-card:hover{transform:translateY(-6px);border-color:var(--d-border2);box-shadow:0 24px 50px rgba(0,0,0,.4)}
+.wn-card:hover::before{opacity:1}
+.wn-card-emoji{font-size:34px;line-height:1;margin-bottom:18px}
+.wn-card-tag{position:absolute;top:24px;right:24px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--mint);background:var(--mint-dim);border:1px solid rgba(0,232,176,.2);padding:4px 10px;border-radius:20px}
+.wn-card-title{font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.25;margin-bottom:12px}
+.wn-card-body{font-size:14px;color:var(--d-text2);line-height:1.7;flex:1;white-space:pre-wrap;word-wrap:break-word}
+.wn-card-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--d-text3);margin-top:20px;padding-top:16px;border-top:1px solid var(--d-border);display:flex;align-items:center;gap:7px}
+.wn-card-date::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--mint);opacity:.6}
+.wn-card-del{position:absolute;bottom:18px;right:18px;font-size:11px;color:var(--d-text3);background:none;border:1px solid var(--d-border);border-radius:6px;padding:3px 9px;cursor:pointer;opacity:0;transition:opacity .2s,color .2s,border-color .2s}
+.wn-card:hover .wn-card-del{opacity:1}
+.wn-card-del:hover{color:var(--rose);border-color:rgba(251,113,133,.3)}
+
+/* Add-new card (admin only) */
+.wn-card-add{align-items:center;justify-content:center;text-align:center;border-style:dashed;cursor:pointer;min-height:260px}
+.wn-card-add:hover{border-color:var(--mint)}
+.wn-add-icon{width:52px;height:52px;border-radius:50%;background:var(--mint-dim);color:var(--mint);font-size:26px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.wn-add-text{font-size:14px;font-weight:600;color:var(--d-text2)}
+
+/* Empty state */
+.wn-empty{padding:0 clamp(20px,6vw,80px)}
+.wn-empty-inner{max-width:1200px;margin:0 auto;background:var(--d-s1);border:1px solid var(--d-border);border-radius:18px;padding:48px 24px;text-align:center}
+.wn-empty-emoji{font-size:32px;margin-bottom:12px}
+.wn-empty-title{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.wn-empty-desc{font-size:14px;color:var(--d-text2)}
+
+/* Progress dots */
+.wn-dots{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.wn-dot{width:6px;height:6px;border-radius:50%;background:var(--d-border2);transition:background .3s,width .3s}
+.wn-dot.active{background:var(--mint);width:20px}
+
+/* Admin compose modal */
+.wn-modal{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+.wn-modal.open{display:flex}
+.wn-modal-box{background:var(--d-s1);border:1px solid var(--d-border2);border-radius:18px;padding:28px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
+.wn-modal-title{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:20px}
+.wn-field{margin-bottom:16px}
+.wn-label{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--d-text2);margin-bottom:6px;display:block}
+.wn-input,.wn-textarea,.wn-emoji-input{width:100%;background:var(--d-s3);border:1px solid var(--d-border2);border-radius:10px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--d-text);outline:none;transition:border-color .15s}
+.wn-input:focus,.wn-textarea:focus,.wn-emoji-input:focus{border-color:var(--mint)}
+.wn-textarea{resize:vertical;min-height:120px;line-height:1.6}
+.wn-emoji-row{display:flex;gap:10px}
+.wn-emoji-input{width:70px;text-align:center;font-size:22px}
+.wn-emoji-picks{display:flex;gap:6px;flex-wrap:wrap;flex:1;align-items:center}
+.wn-emoji-pick{font-size:22px;cursor:pointer;padding:4px;border-radius:8px;transition:background .15s;line-height:1}
+.wn-emoji-pick:hover{background:var(--d-s3)}
+.wn-modal-actions{display:flex;gap:10px;margin-top:22px}
+.wn-publish{flex:1;background:var(--mint);color:var(--d-bg);font-size:14px;font-weight:600;padding:12px;border:none;border-radius:10px;cursor:pointer;transition:background .2s}
+.wn-publish:hover{background:#00d4a0}
+.wn-cancel{background:var(--d-s3);color:var(--d-text2);font-size:14px;font-weight:500;padding:12px 20px;border:1px solid var(--d-border2);border-radius:10px;cursor:pointer}
+
+@media(max-width:600px){
+  .wn-controls{display:none}
+  .wn-card{width:300px}
+  .wn-rail{padding-left:20px;padding-right:20px}
+}
+
 </style>
 </head>
 <body>
@@ -345,6 +440,61 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
   <div class="ticker-track" id="tickerTrack">
     <span class="ticker-item">Kubernetes</span><span class="ticker-item">AI Agents</span><span class="ticker-item">LLM Foundations</span><span class="ticker-item">RAG Systems</span><span class="ticker-item">Docker</span><span class="ticker-item">GitHub Actions</span><span class="ticker-item">Terraform</span><span class="ticker-item">MCP Protocol</span><span class="ticker-item">Prometheus</span><span class="ticker-item">Go Programming</span><span class="ticker-item">ArgoCD</span><span class="ticker-item">OpenShift</span><span class="ticker-item">Vector Databases</span><span class="ticker-item">SRE Practices</span><span class="ticker-item">AIOps</span><span class="ticker-item">Grafana</span><span class="ticker-item">LangChainGo</span>
     <span class="ticker-item">Kubernetes</span><span class="ticker-item">AI Agents</span><span class="ticker-item">LLM Foundations</span><span class="ticker-item">RAG Systems</span><span class="ticker-item">Docker</span><span class="ticker-item">GitHub Actions</span><span class="ticker-item">Terraform</span><span class="ticker-item">MCP Protocol</span><span class="ticker-item">Prometheus</span><span class="ticker-item">Go Programming</span><span class="ticker-item">ArgoCD</span><span class="ticker-item">OpenShift</span><span class="ticker-item">Vector Databases</span><span class="ticker-item">SRE Practices</span><span class="ticker-item">AIOps</span><span class="ticker-item">Grafana</span><span class="ticker-item">LangChainGo</span>
+  </div>
+</div>
+
+
+<!-- WHAT'S NEW TODAY -->
+<section class="whatsnew" id="whatsnew">
+  <div class="wn-head">
+    <div class="wn-head-left">
+      <div class="wn-live"><span class="wn-live-dot"></span>Learning in public</div>
+      <h2 class="wn-title">What's new <span>today</span></h2>
+      <p class="wn-sub">Bite-sized concepts I'm learning as I build this platform. New things, fresh ideas, real discoveries — scroll through.</p>
+    </div>
+    <div class="wn-controls">
+      <button class="wn-arrow" id="wnPrev" aria-label="Previous">←</button>
+      <button class="wn-arrow" id="wnNext" aria-label="Next">→</button>
+    </div>
+  </div>
+  <div class="wn-rail-wrap">
+    <div class="wn-rail" id="wnRail">
+      <!-- Cards injected by JS -->
+      <div class="wn-empty" id="wnLoading"><div class="wn-empty-inner"><div class="wn-empty-emoji">⏳</div><div class="wn-empty-title">Loading…</div></div></div>
+    </div>
+  </div>
+  <div class="wn-dots" id="wnDots"></div>
+</section>
+
+<!-- Admin compose modal -->
+<div class="wn-modal" id="wnModal">
+  <div class="wn-modal-box">
+    <div class="wn-modal-title">Share something new</div>
+    <div class="wn-field">
+      <label class="wn-label">Emoji</label>
+      <div class="wn-emoji-row">
+        <input class="wn-emoji-input" id="wnEmoji" value="💡" maxlength="2"/>
+        <div class="wn-emoji-picks">
+          <span class="wn-emoji-pick">💡</span><span class="wn-emoji-pick">🔁</span><span class="wn-emoji-pick">🧠</span><span class="wn-emoji-pick">⚡</span><span class="wn-emoji-pick">🚀</span><span class="wn-emoji-pick">🔧</span><span class="wn-emoji-pick">📦</span><span class="wn-emoji-pick">🤖</span><span class="wn-emoji-pick">🔑</span>
+        </div>
+      </div>
+    </div>
+    <div class="wn-field">
+      <label class="wn-label">Title</label>
+      <input class="wn-input" id="wnTitleInput" placeholder="e.g. Loops in AI agents"/>
+    </div>
+    <div class="wn-field">
+      <label class="wn-label">What you learned</label>
+      <textarea class="wn-textarea" id="wnBodyInput" placeholder="Explain it simply, like you're telling a friend…"></textarea>
+    </div>
+    <div class="wn-field">
+      <label class="wn-label">Tag (optional)</label>
+      <input class="wn-input" id="wnTagInput" placeholder="e.g. ai, kubernetes, go"/>
+    </div>
+    <div class="wn-modal-actions">
+      <button class="wn-publish" id="wnPublish">Publish</button>
+      <button class="wn-cancel" id="wnCancelBtn">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -749,5 +899,175 @@ footer{padding:32px clamp(20px,6vw,80px);border-top:1px solid var(--d-border);ba
   }
 })();
 </script>
+
+<!-- WHAT'S NEW — Supabase + scroll logic -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  var wnUser = null, wnIsAdmin = false, wnLearnings = [];
+  var rail = document.getElementById('wnRail');
+  var dotsWrap = document.getElementById('wnDots');
+
+  function wnEsc(s){ var d=document.createElement('div'); d.textContent=s==null?'':s; return d.innerHTML; }
+
+  function fmtDate(iso){
+    try {
+      var d = new Date(iso);
+      var now = new Date();
+      var diff = Math.floor((now - d)/86400000);
+      if (diff === 0) return 'Today';
+      if (diff === 1) return 'Yesterday';
+      if (diff < 7) return diff + ' days ago';
+      return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    } catch(e){ return ''; }
+  }
+
+  async function wnInit(){
+    var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+    if (!sb) { renderEmpty('Connect Supabase to enable this feed.'); return; }
+
+    // Who's logged in + are they admin?
+    try {
+      var u = await sb.auth.getUser();
+      wnUser = u.data.user;
+      if (wnUser) {
+        var prof = await sb.from('profiles').select('is_admin').eq('id', wnUser.id).single();
+        wnIsAdmin = !!(prof.data && prof.data.is_admin);
+      }
+    } catch(e){}
+
+    await loadLearnings();
+  }
+
+  async function loadLearnings(){
+    var sb = getSupabase();
+    if (!sb) { renderEmpty('Connect Supabase to enable this feed.'); return; }
+    try {
+      var res = await sb.from('learnings').select('*').order('created_at',{ascending:false});
+      if (res.error) { renderEmpty('Nothing here yet.'); return; }
+      wnLearnings = res.data || [];
+      render();
+    } catch(e){ renderEmpty('Nothing here yet.'); }
+  }
+
+  function renderEmpty(msg){
+    var addCard = wnIsAdmin ? adminAddCardHTML() : '';
+    if (wnIsAdmin) {
+      rail.innerHTML = addCard;
+      bindAddCard();
+      dotsWrap.innerHTML = '';
+    } else {
+      rail.innerHTML = '<div class="wn-empty"><div class="wn-empty-inner"><div class="wn-empty-emoji">🌱</div><div class="wn-empty-title">First entry coming soon</div><div class="wn-empty-desc">'+wnEsc(msg)+'</div></div></div>';
+      dotsWrap.innerHTML = '';
+    }
+  }
+
+  function adminAddCardHTML(){
+    return '<div class="wn-card wn-card-add" id="wnAddCard"><div class="wn-add-icon">+</div><div class="wn-add-text">Add a new learning</div></div>';
+  }
+
+  function render(){
+    if (wnLearnings.length === 0) { renderEmpty('First entry coming soon.'); return; }
+    var html = '';
+    wnLearnings.forEach(function(l){
+      html += '<div class="wn-card" data-id="'+wnEsc(l.id)+'">';
+      if (l.tag) html += '<div class="wn-card-tag">'+wnEsc(l.tag)+'</div>';
+      html += '<div class="wn-card-emoji">'+wnEsc(l.emoji||'💡')+'</div>';
+      html += '<div class="wn-card-title">'+wnEsc(l.title)+'</div>';
+      html += '<div class="wn-card-body">'+wnEsc(l.body)+'</div>';
+      html += '<div class="wn-card-date">'+fmtDate(l.created_at)+'</div>';
+      if (wnIsAdmin) html += '<button class="wn-card-del" data-del="'+wnEsc(l.id)+'">Delete</button>';
+      html += '</div>';
+    });
+    if (wnIsAdmin) html += adminAddCardHTML();
+    rail.innerHTML = html;
+    bindAddCard();
+    bindDelete();
+    buildDots();
+  }
+
+  function bindAddCard(){
+    var add = document.getElementById('wnAddCard');
+    if (add) add.addEventListener('click', openModal);
+  }
+
+  function bindDelete(){
+    rail.querySelectorAll('[data-del]').forEach(function(btn){
+      btn.addEventListener('click', async function(e){
+        e.stopPropagation();
+        if (!confirm('Delete this learning?')) return;
+        var id = btn.getAttribute('data-del');
+        var sb = getSupabase();
+        await sb.from('learnings').delete().eq('id', id);
+        await loadLearnings();
+      });
+    });
+  }
+
+  function buildDots(){
+    var cards = rail.querySelectorAll('.wn-card:not(.wn-card-add)');
+    dotsWrap.innerHTML = '';
+    cards.forEach(function(_,i){
+      var dot = document.createElement('div');
+      dot.className = 'wn-dot' + (i===0?' active':'');
+      dotsWrap.appendChild(dot);
+    });
+  }
+
+  // Scroll controls
+  function cardWidth(){
+    var c = rail.querySelector('.wn-card');
+    return c ? c.offsetWidth + 18 : 358;
+  }
+  var prevBtn = document.getElementById('wnPrev');
+  var nextBtn = document.getElementById('wnNext');
+  if (prevBtn) prevBtn.addEventListener('click', function(){ rail.scrollBy({left:-cardWidth(),behavior:'smooth'}); });
+  if (nextBtn) nextBtn.addEventListener('click', function(){ rail.scrollBy({left:cardWidth(),behavior:'smooth'}); });
+
+  // Update dots + arrow states on scroll
+  rail.addEventListener('scroll', function(){
+    var cards = rail.querySelectorAll('.wn-card:not(.wn-card-add)');
+    var dots = dotsWrap.querySelectorAll('.wn-dot');
+    var idx = Math.round(rail.scrollLeft / cardWidth());
+    dots.forEach(function(d,i){ d.classList.toggle('active', i===Math.min(idx,dots.length-1)); });
+    if (prevBtn) prevBtn.disabled = rail.scrollLeft < 10;
+    if (nextBtn) nextBtn.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 10;
+  }, {passive:true});
+
+  // ===== Compose modal =====
+  var modal = document.getElementById('wnModal');
+  function openModal(){ if(modal) modal.classList.add('open'); }
+  function closeModal(){ if(modal) modal.classList.remove('open'); }
+
+  var cancelBtn = document.getElementById('wnCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  if (modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+
+  document.querySelectorAll('.wn-emoji-pick').forEach(function(el){
+    el.addEventListener('click', function(){ document.getElementById('wnEmoji').value = el.textContent; });
+  });
+
+  var publishBtn = document.getElementById('wnPublish');
+  if (publishBtn) publishBtn.addEventListener('click', async function(){
+    var emoji = document.getElementById('wnEmoji').value.trim() || '💡';
+    var title = document.getElementById('wnTitleInput').value.trim();
+    var body = document.getElementById('wnBodyInput').value.trim();
+    var tag = document.getElementById('wnTagInput').value.trim().toLowerCase();
+    if (!title || !body) { alert('Title and body are required.'); return; }
+    var sb = getSupabase();
+    var res = await sb.from('learnings').insert({ author_id: wnUser.id, emoji: emoji, title: title, body: body, tag: tag });
+    if (res.error) { alert('Could not publish: ' + res.error.message); return; }
+    document.getElementById('wnTitleInput').value = '';
+    document.getElementById('wnBodyInput').value = '';
+    document.getElementById('wnTagInput').value = '';
+    closeModal();
+    await loadLearnings();
+  });
+
+  wnInit();
+})();
+</script>
+
 </body>
 </html>
