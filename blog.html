@@ -532,9 +532,6 @@ async function publishPost() {
   var tagsRaw = document.getElementById('wfTags').value.trim();
 
   if (!title || !content) { alert('Title and content are required.'); return; }
-  if (title.length > 200) { alert('Title must be under 200 characters.'); return; }
-  if (content.length > 20000) { alert('Content must be under 20,000 characters.'); return; }
-  if (tags.length > 5) { alert('Maximum 5 tags allowed.'); return; }
 
   var tags = tagsRaw ? tagsRaw.split(',').map(function(t) { return t.trim().toLowerCase(); }).filter(Boolean) : [];
 

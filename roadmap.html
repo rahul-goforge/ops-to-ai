@@ -103,10 +103,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .sk-info{flex:1;min-width:0}
 .sk-name{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3}
 .skill.done .sk-name{color:var(--mint)}
-.skill.coming{opacity:.45;pointer-events:none}
-.skill.coming .sk-check{display:none}
-.skill.coming .sk-chev{display:none}
-.sk-coming-badge{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.06);color:var(--text3);border:1px solid var(--border);flex-shrink:0}
+
 .sk-meta{font-size:12px;color:var(--text3);margin-top:2px;display:flex;gap:12px}
 .sk-chev{color:var(--text3);font-size:11px;transition:transform .2s;flex-shrink:0}
 .skill.open .sk-chev{transform:rotate(180deg);color:var(--mint)}
@@ -211,133 +208,34 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 // SKILL TREE DATA
 // ============================================
 var SKILLS = [
-  // OPS CORE
-  {id:'linux',name:'Linux & Networking',track:'ops',tier:'Foundation',time:'2 weeks',
-    desc:'Everything runs on Linux. Master the command line, file systems, processes, systemd, and networking fundamentals — IP, DNS, HTTP/S, SSH, firewalls, and the OSI model.',
-    topics:['Command line','File permissions','Process management','systemd & journald','TCP/IP & DNS','SSH & firewalls','OSI model','Package managers'],
-    resources:[
-      {icon:'📺',title:'Linux for Hackers (Full Course)',src:'youtube.com',url:'https://www.youtube.com/watch?v=VbEx7B_PTOE'},
-      {icon:'📖',title:'The Linux Command Line (free book)',src:'linuxcommand.org',url:'https://linuxcommand.org/tlcl.php'}
-    ]},
-  {id:'git',name:'Git & Collaboration',track:'ops',tier:'Foundation',time:'0.5 weeks',
-    desc:'Version control is non-negotiable. Branching, merging, pull requests, rebasing, and code review workflows.',
-    topics:['Branching & merging','Pull requests','Rebasing','Code review','Git hooks','.gitignore'],
-    resources:[
-      {icon:'🎮',title:'Learn Git Branching (interactive)',src:'learngitbranching.js.org',url:'https://learngitbranching.js.org/'}
-    ]},
-  {id:'go',name:'Go for Ops Engineers',track:'ops',tier:'Foundation',time:'2–3 weeks',
-    desc:'Go is the language of cloud-native: Kubernetes, Docker, Prometheus, Terraform, k8sgpt — all written in Go. Learn it once, read the source of everything.',
-    topics:['Goroutines & channels','Structs & interfaces','Error handling','HTTP servers','CLI with cobra','Testing','Modules & packages'],
-    resources:[
-      {icon:'📖',title:'Go by Example',src:'gobyexample.com',url:'https://gobyexample.com/'},
-      {icon:'📺',title:'Go Full Course — freeCodeCamp',src:'youtube.com',url:'https://www.youtube.com/watch?v=un6ZyFkqFKo'}
-    ],
-    playground:true},
-  {id:'bash',name:'Bash & Shell Scripting',track:'ops',tier:'Foundation',time:'0.5 weeks',
-    desc:'The glue of operations. Automate anything with bash: parsing logs, health checks, deployment scripts, cron jobs.',
-    topics:['Variables & loops','Functions','Pipes & redirection','sed & awk','cron','Error handling','trap & signals'],
-    resources:[]},
-  {id:'docker',name:'Docker & Containers',track:'ops',tier:'Core Stack',time:'1.5 weeks',
-    desc:'Containers are the deployment standard. Understand images, Dockerfiles, multi-stage builds, Compose, registries, and container hardening.',
-    topics:['Dockerfile','Multi-stage builds','Docker Compose','Registries','Volumes & networks','Container security','Image scanning'],
-    resources:[
-      {icon:'📺',title:'Docker Tutorial for Beginners — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=3c-iBn73dDE'}
-    ]},
-  {id:'kubernetes',name:'Kubernetes Fundamentals',track:'ops',tier:'Core Stack',time:'3 weeks',
-    desc:'The single highest-leverage skill in the market. 82% of container users run Kubernetes in production. Pods, Deployments, Services, Ingress, ConfigMaps, Secrets, Helm.',
-    topics:['Pods & Deployments','Services & Ingress','ConfigMaps & Secrets','PersistentVolumes','Namespaces','Helm','RBAC','kubectl'],
-    resources:[
-      {icon:'📺',title:'Kubernetes Full Course — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=X48VuDVv0do'},
-      {icon:'🎮',title:'Killercoda Interactive K8s Labs',src:'killercoda.com',url:'https://killercoda.com/playgrounds/scenario/kubernetes'}
-    ]},
-  {id:'openshift',name:'OpenShift',track:'ops',tier:'Core Stack',time:'2 weeks',link:'openshift.html',available:true,
-    desc:'Red Hat\'s enterprise Kubernetes platform. If your company runs OpenShift, you need to understand SCCs, Routes, Operators, OLM, and how it differs from vanilla K8s.',
+  {id:'openshift',name:'OpenShift',track:'ops',tier:'Ops Core',time:'2 weeks',link:'openshift.html',available:true,
+    desc:'Red Hat\'s enterprise Kubernetes platform. Architecture, oc CLI, deployments, RBAC, Operators, OLM, CI/CD with GitOps, and cluster administration.',
     topics:['oc CLI','Routes vs Ingress','SCCs','Operators & OLM','DeploymentConfigs','Builds & S2I','RBAC'],
-    resources:[
-      {icon:'📖',title:'OpenShift Guide (this site)',src:'ops-to-ai',url:'openshift.html'}
-    ]},
-  {id:'cicd',name:'CI/CD — GitHub Actions',track:'ops',tier:'Automation',time:'1.5 weeks',
-    desc:'The dominant CI/CD tool (62% of developers). Build, test, scan, deploy — all as pipeline-as-code in your repo.',
-    topics:['Workflow syntax','Triggers & events','Jobs & steps','Secrets & variables','Matrix builds','Custom actions','Artifact caching'],
-    resources:[
-      {icon:'📖',title:'GitHub Actions Documentation',src:'docs.github.com',url:'https://docs.github.com/en/actions'}
-    ]},
-  {id:'terraform',name:'Terraform / OpenTofu',track:'ops',tier:'Automation',time:'2 weeks',
-    desc:'Infrastructure as Code. Define your infrastructure in HCL, version control it, and reproduce environments. The BUSL/OpenTofu split matters for your career.',
-    topics:['HCL syntax','Providers','State management','Modules','Variables & outputs','Workspaces','Terraform vs OpenTofu','Terraform Cloud'],
-    resources:[
-      {icon:'📖',title:'Terraform Learn (HashiCorp)',src:'developer.hashicorp.com',url:'https://developer.hashicorp.com/terraform/tutorials'}
-    ]},
-  {id:'aws',name:'AWS Core for DevOps',track:'ops',tier:'Cloud',time:'2 weeks',
-    desc:'AWS has ~30% cloud market share and the most job postings. Core services: IAM, EC2, S3, VPC, EKS, CloudWatch.',
-    topics:['IAM & policies','EC2 & VPCs','S3 & storage','EKS','CloudWatch','Route53','CloudFormation'],
-    resources:[
-      {icon:'📖',title:'AWS Free Tier',src:'aws.amazon.com',url:'https://aws.amazon.com/free/'}
-    ]},
-  {id:'observability',name:'Observability — Prometheus, Grafana, Loki',track:'ops',tier:'Reliability',time:'2 weeks',
-    desc:'The three pillars: metrics (Prometheus), logs (Loki), traces (Tempo/Jaeger). Plus OpenTelemetry for vendor-neutral instrumentation.',
-    topics:['PromQL','Grafana dashboards','Alertmanager','Loki & LogQL','OpenTelemetry','Jaeger / Tempo','SLI metrics'],
-    resources:[
-      {icon:'📺',title:'Prometheus & Grafana Tutorial — TechWorld with Nana',src:'youtube.com',url:'https://www.youtube.com/watch?v=h4Sl21AKiDg'}
-    ]},
-  {id:'sre',name:'SRE Practices & Incident Management',track:'ops',tier:'Reliability',time:'1.5 weeks',
-    desc:'SLOs, SLIs, error budgets, blameless postmortems, on-call practices, and runbook writing. The professional discipline of operations.',
-    topics:['SLIs & SLOs','Error budgets','On-call rotations','Incident response','Blameless postmortems','Runbook design','Toil reduction'],
-    resources:[
-      {icon:'📖',title:'Google SRE Book (free online)',src:'sre.google',url:'https://sre.google/sre-book/table-of-contents/'}
-    ]},
-  {id:'gitops',name:'GitOps — ArgoCD',track:'ops',tier:'Automation',time:'1 week',
-    desc:'ArgoCD won the GitOps battle (~50% adoption vs Flux\'s 11%). Declarative, GitOps continuous delivery for Kubernetes.',
-    topics:['ArgoCD architecture','Application CRDs','Sync strategies','ApplicationSets','RBAC','Helm + Kustomize'],
-    resources:[
-      {icon:'📖',title:'ArgoCD Getting Started',src:'argo-cd.readthedocs.io',url:'https://argo-cd.readthedocs.io/en/stable/getting_started/'}
-    ]},
-  {id:'security',name:'DevSecOps — Trivy, Vault, Sigstore',track:'ops',tier:'Security',time:'1.5 weeks',
-    desc:'Container scanning, secrets management, supply chain security. In 2025 alone, over 845K malicious packages were detected.',
-    topics:['Trivy scanning','HashiCorp Vault / OpenBao','Sigstore & cosign','SBOM generation','SLSA framework','GitHub Actions security'],
-    resources:[]},
-
-  // AI BRIDGE
-  {id:'llm',available:true,name:'LLM Foundations & Prompt Engineering',track:'ai',tier:'AI Foundations',time:'1 week',link:'ai-devops.html',
+    resources:[{icon:'📖',title:'OpenShift Guide (this site)',src:'ops-to-ai',url:'openshift.html'}]},
+  {id:'llm',name:'LLM Foundations & Prompt Engineering',track:'ai',tier:'AI Foundations',time:'1 week',link:'ai-devops.html',available:true,
     desc:'How LLMs actually work — tokens, transformers, context windows, temperature. Plus the 6 prompt engineering techniques every engineer needs.',
     topics:['Tokens & context windows','Temperature','System prompts','Role prompting','Chain of Thought','Output formatting','Few-shot examples'],
-    resources:[
-      {icon:'📖',title:'AI for DevOps (this site, Weeks 1)',src:'ops-to-ai',url:'ai-devops.html'},
-      {icon:'📺',title:'How LLMs Work — 3Blue1Brown',src:'youtube.com',url:'https://www.youtube.com/watch?v=wjZofJX0v4M'}
-    ]},
-  {id:'rag',available:true,name:'RAG & Vector Databases',track:'ai',tier:'AI Foundations',time:'1.5 weeks',link:'ai-devops.html',
+    resources:[{icon:'📖',title:'AI for DevOps (Weeks 1)',src:'ops-to-ai',url:'ai-devops.html'},{icon:'📺',title:'How LLMs Work — 3Blue1Brown',src:'youtube.com',url:'https://www.youtube.com/watch?v=wjZofJX0v4M'}]},
+  {id:'rag',name:'RAG & Vector Databases',track:'ai',tier:'AI Foundations',time:'1.5 weeks',link:'ai-devops.html',available:true,
     desc:'Retrieval-Augmented Generation — how to make AI answer questions from YOUR documentation. Embeddings, chunking, pgvector, semantic search.',
     topics:['Embeddings','Vector similarity','pgvector','Chunking strategies','Hybrid search','Reranking','Document loaders'],
-    resources:[
-      {icon:'📖',title:'AI for DevOps (this site, Week 2)',src:'ops-to-ai',url:'ai-devops.html'}
-    ]},
-  {id:'mcp',available:true,name:'MCP — Model Context Protocol',track:'ai',tier:'AI Tools',time:'1 week',link:'ai-devops.html',
-    desc:'The universal standard for connecting AI to tools. 97M+ monthly SDK downloads. Build MCP servers in Go that expose kubectl, Terraform, and monitoring as AI tools.',
+    resources:[{icon:'📖',title:'AI for DevOps (Week 2)',src:'ops-to-ai',url:'ai-devops.html'}]},
+  {id:'mcp',name:'MCP — Model Context Protocol',track:'ai',tier:'AI Tools',time:'1 week',link:'ai-devops.html',available:true,
+    desc:'The universal standard for connecting AI to tools. Build MCP servers in Go that expose kubectl, Terraform, and monitoring as AI tools.',
     topics:['MCP architecture','Client & server','Transport layers','Tool exposure','Go MCP SDK','DevOps MCP servers'],
-    resources:[
-      {icon:'📖',title:'MCP Documentation',src:'modelcontextprotocol.io',url:'https://modelcontextprotocol.io/'},
-      {icon:'📖',title:'AI for DevOps (this site, Week 4)',src:'ops-to-ai',url:'ai-devops.html'}
-    ]},
-  {id:'agents',available:true,name:'Building AI Agents in Go',track:'ai',tier:'AI Tools',time:'2 weeks',link:'ai-devops.html',
-    desc:'The ReAct pattern (Think → Act → Observe → Repeat), tool calling, multi-step reasoning, and the frameworks: LangChainGo, Eino, Google ADK for Go.',
+    resources:[{icon:'📖',title:'MCP Docs',src:'modelcontextprotocol.io',url:'https://modelcontextprotocol.io/'},{icon:'📖',title:'AI for DevOps (Week 4)',src:'ops-to-ai',url:'ai-devops.html'}]},
+  {id:'agents',name:'Building AI Agents in Go',track:'ai',tier:'AI Tools',time:'2 weeks',link:'ai-devops.html',available:true,
+    desc:'The ReAct pattern (Think → Act → Observe → Repeat), tool calling, multi-step reasoning, and Go frameworks: LangChainGo, Eino, Google ADK.',
     topics:['ReAct pattern','Tool/function calling','LangChainGo','Eino (ByteDance)','Google ADK for Go','Human-in-the-loop','Agent evaluation'],
-    resources:[
-      {icon:'📖',title:'AI for DevOps (this site, Weeks 3+5–8)',src:'ops-to-ai',url:'ai-devops.html'}
-    ],
-    playground:true},
-  {id:'aiops',available:true,name:'AIOps — k8sgpt, kagent, kubectl-ai',track:'ai',tier:'AI in Production',time:'1.5 weeks',
-    desc:'Real, production-ready AI tools for operations. k8sgpt scans clusters and explains issues. kagent runs agents as Kubernetes CRDs. kubectl-ai turns natural language into kubectl.',
+    resources:[{icon:'📖',title:'AI for DevOps (Weeks 3+5–8)',src:'ops-to-ai',url:'ai-devops.html'}],playground:true},
+  {id:'aiops',name:'AIOps — k8sgpt, kagent, kubectl-ai',track:'ai',tier:'AI in Production',time:'1.5 weeks',available:true,
+    desc:'Real, production-ready AI tools for operations. k8sgpt scans clusters and explains issues. kagent runs agents as Kubernetes CRDs.',
     topics:['k8sgpt','kagent','kubectl-ai','AI incident copilots','Log analysis with LLMs','Alert correlation'],
-    resources:[
-      {icon:'📖',title:'k8sgpt GitHub',src:'github.com',url:'https://github.com/k8sgpt-ai/k8sgpt'}
-    ]},
-  {id:'infrabot',available:true,name:'InfraBot — Build Your AI Agent',track:'ai',tier:'Capstone Project',time:'2 weeks',link:'ai-devops.html',
-    desc:'The capstone: build a working AI agent in Go that searches runbooks (RAG), checks service health (tools), analyzes logs, and creates incident reports. Your portfolio project.',
-    topics:['Project architecture','RAG pipeline in Go','Custom tools','ReAct agent loop','pgvector integration','CLI interface','Azure OpenAI swap'],
-    resources:[
-      {icon:'📖',title:'AI for DevOps (this site, Weeks 5–8)',src:'ops-to-ai',url:'ai-devops.html'}
-    ],
-    playground:true}
+    resources:[{icon:'📖',title:'k8sgpt GitHub',src:'github.com',url:'https://github.com/k8sgpt-ai/k8sgpt'}]},
+  {id:'infrabot',name:'InfraBot — Build Your AI Agent',track:'ai',tier:'Capstone Project',time:'2 weeks',link:'ai-devops.html',available:true,
+    desc:'The capstone: build a working AI agent in Go that searches runbooks (RAG), checks service health (tools), analyzes logs, and creates incident reports.',
+    topics:['Project architecture','RAG pipeline in Go','Custom tools','ReAct agent loop','pgvector integration','CLI interface'],
+    resources:[{icon:'📖',title:'AI for DevOps (Weeks 5–8)',src:'ops-to-ai',url:'ai-devops.html'}],playground:true}
 ];
 
 // ============================================
@@ -366,18 +264,14 @@ function renderRoadmap() {
     }
 
     var isDone = !!completedSkills[sk.id];
-    var isAvailable = !!sk.available;
-    html += '<div class="skill' + (isDone ? ' done' : '') + (!isAvailable ? ' coming' : '') + '" id="skill-' + sk.id + '" data-track="' + sk.track + '">';
-    html += '<div class="skill-hd"' + (isAvailable ? ' onclick="toggleSkill(\'' + sk.id + '\')"' : '') + '>';
-    if (isAvailable) {
-      html += '<div class="sk-check" onclick="event.stopPropagation();toggleComplete(\'' + sk.id + '\')">' + (isDone ? '✓' : '') + '</div>';
-    }
+    html += '<div class="skill' + (isDone ? ' done' : '') + '" id="skill-' + sk.id + '" data-track="' + sk.track + '">';
+    html += '<div class="skill-hd" onclick="toggleSkill(\'' + sk.id + '\')">';
+    html += '<div class="sk-check" onclick="event.stopPropagation();toggleComplete(\'' + sk.id + '\')"> ' + (isDone ? '✓' : '') + '</div>';
     html += '<div class="sk-dot ' + sk.track + '-dot"></div>';
     html += '<div class="sk-info"><div class="sk-name">' + sk.name + '</div>';
     html += '<div class="sk-meta"><span>⏱ ' + sk.time + '</span><span>' + (sk.track === 'ops' ? '⚙️ Ops' : '🧠 AI') + '</span></div></div>';
-    if (sk.link && isAvailable) html += '<a href="' + sk.link + '" class="sk-link" onclick="event.stopPropagation()">Open course →</a>';
-    if (!isAvailable) html += '<span class="sk-coming-badge">Coming soon</span>';
-    if (isAvailable) html += '<span class="sk-chev">▼</span>';
+    if (sk.link) html += '<a href="' + sk.link + '" class="sk-link" onclick="event.stopPropagation()">Open course →</a>';
+    html += '<span class="sk-chev">▼</span>';
     html += '</div>';
 
     // Expanded body
@@ -439,8 +333,7 @@ function toggleSkill(id) {
 }
 
 function toggleComplete(id) {
-  var skill = SKILLS.find(function(s){return s.id===id});
-  if (!skill || !skill.available) return;
+
   if (completedSkills[id]) {
     delete completedSkills[id];
     removeProgress(id);
@@ -459,7 +352,7 @@ function filterTrack(track, btn) {
 }
 
 function updateProgress() {
-  var total = SKILLS.filter(function(s){return s.available}).length;
+  var total = SKILLS.length;
   var done = Object.keys(completedSkills).length;
   var pct = total > 0 ? Math.round(done / total * 100) : 0;
   document.getElementById('doneCount').textContent = done;
