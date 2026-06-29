@@ -95,6 +95,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--l-bg);color:var(-
 .sp-back:hover{gap:8px}
 .sp-title{font-family:'Outfit',sans-serif;font-size:clamp(28px,4vw,36px);font-weight:800;color:var(--l-text);letter-spacing:-1px;line-height:1.15;margin-bottom:12px}
 .sp-meta{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--l-border)}
+
+/* Markdown styles */
+.md-p{margin-bottom:14px}
+.md-h2{font-family:'Outfit',sans-serif;font-size:22px;font-weight:700;color:var(--l-text);margin:28px 0 12px;letter-spacing:-.3px}
+.md-h3{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:var(--l-text);margin:24px 0 10px;letter-spacing:-.2px}
+.md-h4{font-size:15px;font-weight:600;color:var(--l-text);margin:20px 0 8px}
+.md-code-block{background:#1a1e2e;color:#e8ecf4;border-radius:10px;padding:18px;overflow-x:auto;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6}
+.md-inline-code{font-family:'JetBrains Mono',monospace;font-size:13px;background:rgba(0,0,0,.06);padding:2px 6px;border-radius:4px;color:#7C5CFC}
+.md-link{color:var(--mint-d);text-decoration:none;border-bottom:1px solid rgba(0,166,125,.3);transition:border-color .15s}
+.md-link:hover{border-color:var(--mint-d)}
+.md-ul,.md-ol{margin:12px 0 12px 24px}
+.md-li,.md-oli{margin-bottom:6px;line-height:1.65}
+
 .sp-content{font-size:15px;color:var(--l-text);line-height:1.8;white-space:pre-wrap;word-wrap:break-word}
 .sp-content code{font-family:'JetBrains Mono',monospace;font-size:13px;background:rgba(0,0,0,.06);padding:2px 6px;border-radius:4px}
 .sp-vote{display:flex;align-items:center;gap:10px;margin:28px 0;padding:18px 0;border-top:1px solid var(--l-border);border-bottom:1px solid var(--l-border)}
@@ -154,6 +167,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--l-bg);color:var(-
   .pc-title{font-size:17px}
 }
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b26233bf-c93d-43b3-a0fe-6ea8287414d7"></script>
 </head>
 <body>
 
@@ -243,6 +257,44 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--l-bg);color:var(-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script>
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  var html = text;
+  // Escape HTML first
+  html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Code blocks (``` ... ```)
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    return '<pre class="md-code-block"><code class="language-' + (lang||'text') + '">' + code.trim() + '</code></pre>';
+  });
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>');
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h4 class="md-h4">$1</h4>');
+  html = html.replace(/^## (.+)$/gm, '<h3 class="md-h3">$1</h3>');
+  html = html.replace(/^# (.+)$/gm, '<h2 class="md-h2">$1</h2>');
+  // Links [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="md-link">$1</a>');
+  // Unordered lists
+  html = html.replace(/^[\-\*] (.+)$/gm, '<li class="md-li">$1</li>');
+  html = html.replace(/(<li class="md-li">.*<\/li>\n?)+/g, function(m) { return '<ul class="md-ul">' + m + '</ul>'; });
+  // Numbered lists
+  html = html.replace(/^\d+\. (.+)$/gm, '<li class="md-oli">$1</li>');
+  html = html.replace(/(<li class="md-oli">.*<\/li>\n?)+/g, function(m) { return '<ol class="md-ol">' + m + '</ol>'; });
+  // Line breaks (double newline = paragraph)
+  html = html.replace(/\n\n/g, '</p><p class="md-p">');
+  html = '<p class="md-p">' + html + '</p>';
+  // Clean up empty paragraphs
+  html = html.replace(/<p class="md-p"><\/p>/g, '');
+  html = html.replace(/<p class="md-p">(<(?:pre|h[234]|ul|ol))/g, '$1');
+  html = html.replace(/(<\/(?:pre|h[234]|ul|ol)>)<\/p>/g, '$1');
+  return html;
+}
+
 var currentUser = null;
 var currentPostId = null;
 var allPosts = [];
@@ -407,7 +459,7 @@ async function showPost(postId) {
     (safeURL(profile.avatar_url) ? '<img class="pc-avatar" src="' + escHTML(safeURL(profile.avatar_url)) + '"/>' : '<div class="pc-avatar pc-avatar-empty">' + escHTML((profile.display_name||'?').charAt(0).toUpperCase()) + '</div>') +
     '<span class="pc-author">' + escHTML(profile.display_name || 'Anonymous') + '</span>' +
     '<span class="pc-date">' + date + '</span>';
-  document.getElementById('spContent').textContent = post.content;
+  document.getElementById('spContent').innerHTML = renderMarkdown(post.content);
 
   // Show comment form if logged in
   document.getElementById('commentForm').style.display = currentUser ? 'flex' : 'none';

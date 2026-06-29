@@ -167,6 +167,32 @@ table.comp td.no{color:var(--red);font-weight:600;}
   table.comp{font-size:11px}
   table.comp th,table.comp td{padding:6px 8px}
 }
+
+.code-copy-new{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.08);color:#8B9AB8;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;opacity:0;transition:all .2s;z-index:2}
+.code-block:hover .code-copy-new{opacity:1}
+.code-copy-new:hover{background:rgba(0,232,176,.15);color:#00E8B0}
+.code-copy-new.copied{background:rgba(0,232,176,.2);color:#00E8B0}
+
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b26233bf-c93d-43b3-a0fe-6ea8287414d7"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
+
+<style>
+pre[class*="language-"],code[class*="language-"]{font-family:'JetBrains Mono',monospace!important;font-size:13px!important}
+pre[class*="language-"]{background:#141722!important;border-radius:10px!important;border:1px solid rgba(255,255,255,.06)!important;margin:16px 0!important}
+.token.comment{color:#6B7E96!important}
+.token.keyword{color:#7C5CFC!important}
+.token.string{color:#00E8B0!important}
+.token.function{color:#38BDF8!important}
+.token.number{color:#FBBF24!important}
+.token.operator{color:#FB7185!important}
+.token.builtin{color:#38BDF8!important}
+
+.code-copy-new{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.08);color:#8B9AB8;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;opacity:0;transition:all .2s;z-index:2}
+.code-block:hover .code-copy-new{opacity:1}
+.code-copy-new:hover{background:rgba(0,232,176,.15);color:#00E8B0}
+.code-copy-new.copied{background:rgba(0,232,176,.2);color:#00E8B0}
+
 </style>
 </head>
 <body>
@@ -178,8 +204,6 @@ table.comp td.no{color:var(--red);font-weight:600;}
   </div>
   <div class="sidebar-search">
     <input type="text" id="nav-search" placeholder="Search chapters…" oninput="filterNav(this.value)"/>
-  </div>
-  
   </div>
   <div class="sidebar-section-label">🟢 Beginner</div>
   <div class="sidebar-nav" id="sidebar-nav">
@@ -210,7 +234,7 @@ table.comp td.no{color:var(--red);font-weight:600;}
   <div id="topbar">
     <div class="topbar-breadcrumb">OpenShift Guide · <strong id="current-chapter-title">Introduction</strong></div>
     <div class="topbar-actions">
-      <button class="btn-outline" onclick="markDone()">✓ Mark Done</button>
+      <button class="btn-outline" id="doneBtn" onclick="markDone()">✓ Mark Done</button>
       <button class="btn-sm" onclick="nextChapter()">Next →</button>
     </div>
   </div>
@@ -1499,9 +1523,27 @@ function updateProgress() {
 }
 
 function markDone() {
-  done.add(current);
-  navLinks[current].classList.add('done');
+  var btn = document.getElementById('doneBtn');
+  if (done.has(current)) {
+    done.delete(current);
+    if (navLinks[current]) navLinks[current].classList.remove('done');
+    if (btn) { btn.textContent = '✓ Mark Done'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
+  } else {
+    done.add(current);
+    if (navLinks[current]) navLinks[current].classList.add('done');
+    if (btn) { btn.textContent = '✓ Done'; btn.style.background = '#00E8B0'; btn.style.color = '#08090E'; btn.style.borderColor = '#00E8B0'; }
+  }
   updateProgress();
+}
+
+function updateDoneButton() {
+  var btn = document.getElementById('doneBtn');
+  if (!btn) return;
+  if (done.has(current)) {
+    btn.textContent = '✓ Done'; btn.style.background = '#00E8B0'; btn.style.color = '#08090E'; btn.style.borderColor = '#00E8B0';
+  } else {
+    btn.textContent = '✓ Mark Done'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = '';
+  }
 }
 
 function showChapter(idx, el) {
@@ -1512,6 +1554,7 @@ function showChapter(idx, el) {
   document.getElementById('current-chapter-title').textContent = chapters[idx];
   document.getElementById('main').scrollTo({top: 0, behavior: 'smooth'});
   current = idx;
+  updateDoneButton();
   return false;
 }
 
@@ -1575,6 +1618,7 @@ document.addEventListener('keydown', e => {
 // Restore done state
 done.forEach(i => { if (navLinks[i]) navLinks[i].classList.add('done'); });
 updateProgress();
+updateDoneButton();
 
 function toggleSidebar(){
   var sb=document.getElementById('sidebar');
@@ -1591,6 +1635,33 @@ function closeSidebar(){
 // Close sidebar on nav click (mobile)
 document.querySelectorAll('#sidebar a').forEach(function(a){
   a.addEventListener('click',function(){if(window.innerWidth<=900)closeSidebar()});
+});
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.code-block').forEach(function(block){
+    if (block.querySelector('.code-copy-new') || block.querySelector('.copy-btn')) return;
+    block.style.position = 'relative';
+    var btn = document.createElement('button');
+    btn.className = 'code-copy-new';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var code = block.querySelector('code, pre');
+      var text = (code || block).textContent;
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    block.appendChild(btn);
+  });
 });
 </script>
 </body>
