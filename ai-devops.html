@@ -1199,9 +1199,12 @@ navItems.forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=900)cl
 <div class="playground-panel" id="playPanel">
   <div class="playground-panel-head">
     <span class="playground-panel-title">Go Playground — try code live</span>
-    <button class="playground-panel-close" onclick="togglePlayground()">✕ Close</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="https://goplay.tools/" target="_blank" rel="noopener" class="playground-panel-close" style="text-decoration:none;color:#00E8B0;border-color:rgba(0,232,176,.3)">↗ New tab</a>
+      <button class="playground-panel-close" onclick="togglePlayground()">✕ Close</button>
+    </div>
   </div>
-  <iframe src="https://go.dev/play/" loading="lazy" title="Go Playground"></iframe>
+  <iframe src="https://goplay.tools/" loading="lazy" title="Go Playground" referrerpolicy="no-referrer"></iframe>
 </div>
 
 <script>

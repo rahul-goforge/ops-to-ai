@@ -173,6 +173,15 @@ table.comp td.no{color:var(--red);font-weight:600;}
 .code-copy-new:hover{background:rgba(0,232,176,.15);color:#00E8B0}
 .code-copy-new.copied{background:rgba(0,232,176,.2);color:#00E8B0}
 
+
+.os-auth{display:flex;align-items:center;gap:8px;margin-right:4px}
+.os-signin{font-size:12px;font-weight:600;padding:6px 12px;border-radius:6px;border:1px solid rgba(0,232,176,.3);background:rgba(0,232,176,.06);color:#00E8B0;cursor:pointer;white-space:nowrap;transition:all .15s}
+.os-signin:hover{background:rgba(0,232,176,.12)}
+.os-user{display:flex;align-items:center;gap:7px;font-size:12px;color:#8B9AB8}
+.os-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.os-signout{font-size:11px;color:#4B5672;background:none;border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:3px 8px;cursor:pointer;transition:all .15s}
+.os-signout:hover{color:#FB7185;border-color:rgba(251,113,133,.3)}
+@media(max-width:768px){.os-auth .os-user span{display:none}.os-signin{padding:5px 10px;font-size:11px}}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b26233bf-c93d-43b3-a0fe-6ea8287414d7"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
@@ -194,6 +203,8 @@ pre[class*="language-"]{background:#141722!important;border-radius:10px!importan
 .code-copy-new.copied{background:rgba(0,232,176,.2);color:#00E8B0}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 </head>
 <body>
 <nav id="sidebar">
@@ -234,6 +245,7 @@ pre[class*="language-"]{background:#141722!important;border-radius:10px!importan
   <div id="topbar">
     <div class="topbar-breadcrumb">OpenShift Guide · <strong id="current-chapter-title">Introduction</strong></div>
     <div class="topbar-actions">
+      <span id="osAuth" class="os-auth"></span>
       <button class="btn-outline" id="doneBtn" onclick="markDone()">✓ Mark Done</button>
       <button class="btn-sm" onclick="nextChapter()">Next →</button>
     </div>
@@ -1510,8 +1522,12 @@ const chapters = [
   "Autoscaling & Scheduling","Service Mesh & Serverless","Cluster Administration","Commands Cheat Sheet"
 ];
 let current = 0;
-const done = new Set(JSON.parse(localStorage.getItem('os-done') || '[]'));
+let done = new Set(JSON.parse(localStorage.getItem('os-done') || '[]'));
 const navLinks = document.querySelectorAll('.sidebar-nav a[data-label]');
+let osUser = null;
+
+// Skill id prefix so OpenShift chapters don't clash with roadmap skills
+function chSkillId(idx){ return 'os-ch-' + idx; }
 
 function updateProgress() {
   const pct = Math.round((done.size / chapters.length) * 100);
@@ -1519,7 +1535,95 @@ function updateProgress() {
   var barEl = document.getElementById('prog-bar');
   if (pctEl) pctEl.textContent = pct + '%';
   if (barEl) barEl.style.width = pct + '%';
+  // Always cache locally
   localStorage.setItem('os-done', JSON.stringify([...done]));
+}
+
+// Save one chapter's completion to Supabase (if logged in)
+function saveChapterProgress(idx) {
+  var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+  if (sb && osUser) {
+    sb.from('progress').upsert({
+      user_id: osUser.id,
+      skill_id: chSkillId(idx)
+    }, { onConflict: 'user_id,skill_id' }).then(function(res){
+      if (res && res.error) console.error('[ops-to-ai] OS save error:', res.error);
+    });
+  }
+}
+
+function removeChapterProgress(idx) {
+  var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+  if (sb && osUser) {
+    sb.from('progress').delete()
+      .eq('user_id', osUser.id)
+      .eq('skill_id', chSkillId(idx))
+      .then(function(res){
+        if (res && res.error) console.error('[ops-to-ai] OS remove error:', res.error);
+      });
+  }
+}
+
+// Load progress from Supabase when logged in (single source of truth)
+async function loadOSProgress() {
+  var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+  if (sb && osUser) {
+    try {
+      var res = await sb.from('progress').select('skill_id').eq('user_id', osUser.id);
+      done = new Set();
+      if (res.data) {
+        res.data.forEach(function(r){
+          if (r.skill_id && r.skill_id.indexOf('os-ch-') === 0) {
+            done.add(parseInt(r.skill_id.replace('os-ch-',''), 10));
+          }
+        });
+      }
+      localStorage.setItem('os-done', JSON.stringify([...done]));
+    } catch(e){ console.error('[ops-to-ai] OS load error:', e); }
+  } else {
+    // Anonymous → use localStorage
+    done = new Set(JSON.parse(localStorage.getItem('os-done') || '[]'));
+  }
+  // Refresh UI
+  navLinks.forEach(function(a,i){ a.classList.toggle('done', done.has(i)); });
+  updateProgress();
+  updateDoneButton();
+}
+
+// Auth UI + init
+async function initOSAuth() {
+  var sb = (typeof getSupabase === 'function') ? getSupabase() : null;
+  var authEl = document.getElementById('osAuth');
+  if (!sb || !authEl) return;
+
+  try {
+    var u = await sb.auth.getUser();
+    osUser = u.data.user;
+  } catch(e){ osUser = null; }
+
+  if (osUser) {
+    var meta = osUser.user_metadata || {};
+    var name = meta.full_name || meta.user_name || 'You';
+    var avatar = meta.avatar_url || '';
+    authEl.innerHTML = '<span class="os-user">' +
+      (avatar ? '<img class="os-avatar" src="'+avatar+'"/>' : '') +
+      '<span>'+name+'</span></span>' +
+      '<button class="os-signout" onclick="osSignOut()">Sign out</button>';
+    await loadOSProgress();
+  } else {
+    authEl.innerHTML = '<button class="os-signin" onclick="osSignIn()">Sign in to save progress</button>';
+  }
+}
+
+function osSignIn() {
+  if (typeof signInWithGitHub === 'function') signInWithGitHub();
+}
+
+function osSignOut() {
+  localStorage.removeItem('os-done');
+  done = new Set();
+  if (typeof signOut === 'function') signOut();
+  else location.reload();
 }
 
 function markDone() {
@@ -1528,10 +1632,12 @@ function markDone() {
     done.delete(current);
     if (navLinks[current]) navLinks[current].classList.remove('done');
     if (btn) { btn.textContent = '✓ Mark Done'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
+    removeChapterProgress(current);
   } else {
     done.add(current);
     if (navLinks[current]) navLinks[current].classList.add('done');
     if (btn) { btn.textContent = '✓ Done'; btn.style.background = '#00E8B0'; btn.style.color = '#08090E'; btn.style.borderColor = '#00E8B0'; }
+    saveChapterProgress(current);
   }
   updateProgress();
 }
@@ -1615,10 +1721,12 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') prevChapter();
 });
 
-// Restore done state
+// Restore done state (from localStorage first, then Supabase if logged in)
 done.forEach(i => { if (navLinks[i]) navLinks[i].classList.add('done'); });
 updateProgress();
 updateDoneButton();
+// Initialize auth + load cloud progress
+initOSAuth();
 
 function toggleSidebar(){
   var sb=document.getElementById('sidebar');
